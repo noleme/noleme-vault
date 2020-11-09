@@ -32,14 +32,8 @@ _TODO_
 
 ## IV. Dev Installation
 
-### A. Pre-requisites
-
 This project will require you to have the following:
 
 * Java 13+
 * Git (versioning)
 * Maven (dependency resolving, publishing and packaging) 
-
-### B. Setup
-
-_TODO_
