@@ -1,6 +1,6 @@
 package com.lumio.vault.parser.resolver.source;
 
-import com.lumio.commons.file.Charsets;
+import com.noleme.commons.file.Charsets;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
