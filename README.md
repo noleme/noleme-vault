@@ -28,6 +28,69 @@ _TODO_
 
 ## III. Usage
 
+A basic exemple of using this library with a `yml` configuration file:
+
+Given a dummy configuration file `my_conf.yml`:
+
+```yaml
+variables:
+    my_var: 12.34
+    my_other_var: "interesting"
+
+services:
+    my_service:
+        class: "me.company.MyClass"
+        constructor:
+            - "not so interesting"
+            - "##my_var##"
+
+    my_other_service:
+        class: "me.company.MyOtherClass"
+        constructor:
+            - "##my_other_var"
+``` 
+
+We could perform injection via annotations on a dummy class such as:
+
+```java
+public class MyService
+{
+    @Inject @Named("my_service")
+    public MyClass service;
+    @Inject @Named("my_other_service")
+    public MyOtherClass otherService;
+}
+```
+
+..and do the following:
+
+```java
+MyService service = Vault.with("my_conf.yml").inject(new MyService());
+```
+
+..one of the neat things we can do, is programmatically override parts of the configuration:
+
+```java
+MyService service = Vault.with("my_conf.yml", defs -> {
+    defs.setVariable("my_var", 34.56); //my_var will now equal 34.56 upon injection
+}).inject(new MyService());
+```
+
+Alternatively we could directly query one of the declared services:
+
+```java
+MyClass myService = Vault.with("my_conf.yml").instance(Key.of(MyClass.class, "my_service"));
+```
+
+Other features that will need to be documented include:
+
+* import of dependency json/yml files
+* service method invocation
+* service instantiation via static method call
+* service aliasing
+* service closing
+* service container composition
+
 _TODO_
 
 ## IV. Dev Installation
