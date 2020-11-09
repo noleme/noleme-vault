@@ -16,7 +16,7 @@ Add the following in your `pom.xml`:
 
 ```xml
 <dependency>
-    <groupId>com.lumio</groupId>
+    <groupId>com.lumiomedical</groupId>
     <artifactId>lumio-vault</artifactId>
     <version>0.7</version>
 </dependency>
