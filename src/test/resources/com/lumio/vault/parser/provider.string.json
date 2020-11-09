@@ -1,0 +1,14 @@
+{
+    "variables": {
+        "provider.string.value": "SomeString"
+    },
+    "services": [
+        {
+            "identifier": "provider.string",
+            "class": "com.lumio.vault.service.StringProvider",
+            "constructor": [
+                "##provider.string.value##"
+            ]
+        }
+    ]
+}

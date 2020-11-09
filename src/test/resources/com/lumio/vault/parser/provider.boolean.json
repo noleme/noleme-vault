@@ -1,0 +1,14 @@
+{
+    "variables": {
+        "provider.boolean.value": true
+    },
+    "services": [
+        {
+            "identifier": "provider.boolean",
+            "class": "com.lumio.vault.service.BooleanProvider",
+            "constructor": [
+                "##provider.boolean.value##"
+            ]
+        }
+    ]
+}
