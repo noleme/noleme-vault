@@ -28,7 +28,7 @@ _TODO_
 
 ## III. Usage
 
-A basic exemple of using this library with a `yml` configuration file:
+A basic example of using this library with a `yml` configuration file:
 
 Given a dummy configuration file `my_conf.yml`:
 
