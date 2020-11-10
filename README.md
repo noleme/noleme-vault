@@ -2,6 +2,7 @@
 
 [![GitHub Workflow Status](https://img.shields.io/github/workflow/status/lumio-medical/lumio-vault/Java%20CI%20with%20Maven)](https://github.com/lumio-medical/lumio-vault/actions?query=workflow%3A%22Java+CI+with+Maven%22)
 [![Maven Central Repository](https://maven-badges.herokuapp.com/maven-central/com.lumiomedical/lumio-vault/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.lumiomedical/lumio-vault)
+[![javadoc](https://javadoc.io/badge2/com.lumiomedical/lumio-vault/javadoc.svg)](https://javadoc.io/doc/com.lumiomedical/lumio-vault)
 ![GitHub](https://img.shields.io/github/license/lumio-medical/lumio-vault)
 
 A library providing DI with JSR-330 annotations and extensible YML/JSON configuration.
