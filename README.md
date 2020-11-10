@@ -48,7 +48,7 @@ services:
     my_other_service:
         class: "me.company.MyOtherClass"
         constructor:
-            - "##my_other_var"
+            - "##my_other_var##"
 ``` 
 
 We could perform injection via annotations on a dummy class such as:
