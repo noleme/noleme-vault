@@ -3,6 +3,8 @@ package com.lumiomedical.vault.container.definition;
 import com.lumiomedical.vault.exception.VaultCompilationException;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author Pierre Lecerf (pierre@noleme.com)
@@ -13,6 +15,8 @@ public class Variable
     private final String name;
     private Object value;
     private Collection<String> dependencies;
+    private static final Pattern variablePattern = Pattern.compile("(##(.*?)##)");
+    private static final Pattern envPattern = Pattern.compile("(\\$\\{(.*?)})");
 
     /**
      *
@@ -100,17 +104,17 @@ public class Variable
     {
         List<String> variables = new ArrayList<>();
 
-        int prev = -1;
-        for (int i = 0 ; (i = string.indexOf("##", i)) != -1 ; i += 2)
+        Matcher matcher = variablePattern.matcher(string);
+        if (matcher.find())
         {
-            if (prev == -1)
-                prev = i + 2;
-            else {
-                String var = string.substring(prev, i);
-                variables.add(var);
-                prev = -1;
-            }
+            variables.add(matcher.group(2));
+
+            matcher.results().forEach(matchResult -> {
+                String variable = matchResult.group(2);
+                variables.add(variable);
+            });
         }
+
         return variables;
     }
 
@@ -128,6 +132,7 @@ public class Variable
             if (replacement.getValue() == null)
                 continue;
             newString = newString.replace(replacement.getKey(), replacement.getValue().toString());
+            newString = replaceEnv(newString);
         }
         return newString;
     }
@@ -154,9 +159,30 @@ public class Variable
                     else
                         param = ((String)param).replace(replacement.getKey(), replacement.getValue().toString());
                 }
+                /* If param is still an instance of String, it can still contain references to ENV variables */
+                if (param instanceof String)
+                    param = replaceEnv((String)param);
                 params[i] = param;
             }
         }
         return params;
+    }
+
+    /**
+     *
+     * @param value
+     * @return
+     */
+    public static String replaceEnv(String value)
+    {
+        Matcher matcher = envPattern.matcher(value);
+        if (matcher.find())
+        {
+            return matcher.replaceAll(mr -> {
+                String env = System.getenv(mr.group(2));
+                return env != null ? env : "";
+            });
+        }
+        return value;
     }
 }
