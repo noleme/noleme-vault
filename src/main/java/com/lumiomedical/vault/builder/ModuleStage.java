@@ -7,6 +7,8 @@ import com.lumiomedical.vault.legacy.VaultLegacyCompiler;
 import java.lang.reflect.Method;
 
 /**
+ * This BuildStage implementation registers services using @Provides annotations found in the provided "module" instances.
+ *
  * @author Pierre Lecerf (plecerf@lumiomedical.com)
  * Created on 2020/05/24
  */

@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.function.Consumer;
 
 /**
+ * A builder class for queuing BuildStages over the creation of a Vault instance.
+ *
  * @author Pierre Lecerf (plecerf@lumiomedical.com)
  * Created on 2020/05/24
  */

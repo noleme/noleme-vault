@@ -4,6 +4,8 @@ import com.lumiomedical.vault.Vault;
 import com.lumiomedical.vault.legacy.Key;
 
 /**
+ * This BuildStage implementation registers the Vault in itself.
+ *
  * @author Pierre Lecerf (plecerf@lumiomedical.com)
  * Created on 2020/05/24
  */

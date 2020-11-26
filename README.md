@@ -37,6 +37,7 @@ Given a dummy configuration file `my_conf.yml`:
 variables:
     my_var: 12.34
     my_other_var: "interesting"
+    my_env_var: ${MY_VAR}
 
 services:
     my_service:
