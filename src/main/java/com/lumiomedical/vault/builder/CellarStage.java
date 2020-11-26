@@ -5,6 +5,8 @@ import com.lumiomedical.vault.container.Cellar;
 import com.lumiomedical.vault.legacy.Key;
 
 /**
+ * This BuildStage implementation registers services using a pre-existing Cellar instance.
+ *
  * @author Pierre Lecerf (plecerf@lumiomedical.com)
  * Created on 2020/05/24
  */

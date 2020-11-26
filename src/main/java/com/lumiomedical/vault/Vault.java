@@ -232,7 +232,7 @@ public final class Vault implements AutoCloseable
                     return (Provider<T>) this.providers.get(potentialParentKey);
             }
             if (key.name != null)
-                throw new RuntimeVaultException("No service could be found for name "+key.name+".");
+                throw new RuntimeVaultException("No service could be found for name "+key.name+" and type "+key.type.getName()+".");
 
             final Constructor constructor = VaultLegacyCompiler.constructor(key);
             final Provider<?>[] paramProviders = VaultLegacyCompiler.paramProviders(

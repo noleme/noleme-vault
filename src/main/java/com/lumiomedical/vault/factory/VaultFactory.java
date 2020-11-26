@@ -195,6 +195,7 @@ public class VaultFactory
                 var value = variables.get(dep).getValue();
                 val = val.replace("##"+dep+"##", value != null ? value.toString() : "");
             }
+            val = Variable.replaceEnv(val);
 
             v.setValue(val);
             definitions.setVariable(vk, val);

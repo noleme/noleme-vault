@@ -7,6 +7,9 @@ import com.lumiomedical.vault.exception.VaultException;
 import com.lumiomedical.vault.factory.VaultFactory;
 
 /**
+ * This BuildStage implementation registers services using a pre-existing Definitions instance.
+ * The Definitions will be used to populate a new Cellar, which in turn will be used for registering services into the Vault.
+ *
  * @author Pierre Lecerf (plecerf@lumiomedical.com)
  * Created on 2020/05/24
  */

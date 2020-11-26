@@ -6,12 +6,12 @@
 
     <groupId>com.lumiomedical</groupId>
     <artifactId>lumio-vault</artifactId>
-    <version>0.7</version>
+    <version>0.8</version>
     <packaging>jar</packaging>
 
     <name>Lumio Vault</name>
     <description>A library providing DI with JSR-330 annotations and extensible YML/JSON configuration</description>
-    <url>https://github.com/lumio-medical/lumio-flow</url>
+    <url>https://github.com/lumio-medical/lumio-vault</url>
 
     <organization>
         <name>Lumio Medical</name>

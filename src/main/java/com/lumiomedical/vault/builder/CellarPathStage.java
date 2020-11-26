@@ -11,6 +11,10 @@ import java.util.List;
 import java.util.function.Consumer;
 
 /**
+ * This BuildStage implementation registers services using a path to a Cellar configuration file.
+ * The provided VaultFactory will be used to build the Cellar once the path is resolved.
+ * An optional "adjuster" can perform modifications before populating the Cellar.
+ *
  * @author Pierre Lecerf (plecerf@lumiomedical.com)
  * Created on 2020/05/24
  */
