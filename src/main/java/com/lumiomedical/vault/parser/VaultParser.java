@@ -2,6 +2,7 @@ package com.lumiomedical.vault.parser;
 
 import com.lumiomedical.vault.exception.VaultParserException;
 import com.lumiomedical.vault.container.definition.Definitions;
+import com.lumiomedical.vault.parser.module.VaultModule;
 import com.lumiomedical.vault.parser.resolver.source.Source;
 
 /**
@@ -48,4 +49,11 @@ public interface VaultParser
      * @throws VaultParserException
      */
     Definitions extract(Source source, Definitions definitions) throws VaultParserException;
+
+    /**
+     *
+     * @param module
+     * @return
+     */
+    VaultParser register(VaultModule module);
 }

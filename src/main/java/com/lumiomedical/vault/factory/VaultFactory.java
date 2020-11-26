@@ -3,6 +3,7 @@ package com.lumiomedical.vault.factory;
 import com.lumiomedical.vault.container.Cellar;
 import com.lumiomedical.vault.container.Invocation;
 import com.lumiomedical.vault.container.definition.*;
+import com.lumiomedical.vault.container.definition.hook.PostResolvingHandler;
 import com.lumiomedical.vault.exception.*;
 import com.lumiomedical.vault.parser.VaultFlexibleParser;
 import com.lumiomedical.vault.parser.VaultParser;
@@ -20,13 +21,14 @@ public class VaultFactory
 {
     private final VaultParser parser;
     private final ClassLoader classLoader;
+    public static VaultParser defaultParser = new VaultFlexibleParser();
 
     /**
      *
      */
     public VaultFactory()
     {
-        this(new VaultFlexibleParser(), null);
+        this(defaultParser, null);
     }
 
     /**
@@ -35,7 +37,7 @@ public class VaultFactory
      */
     public VaultFactory(ClassLoader classLoader)
     {
-        this(new VaultFlexibleParser(), classLoader);
+        this(defaultParser, classLoader);
     }
 
     /**
@@ -88,6 +90,10 @@ public class VaultFactory
     {
         try {
             this.resolveVariables(definitions);
+
+            for (PostResolvingHandler handler : definitions.getHandlers())
+                handler.handle(definitions);
+
             this.checkCompleteness(definitions, cellar);
             List<ServiceDefinition> instantiations = this.checkStructure(definitions.listDefinitions(), cellar);
 
@@ -96,7 +102,6 @@ public class VaultFactory
 
             return cellar;
         }
-
         catch (VaultCompilationException e) {
             throw new VaultInjectionException("An error occurred while attempting to compile the object graph described by the configuration.", e);
         }
