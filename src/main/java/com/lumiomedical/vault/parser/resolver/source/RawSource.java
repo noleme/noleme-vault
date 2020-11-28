@@ -1,5 +1,6 @@
 package com.lumiomedical.vault.parser.resolver.source;
 
+import com.lumiomedical.vault.parser.resolver.dialect.interpreter.DialectInterpreter;
 import com.noleme.commons.file.Charsets;
 
 import java.io.ByteArrayInputStream;
@@ -9,26 +10,26 @@ import java.io.InputStream;
  * @author Pierre Lecerf (plecerf@lumiomedical.com)
  * Created on 2020/07/06
  */
-public class RawSource extends Source
+public class RawSource extends Source<InputStream>
 {
     /**
      *
      * @param data
-     * @param dialect
+     * @param interpreter
      */
-    public RawSource(String data, Dialect dialect)
+    public RawSource(String data, DialectInterpreter<InputStream> interpreter)
     {
-        this(new ByteArrayInputStream(data.getBytes(Charsets.UTF_8.getCharset())), dialect);
+        this(new ByteArrayInputStream(data.getBytes(Charsets.UTF_8.getCharset())), interpreter);
     }
 
     /**
      *
      * @param data
-     * @param dialect
+     * @param interpreter
      */
-    public RawSource(InputStream data, Dialect dialect)
+    public RawSource(InputStream data, DialectInterpreter<InputStream> interpreter)
     {
-        super(null, data, dialect);
+        super(null, data, interpreter);
     }
 
     @Override

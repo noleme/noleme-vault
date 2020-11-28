@@ -2,13 +2,12 @@
     "variables": {
         "provider.double.value": 12.34
     },
-    "services": [
-        {
-            "identifier": "provider.double",
+    "services": {
+        "provider.double": {
             "class": "com.lumiomedical.vault.service.DoubleProvider",
             "constructor": [
                 "##provider.double.value##"
             ]
         }
-    ]
+    }
 }

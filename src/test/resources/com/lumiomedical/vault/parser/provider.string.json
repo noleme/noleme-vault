@@ -2,13 +2,12 @@
     "variables": {
         "provider.string.value": "SomeString"
     },
-    "services": [
-        {
-            "identifier": "provider.string",
+    "services": {
+        "provider.string": {
             "class": "com.lumiomedical.vault.service.StringProvider",
             "constructor": [
                 "##provider.string.value##"
             ]
         }
-    ]
+    }
 }

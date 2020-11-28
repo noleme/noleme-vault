@@ -7,7 +7,7 @@ import com.lumiomedical.vault.container.Invocation;
 import com.lumiomedical.vault.container.definition.*;
 import com.lumiomedical.vault.exception.VaultParserException;
 
-import static com.lumiomedical.vault.parser.module.VariableModule.value;
+import static com.lumiomedical.vault.parser.module.VariableRegistrationModule.value;
 import static com.noleme.commons.function.RethrowConsumer.rethrower;
 
 /**
@@ -23,35 +23,19 @@ public class ServiceModule implements VaultModule
     }
 
     @Override
-    public void process(JsonNode json, Definitions definitions) throws VaultParserException
+    public void process(ObjectNode json, Definitions definitions) throws VaultParserException
     {
-        /*
-         * Here we allow both object and array notations.
-         * If the old-style array notation is used, we expect an 'identifier' field in the declaration object.
-         * If the object notation is used, the declaration's key can be used instead of an explicit 'identifier' field.
-         * If both the key and identifier are present with conflicting values, an error will be thrown.
-         */
-        if (json.isArray())
-        {
-            for (JsonNode serviceNode : json)
-                this.extractService((ObjectNode)serviceNode, definitions);
-        }
-        else if (json.isObject())
-        {
-            json.fields().forEachRemaining(rethrower(entry -> {
-                String identifier = entry.getKey();
-                ObjectNode serviceNode = (ObjectNode) entry.getValue();
+        json.fields().forEachRemaining(rethrower(entry -> {
+            String identifier = entry.getKey();
+            ObjectNode serviceNode = (ObjectNode) entry.getValue();
 
-                if (serviceNode.has("identifier") && !identifier.equals(serviceNode.get("identifier").asText()))
-                    throw new VaultParserException("A service was declared with conflicting identifiers, the shorthand notation '"+identifier+"' is different from the 'identifier' field of value '"+serviceNode.get("identifier").asText()+"' found in the declaration ");
+            if (serviceNode.has("identifier") && !identifier.equals(serviceNode.get("identifier").asText()))
+                throw new VaultParserException("A service was declared with conflicting identifiers, the shorthand notation '"+identifier+"' is different from the 'identifier' field of value '"+serviceNode.get("identifier").asText()+"' found in the declaration ");
 
-                serviceNode.put("identifier", identifier);
+            serviceNode.put("identifier", identifier);
 
-                this.extractService(serviceNode, definitions);
-            }));
-        }
-        else
-            throw new VaultParserException("The 'services' entry is expected to be either an array or an object.");
+            this.extractService(serviceNode, definitions);
+        }));
     }
 
     /**

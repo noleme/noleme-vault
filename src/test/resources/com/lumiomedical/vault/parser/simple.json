@@ -6,20 +6,19 @@
     ],
     "variables": {
         "provider.integer.value": 2345,
-        "provider.double.value": 12.34
+        "provider.double.value": 12.34,
+        "provider.string.base_value": "SomeString",
+        "provider.string.value": "##provider.string.base_value##"
     },
-    "services": [
-        {
-            "identifier": "alias.string",
+    "services": {
+        "alias.string": {
             "alias": "provider.string"
         },
-        {
-            "identifier": "provider.boolean.base",
+        "provider.boolean.base": {
             "class": "com.lumiomedical.vault.service.BooleanProvider",
             "constructor": [ false ]
         },
-        {
-            "identifier": "provider.double",
+        "provider.double": {
             "class": "com.lumiomedical.vault.service.DoubleProvider",
             "constructor": [
                 "##provider.double.value##"
@@ -28,20 +27,18 @@
                 ["provide"]
             ]
         },
-        {
-            "identifier": "provider.string",
+        "provider.string": {
             "class": "com.lumiomedical.vault.service.StringProvider",
             "method": "build",
             "arguments": [
                 "##provider.string.value##"
             ]
         },
-        {
-            "identifier": "provider.boolean",
+        "provider.boolean": {
             "class": "com.lumiomedical.vault.service.ServiceProvider",
             "arguments": [
                 "@provider.boolean.base"
             ]
         }
-    ]
+    }
 }

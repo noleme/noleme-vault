@@ -1,9 +1,10 @@
 package com.lumiomedical.vault.container.definition;
 
 import com.lumiomedical.vault.container.Invocation;
-import com.lumiomedical.vault.container.definition.hook.PostResolvingHandler;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Pierre Lecerf (pierre@noleme.com)
@@ -13,13 +14,11 @@ public class Definitions
 {
     private final Map<String, Object> variables;
     private final Map<String, ServiceDefinition> definitions;
-    private final List<PostResolvingHandler> handlers;
 
     public Definitions()
     {
         this.variables = new HashMap<>();
         this.definitions = new HashMap<>();
-        this.handlers = new ArrayList<>();
     }
 
     /**
@@ -83,6 +82,15 @@ public class Definitions
 
     /**
      *
+     * @return
+     */
+    public Map<String, ServiceDefinition> getDefinitions()
+    {
+        return this.definitions;
+    }
+
+    /**
+     *
      * @param identifier
      * @param def
      */
@@ -99,26 +107,6 @@ public class Definitions
     public Definitions removeDefinition(String identifier)
     {
         this.definitions.remove(identifier);
-        return this;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public List<PostResolvingHandler> getHandlers()
-    {
-        return this.handlers;
-    }
-
-    /**
-     *
-     * @param handler
-     * @return
-     */
-    public Definitions registerHandler(PostResolvingHandler handler)
-    {
-        this.handlers.add(handler);
         return this;
     }
 

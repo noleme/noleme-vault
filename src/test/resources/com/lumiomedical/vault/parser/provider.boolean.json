@@ -2,13 +2,12 @@
     "variables": {
         "provider.boolean.value": true
     },
-    "services": [
-        {
-            "identifier": "provider.boolean",
+    "services": {
+        "provider.boolean": {
             "class": "com.lumiomedical.vault.service.BooleanProvider",
             "constructor": [
                 "##provider.boolean.value##"
             ]
         }
-    ]
+    }
 }

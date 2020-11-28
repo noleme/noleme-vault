@@ -5,10 +5,10 @@ import com.lumiomedical.vault.container.Cellar;
 import com.lumiomedical.vault.container.definition.Definitions;
 import com.lumiomedical.vault.exception.VaultException;
 import com.lumiomedical.vault.factory.VaultFactory;
+import com.lumiomedical.vault.parser.adjuster.VaultAdjuster;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Consumer;
 
 /**
  * This BuildStage implementation registers services using a path to a Cellar configuration file.
@@ -22,7 +22,7 @@ public class CellarPathStage implements BuildStage
 {
     private final VaultFactory factory;
     private final List<String> paths;
-    private final Consumer<Definitions> adjuster;
+    private final VaultAdjuster adjuster;
 
     /**
      *
@@ -39,7 +39,7 @@ public class CellarPathStage implements BuildStage
      * @param factory
      * @param path
      */
-    public CellarPathStage(VaultFactory factory, String path, Consumer<Definitions> adjuster)
+    public CellarPathStage(VaultFactory factory, String path, VaultAdjuster adjuster)
     {
         this(factory, Collections.singletonList(path), adjuster);
     }
@@ -60,7 +60,7 @@ public class CellarPathStage implements BuildStage
      * @param paths
      * @param adjuster
      */
-    public CellarPathStage(VaultFactory factory, List<String> paths, Consumer<Definitions> adjuster)
+    public CellarPathStage(VaultFactory factory, List<String> paths, VaultAdjuster adjuster)
     {
         this.factory = factory;
         this.paths = paths;
@@ -72,10 +72,7 @@ public class CellarPathStage implements BuildStage
     {
         Definitions definitions = new Definitions();
 
-        for (String path : this.paths)
-            definitions = this.factory.parse(path, definitions);
-
-        this.adjuster.accept(definitions);
+        definitions = this.factory.parser().extractOrigin(this.paths, definitions, this.adjuster);
 
         Cellar cellar = this.factory.populate(new Cellar(), definitions);
 

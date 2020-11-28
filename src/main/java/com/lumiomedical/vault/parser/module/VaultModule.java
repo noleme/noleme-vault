@@ -1,6 +1,6 @@
 package com.lumiomedical.vault.parser.module;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.lumiomedical.vault.container.definition.Definitions;
 import com.lumiomedical.vault.exception.VaultParserException;
 
@@ -22,5 +22,5 @@ public interface VaultModule
      * @param definitions
      * @throws VaultParserException
      */
-    void process(JsonNode node, Definitions definitions) throws VaultParserException;
+    void process(ObjectNode node, Definitions definitions) throws VaultParserException;
 }

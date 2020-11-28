@@ -1,13 +1,14 @@
 package com.lumiomedical.vault.parser.module;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.lumiomedical.vault.container.definition.Definitions;
 
 /**
  * @author Pierre Lecerf (plecerf@lumiomedical.com)
  * Created on 2020/11/24
  */
-public class VariableModule implements VaultModule
+public class VariableRegistrationModule implements VaultModule
 {
     @Override
     public String identifier()
@@ -16,7 +17,7 @@ public class VariableModule implements VaultModule
     }
 
     @Override
-    public void process(JsonNode json, Definitions definitions)
+    public void process(ObjectNode json, Definitions definitions)
     {
         json.fields().forEachRemaining(entry -> definitions.setVariable(entry.getKey(), value(entry.getValue())));
     }
@@ -30,6 +31,8 @@ public class VariableModule implements VaultModule
      */
     public static Object value(JsonNode node)
     {
+        if (node.isNull())
+            return null;
         if (node.isTextual())
             return node.asText();
         if (node.isBoolean())

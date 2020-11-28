@@ -6,6 +6,8 @@ imports:
 variables:
     provider.integer.value: 2345
     provider.double.value: 12.34
+    provider.string.base_value: "SomeString"
+    provider.string.value: "##provider.string.base_value##"
 
 services:
     alias.string:

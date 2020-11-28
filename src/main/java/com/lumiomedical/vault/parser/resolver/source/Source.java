@@ -2,18 +2,18 @@ package com.lumiomedical.vault.parser.resolver.source;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.lumiomedical.vault.exception.VaultResolverException;
-
-import java.io.InputStream;
+import com.lumiomedical.vault.parser.resolver.dialect.Dialect;
+import com.lumiomedical.vault.parser.resolver.dialect.interpreter.DialectInterpreter;
 
 /**
  * @author Pierre Lecerf (plecerf@lumiomedical.com)
  * Created on 2020/05/23
  */
-public class Source
+public class Source <D>
 {
     private final String origin;
-    private final InputStream data;
-    private final Dialect dialect;
+    private final D data;
+    private final DialectInterpreter<D> interpreter;
 
     /**
      *
@@ -21,32 +21,27 @@ public class Source
      * @param data
      * @throws VaultResolverException
      */
-    public Source(String origin, InputStream data) throws VaultResolverException
+    public Source(String origin, D data) throws VaultResolverException
     {
-        this(origin, data, Dialect.guess(origin));
+        this(origin, data, Dialect.guess(origin, data));
     }
 
     /**
      *
      * @param origin
      * @param data
-     * @param dialect
+     * @param interpreter
      */
-    Source(String origin, InputStream data, Dialect dialect)
+    public Source(String origin, D data, DialectInterpreter<D> interpreter)
     {
         this.origin = origin;
         this.data = data;
-        this.dialect = dialect;
+        this.interpreter = interpreter;
     }
 
     public String getOrigin()
     {
         return this.origin;
-    }
-
-    public Dialect getDialect()
-    {
-        return this.dialect;
     }
 
     /**
@@ -56,6 +51,6 @@ public class Source
      */
     public ObjectNode interpret() throws VaultResolverException
     {
-        return this.dialect.interpret(this.data);
+        return this.interpreter.interpret(this.data);
     }
 }

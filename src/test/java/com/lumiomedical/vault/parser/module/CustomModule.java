@@ -1,6 +1,6 @@
 package com.lumiomedical.vault.parser.module;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.lumiomedical.vault.container.definition.Definitions;
 import com.lumiomedical.vault.container.definition.ServiceProvider;
 import com.lumiomedical.vault.service.StringProvider;
@@ -18,7 +18,7 @@ public class CustomModule implements VaultModule
     }
 
     @Override
-    public void process(JsonNode json, Definitions definitions)
+    public void process(ObjectNode json, Definitions definitions)
     {
         String value = json.get("value").asText();
 

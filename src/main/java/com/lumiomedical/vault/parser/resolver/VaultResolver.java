@@ -11,9 +11,9 @@ public interface VaultResolver
 {
     /**
      *
-     * @param path
+     * @param origin
      * @return
      * @throws VaultResolverException
      */
-    Source resolve(String path) throws VaultResolverException;
+    Source resolve(String origin) throws VaultResolverException;
 }
