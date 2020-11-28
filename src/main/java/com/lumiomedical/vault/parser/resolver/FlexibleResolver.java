@@ -14,15 +14,15 @@ import java.io.IOException;
 public class FlexibleResolver implements VaultResolver
 {
     @Override
-    public Source resolve(String path) throws VaultResolverException
+    public Source resolve(String origin) throws VaultResolverException
     {
         try {
-            if (Files.fileExists(path))
-                return new Source(path, Files.streamFrom(path));
-            return new Source(path, Resources.streamFrom(path));
+            if (Files.fileExists(origin))
+                return new Source<>(origin, Files.streamFrom(origin));
+            return new Source<>(origin, Resources.streamFrom(origin));
         }
         catch (IOException e) {
-            throw new VaultResolverException("The configuration file could not be loaded at "+path+".", e);
+            throw new VaultResolverException("The configuration file could not be loaded at "+origin+".", e);
         }
     }
 }

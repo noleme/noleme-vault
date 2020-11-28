@@ -2,7 +2,7 @@ package com.lumiomedical.vault.parser;
 
 import com.lumiomedical.vault.container.definition.Definitions;
 import com.lumiomedical.vault.exception.VaultParserException;
-import com.lumiomedical.vault.parser.resolver.source.Dialect;
+import com.lumiomedical.vault.parser.resolver.dialect.Dialect;
 import com.lumiomedical.vault.parser.resolver.source.RawSource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -16,7 +16,7 @@ public class RawSourceTest
     @Test
     void jsonRawTest() throws VaultParserException
     {
-        var parser = new VaultFlexibleParser();
+        var parser = new VaultCompositeParser();
         var source = new RawSource("{" +
             "\"variables\":{" +
                 "\"provider.double.value\":12.34," +
@@ -34,7 +34,7 @@ public class RawSourceTest
     @Test
     void yamlRawTest() throws VaultParserException
     {
-        var parser = new VaultFlexibleParser();
+        var parser = new VaultCompositeParser();
         var source = new RawSource("variables:\n" +
             "  provider.double.value: 12.34\n" +
             "  provider.string.value: SomeString\n" +

@@ -5,10 +5,10 @@ import com.lumiomedical.vault.container.Cellar;
 import com.lumiomedical.vault.container.definition.Definitions;
 import com.lumiomedical.vault.exception.VaultException;
 import com.lumiomedical.vault.factory.VaultFactory;
+import com.lumiomedical.vault.parser.adjuster.VaultAdjuster;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 /**
  * A builder class for queuing BuildStages over the creation of a Vault instance.
@@ -102,7 +102,7 @@ public final class VaultBuilder
      * @param adjuster
      * @return
      */
-    public VaultBuilder with(String path, Consumer<Definitions> adjuster)
+    public VaultBuilder with(String path, VaultAdjuster adjuster)
     {
         this.stages.add(new CellarPathStage(this.factory, path, adjuster));
         return this;
@@ -125,7 +125,7 @@ public final class VaultBuilder
      * @param adjuster
      * @return
      */
-    public VaultBuilder with(List<String> paths, Consumer<Definitions> adjuster)
+    public VaultBuilder with(List<String> paths, VaultAdjuster adjuster)
     {
         this.stages.add(new CellarPathStage(this.factory, paths, adjuster));
         return this;
@@ -137,7 +137,7 @@ public final class VaultBuilder
      * @param paths
      * @return
      */
-    public VaultBuilder with(Consumer<Definitions> adjuster, String... paths)
+    public VaultBuilder with(VaultAdjuster adjuster, String... paths)
     {
         this.stages.add(new CellarPathStage(this.factory, List.of(paths), adjuster));
         return this;

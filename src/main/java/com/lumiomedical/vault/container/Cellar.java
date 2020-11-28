@@ -77,11 +77,33 @@ public class Cellar implements AutoCloseable
     ** Services
     */
 
+    /**
+     *
+     * @param name
+     * @return
+     */
     public Object getService(String name)
     {
         if (!this.services.containsKey(name))
             throw new VaultNotFoundException("The cellar has no declared \""+name+"\" service.");
         return this.services.get(name);
+    }
+
+    /**
+     *
+     * @param name
+     * @param type
+     * @param <T>
+     * @return
+     */
+    public <T> T getService(String name, Class<T> type)
+    {
+        Object service = this.getService(name);
+
+        if (!type.isInstance(service))
+            throw new VaultNotFoundException("The cellar has a \""+name+"\" service but its type does not match the required "+type.getName());
+
+        return type.cast(service);
     }
 
     public boolean hasService(String name)

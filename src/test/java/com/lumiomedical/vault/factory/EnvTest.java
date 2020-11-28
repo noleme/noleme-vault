@@ -16,7 +16,7 @@ import java.util.Map;
 public class EnvTest
 {
     @Test
-    void testEnvVariables() throws VaultException
+    void envVariables() throws VaultException
     {
         setEnv("MY_VAR", "some interesting value");
         setEnv("MY_OTHER_VAR", "some uninteresting value");
@@ -36,6 +36,7 @@ public class EnvTest
 
     /**
      * Nasty hack for altering the env variable snapshot ; does not impact the actual env environment, only its in-memory representation.
+     * This produces a warning for illegal reflective access, should not be an issue in this context.
      *
      * @param name
      * @param value

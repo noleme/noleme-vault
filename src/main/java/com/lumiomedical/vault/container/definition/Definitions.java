@@ -82,6 +82,15 @@ public class Definitions
 
     /**
      *
+     * @return
+     */
+    public Map<String, ServiceDefinition> getDefinitions()
+    {
+        return this.definitions;
+    }
+
+    /**
+     *
      * @param identifier
      * @param def
      */

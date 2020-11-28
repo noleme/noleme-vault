@@ -13,13 +13,13 @@ import java.io.FileNotFoundException;
 public class FileResolver implements VaultResolver
 {
     @Override
-    public Source resolve(String path) throws VaultResolverException
+    public Source resolve(String origin) throws VaultResolverException
     {
         try {
-            return new Source(path, Files.streamFrom(path));
+            return new Source<>(origin, Files.streamFrom(origin));
         }
         catch (FileNotFoundException e) {
-            throw new VaultResolverException("The configuration file could not be loaded at "+path+".", e);
+            throw new VaultResolverException("The configuration file could not be loaded at "+origin+".", e);
         }
     }
 }

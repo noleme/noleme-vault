@@ -14,7 +14,7 @@ public class ParserTest
     @Test
     void basicJsonParsing() throws VaultParserException
     {
-        var parser = new VaultFlexibleParser();
+        var parser = new VaultCompositeParser();
 
         Definitions def = parser.extract("com/lumiomedical/vault/parser/simple.json");
 
@@ -24,7 +24,7 @@ public class ParserTest
     @Test
     void basicYamlParsing() throws VaultParserException
     {
-        var parser = new VaultFlexibleParser();
+        var parser = new VaultCompositeParser();
 
         Definitions def = parser.extract("com/lumiomedical/vault/parser/simple.yml");
 

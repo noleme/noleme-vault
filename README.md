@@ -19,7 +19,7 @@ Add the following in your `pom.xml`:
 <dependency>
     <groupId>com.lumiomedical</groupId>
     <artifactId>lumio-vault</artifactId>
-    <version>0.8</version>
+    <version>0.9</version>
 </dependency>
 ```
 
@@ -92,6 +92,7 @@ Other features that will need to be documented include:
 * service aliasing
 * service closing
 * service container composition
+* custom modules
 
 _TODO_
 

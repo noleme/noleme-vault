@@ -8,15 +8,18 @@ import com.lumiomedical.vault.exception.RuntimeVaultException;
 import com.lumiomedical.vault.exception.VaultException;
 import com.lumiomedical.vault.legacy.Key;
 import com.lumiomedical.vault.legacy.VaultLegacyCompiler;
+import com.lumiomedical.vault.parser.adjuster.VaultAdjuster;
 
 import javax.inject.Provider;
 import javax.inject.Singleton;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Consumer;
 
 /**
  * @author Pierre Lecerf (plecerf@lumiomedical.com)
@@ -108,7 +111,7 @@ public final class Vault implements AutoCloseable
      * @return
      * @throws VaultException
      */
-    public static Vault with(String path, Consumer<Definitions> adjuster) throws VaultException
+    public static Vault with(String path, VaultAdjuster adjuster) throws VaultException
     {
         return Vault.builder().with(path, adjuster).build();
     }
@@ -121,7 +124,7 @@ public final class Vault implements AutoCloseable
      * @return
      * @throws VaultException
      */
-    public static Vault with(List<String> paths, Consumer<Definitions> adjuster) throws VaultException
+    public static Vault with(List<String> paths, VaultAdjuster adjuster) throws VaultException
     {
         return Vault.builder().with(paths, adjuster).build();
     }
@@ -133,7 +136,7 @@ public final class Vault implements AutoCloseable
      * @return
      * @throws VaultException
      */
-    public static Vault with(Consumer<Definitions> adjuster, String... paths) throws VaultException
+    public static Vault with(VaultAdjuster adjuster, String... paths) throws VaultException
     {
         return Vault.builder().with(adjuster, paths).build();
     }

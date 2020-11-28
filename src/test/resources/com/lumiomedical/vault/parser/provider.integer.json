@@ -2,13 +2,12 @@
     "variables": {
         "provider.integer.value": 1234
     },
-    "services": [
-        {
-            "identifier": "provider.integer",
+    "services": {
+        "provider.integer": {
             "class": "com.lumiomedical.vault.service.IntegerProvider",
             "constructor": [
                 "##provider.integer.value##"
             ]
         }
-    ]
+    }
 }
