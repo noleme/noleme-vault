@@ -6,7 +6,7 @@
 
     <groupId>com.lumiomedical</groupId>
     <artifactId>lumio-vault</artifactId>
-    <version>0.9</version>
+    <version>0.9.1</version>
     <packaging>jar</packaging>
 
     <name>Lumio Vault</name>
@@ -29,7 +29,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.release>13</maven.compiler.release>
+        <maven.compiler.release>11</maven.compiler.release>
     </properties>
 
     <dependencies>
