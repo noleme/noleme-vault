@@ -13,7 +13,8 @@ public class Invocation
     {
         this(methodName, new Object[]{});
     }
-    public Invocation(String methodName, Object[] params)
+
+    public Invocation(String methodName, Object... params)
     {
         this.methodName = methodName;
         this.params = params;

@@ -19,7 +19,7 @@ Add the following in your `pom.xml`:
 <dependency>
     <groupId>com.lumiomedical</groupId>
     <artifactId>lumio-vault</artifactId>
-    <version>0.9</version>
+    <version>0.9.1</version>
 </dependency>
 ```
 
@@ -100,6 +100,6 @@ _TODO_
 
 This project will require you to have the following:
 
-* Java 13+
+* Java 11+
 * Git (versioning)
 * Maven (dependency resolving, publishing and packaging) 
