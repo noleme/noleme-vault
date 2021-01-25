@@ -4,6 +4,7 @@ import com.lumiomedical.vault.container.definition.Definitions;
 import com.lumiomedical.vault.exception.VaultParserException;
 import com.lumiomedical.vault.parser.adjuster.VaultAdjuster;
 import com.lumiomedical.vault.parser.module.VaultModule;
+import com.lumiomedical.vault.parser.preprocessor.VaultPreprocessor;
 import com.lumiomedical.vault.parser.resolver.source.Source;
 
 import java.util.Arrays;
@@ -81,8 +82,17 @@ public interface VaultParser
     Definitions extractOrigin(Collection<String> origins, Definitions definitions, Collection<VaultAdjuster> adjusters) throws VaultParserException;
 
     /**
+     * Register a custom preprocessor for performing modifications over configuration nodes before compilation passes.
      *
-     * @param module
+     * @param preprocessor a vault preprocessor instance
+     * @return
+     */
+    VaultParser registerPreprocessor(VaultPreprocessor preprocessor);
+
+    /**
+     * Register a custom module for performing additional processing over configuration nodes.
+     *
+     * @param module a vault module instance
      * @return
      */
     VaultParser register(VaultModule module);

@@ -7,6 +7,7 @@ import com.lumiomedical.vault.exception.VaultParserException;
 import com.lumiomedical.vault.exception.VaultStructureException;
 import com.lumiomedical.vault.parser.adjuster.VaultAdjuster;
 import com.lumiomedical.vault.parser.module.*;
+import com.lumiomedical.vault.parser.preprocessor.VaultPreprocessor;
 import com.lumiomedical.vault.parser.resolver.FlexibleResolver;
 import com.lumiomedical.vault.parser.resolver.VaultResolver;
 import com.lumiomedical.vault.parser.resolver.source.Source;
@@ -27,6 +28,7 @@ public class VaultCompositeParser implements VaultParser
     private final VaultResolver resolver;
     private static final String rootIdentifier = "*";
     private static final Set<String> coreDirectives = Set.of("imports");
+    private final List<VaultPreprocessor> preprocessors = new ArrayList<>();
     /* Module stacks */
     private final List<VaultModule> preModules = Lists.of(
         new VariableRegistrationModule()
@@ -110,6 +112,11 @@ public class VaultCompositeParser implements VaultParser
     {
         try {
             ObjectNode json = source.interpret();
+
+            /* The preprocessor pass can be used to perform compatibility adjustments or last-minute changes over uncontrolled inputs */
+            for (VaultPreprocessor preprocessor : this.preprocessors)
+                json = preprocessor.preprocess(json);
+
             this.validateStructure(json);
 
             for (String imp : this.getImports(json))
@@ -156,6 +163,12 @@ public class VaultCompositeParser implements VaultParser
         }
     }
 
+    @Override
+    public VaultParser registerPreprocessor(VaultPreprocessor preprocessor)
+    {
+        this.preprocessors.add(preprocessor);
+        return this;
+    }
 
     @Override
     public VaultParser register(VaultModule module)

@@ -31,7 +31,7 @@ public class ParserTest
         makeAssertions(def);
     }
 
-    void makeAssertions(Definitions def)
+    public static void makeAssertions(Definitions def)
     {
         Assertions.assertEquals(true, def.getVariable("provider.boolean.value"));
         Assertions.assertEquals(12.34, def.getVariable("provider.double.value"));
