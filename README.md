@@ -20,7 +20,7 @@ Add the following in your `pom.xml`:
 <dependency>
     <groupId>com.lumiomedical</groupId>
     <artifactId>lumio-vault</artifactId>
-    <version>0.10</version>
+    <version>0.11</version>
 </dependency>
 ```
 
