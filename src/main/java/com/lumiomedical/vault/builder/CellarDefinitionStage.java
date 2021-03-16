@@ -5,6 +5,8 @@ import com.lumiomedical.vault.container.Cellar;
 import com.lumiomedical.vault.container.definition.Definitions;
 import com.lumiomedical.vault.exception.VaultException;
 import com.lumiomedical.vault.factory.VaultFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This BuildStage implementation registers services using a pre-existing Definitions instance.
@@ -17,6 +19,8 @@ public class CellarDefinitionStage implements BuildStage
 {
     private final VaultFactory factory;
     private final Definitions definitions;
+
+    private static final Logger logger = LoggerFactory.getLogger(CellarDefinitionStage.class);
 
     /**
      *
@@ -32,6 +36,8 @@ public class CellarDefinitionStage implements BuildStage
     @Override
     public void build(Vault vault) throws VaultException
     {
+        logger.debug("Populating vault using pre-compiled Definitions");
+
         Cellar cellar = this.factory.populate(new Cellar(), this.definitions);
         new CellarStage(cellar).build(vault);
     }

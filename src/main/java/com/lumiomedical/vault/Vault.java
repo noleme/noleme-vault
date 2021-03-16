@@ -44,6 +44,16 @@ public final class Vault implements AutoCloseable
     }
 
     /**
+     *
+     * @return
+     * @throws VaultException
+     */
+    public static Vault with() throws VaultException
+    {
+        return Vault.builder().build();
+    }
+
+    /**
      * Helper method for creating a simple one-stage Vault instance.
      *
      * @param stage
@@ -130,6 +140,7 @@ public final class Vault implements AutoCloseable
     }
 
     /**
+     * Helper method for creating a simple one-stage Vault instance.
      *
      * @param adjuster
      * @param paths
@@ -161,6 +172,14 @@ public final class Vault implements AutoCloseable
     public <T> T instance(Class<T> type)
     {
         return provider(Key.of(type), null).get();
+    }
+
+    /**
+     * @return an instance of type
+     */
+    public <T> T instance(Class<T> type, String name)
+    {
+        return provider(Key.of(type, name), null).get();
     }
 
     /**
@@ -206,7 +225,7 @@ public final class Vault implements AutoCloseable
             Key<?> key = (Key<?>) f[2];
 
             try {
-                field.set(target, (boolean) f[1] ? provider(key) : instance(key));
+                field.set(target, (boolean) f[1] ? this.provider(key) : this.instance(key));
             }
             catch (IllegalAccessException e) {
                 throw new VaultException(String.format("Can't inject field %s in %s", field.getName(), target.getClass().getName()), e);

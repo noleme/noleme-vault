@@ -3,6 +3,8 @@ package com.lumiomedical.vault.builder;
 import com.lumiomedical.vault.Vault;
 import com.lumiomedical.vault.container.Cellar;
 import com.lumiomedical.vault.legacy.Key;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This BuildStage implementation registers services using a pre-existing Cellar instance.
@@ -13,6 +15,8 @@ import com.lumiomedical.vault.legacy.Key;
 public class CellarStage implements BuildStage
 {
     private final Cellar cellar;
+
+    private static final Logger logger = LoggerFactory.getLogger(CellarStage.class);
 
     /**
      *
@@ -26,15 +30,32 @@ public class CellarStage implements BuildStage
     @Override
     public void build(Vault vault)
     {
+        logger.debug("Populating vault using pre-compiled Cellar ({} service and {} variable references found)", this.cellar.getServices().size(), this.cellar.getVariables().size());
+
         this.cellar.getServices().forEach((name, service) -> {
-            vault.register(Key.of(service.getClass(), name), () -> service, this.cellar.isCloseable(name));
+            Key namedKey = Key.of(service.getClass(), name);
+            Key typeKey = Key.of(service.getClass());
+            boolean isCloseable = this.cellar.isCloseable(name);
+
+            vault.register(typeKey, () -> service, isCloseable);
+            vault.register(namedKey, () -> service, isCloseable);
         });
         this.cellar.getVariables().forEach((name, variable) -> {
-            Key key = variable != null
-                ? Key.of(variable.getClass(), name)
-                : Key.of(Object.class, name)
-            ;
-            vault.register(key, () -> variable);
+            Key namedKey = Key.of(getVariableClass(variable), name);
+            Key typeKey = Key.of(getVariableClass(variable));
+
+            vault.register(namedKey, () -> variable);
+            vault.register(typeKey, () -> variable);
         });
+    }
+
+    /**
+     *
+     * @param instance
+     * @return
+     */
+    private static Class<?> getVariableClass(Object instance)
+    {
+        return instance != null ? instance.getClass() : Object.class;
     }
 }

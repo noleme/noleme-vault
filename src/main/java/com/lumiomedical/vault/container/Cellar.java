@@ -2,6 +2,8 @@ package com.lumiomedical.vault.container;
 
 import com.lumiomedical.vault.exception.RuntimeVaultException;
 import com.lumiomedical.vault.exception.VaultNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -16,6 +18,8 @@ public class Cellar implements AutoCloseable
     private final Map<String, Object> services;
     private final Map<String, Object> variables;
     private final Set<String> closeables;
+
+    private static final Logger logger = LoggerFactory.getLogger(Cellar.class);
 
     public Cellar()
     {
@@ -151,6 +155,8 @@ public class Cellar implements AutoCloseable
     @Override
     public void close()
     {
+        logger.debug("Closing Cellar ({} closeables registered)", this.closeables.size());
+
         for (String closeable : this.closeables)
         {
             try {

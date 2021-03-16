@@ -7,6 +7,8 @@ import com.lumiomedical.vault.exception.*;
 import com.lumiomedical.vault.parser.VaultCompositeParser;
 import com.lumiomedical.vault.parser.VaultParser;
 import com.lumiomedical.vault.reflect.ClassUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -22,6 +24,8 @@ public class VaultFactory
     private final ClassLoader classLoader;
     private final VaultParser parser;
     public static VaultParser defaultParser = new VaultCompositeParser();
+
+    private static final Logger logger = LoggerFactory.getLogger(VaultFactory.class);
 
     /**
      *
@@ -89,6 +93,8 @@ public class VaultFactory
     public Cellar populate(Cellar cellar, Definitions definitions) throws VaultInjectionException
     {
         try {
+            logger.debug("Populating cellar with definitions ({} service and {} variable definitions found)", definitions.getDefinitions().size(), definitions.getVariables().size());
+
             this.checkCompleteness(definitions, cellar);
             List<ServiceDefinition> instantiations = this.checkStructure(definitions.listDefinitions(), cellar);
 
@@ -299,7 +305,7 @@ public class VaultFactory
                     o = cellar.getService(id);
                     params[i] = o;
                 }
-                paramTypes[i] = o != null ? o.getClass() : (Class<?>)null;
+                paramTypes[i] = o != null ? o.getClass() : null;
             }
             Constructor ctor = ClassUtils.getConstructor(c, paramTypes);
             return ctor.newInstance(params);
@@ -354,7 +360,7 @@ public class VaultFactory
                     o = cellar.getService(id);
                     args[i] = o;
                 }
-                argTypes[i] = o != null ? o.getClass() : (Class<?>)null;
+                argTypes[i] = o != null ? o.getClass() : null;
             }
             Method method = ClassUtils.getMethod(c, methodName, argTypes);
 
@@ -406,7 +412,7 @@ public class VaultFactory
                         o = cellar.getService(id);
                         params[i] = o;
                     }
-                    paramTypes[i] = o != null ? o.getClass() : (Class<?>)null;
+                    paramTypes[i] = o != null ? o.getClass() : null;
                 }
 
                 Method method = ClassUtils.getMethod(instance.getClass(), invocation.getMethodName(), paramTypes);

@@ -3,7 +3,9 @@ package com.lumiomedical.vault.legacy;
 import com.lumiomedical.vault.Provides;
 import com.lumiomedical.vault.Vault;
 import com.lumiomedical.vault.exception.RuntimeVaultException;
-import com.lumiomedical.vault.exception.VaultException;
+import com.lumiomedical.vault.legacy.provider.CachedProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -19,6 +21,8 @@ import java.util.*;
  */
 public class VaultLegacyCompiler
 {
+    private static final Logger logger = LoggerFactory.getLogger(VaultLegacyCompiler.class);
+
     /**
      *
      * @param target
@@ -167,13 +171,12 @@ public class VaultLegacyCompiler
      * @param vault
      * @param module
      * @param m
-     * @throws VaultException
      */
-    public static void providerMethod(Vault vault, final Object module, final Method m) throws VaultException
+    public static void providerMethod(Vault vault, final Object module, final Method m)
     {
-        final Key key = Key.of(m.getReturnType(), VaultLegacyCompiler.qualifier(m.getAnnotations()));
+        final Key<?> key = Key.of(m.getReturnType(), VaultLegacyCompiler.qualifier(m.getAnnotations()));
         if (vault.hasProvider(key))
-            throw new VaultException(String.format("%s has multiple providers, module %s", key.toString(), module.getClass()));
+            logger.debug("{} has multiple providers, module {}", key.toString(), module.getClass());
 
         Singleton singleton = m.getAnnotation(Singleton.class) != null
             ? m.getAnnotation(Singleton.class)
@@ -189,7 +192,7 @@ public class VaultLegacyCompiler
             Collections.singleton(key)
         );
 
-        var provider = (Provider<?>) () -> {
+        Provider<?> provider = () -> {
             try {
                 return m.invoke(module, params(paramProviders));
             }
@@ -198,7 +201,7 @@ public class VaultLegacyCompiler
             }
         };
 
-        vault.register(key, provider);
+        vault.register(key, singleton == null ? provider : new CachedProvider<>(provider));
     }
 
     /**

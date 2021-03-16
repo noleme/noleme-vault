@@ -9,22 +9,16 @@ import org.junit.jupiter.api.Test;
 public class AmbiguousModuleTest
 {
     @Test
-    public void ambiguousModule()
+    public void ambiguousModule() throws VaultException
     {
-        Assertions.assertThrows(VaultException.class, () -> {
-            Vault.with(new Module());
-        });
+        var vault = Vault.with(new Module());
+
+        Assertions.assertEquals("zoo", vault.instance(String.class));
     }
 
     public static class Module {
-        @Provides
-        String foo() {
-            return "foo";
-        }
-
-        @Provides
-        String bar() {
-            return "bar";
-        }
+        @Provides String bar() { return "bar"; }
+        @Provides String foo() { return "foo"; }
+        @Provides String zoo() { return "zoo"; }
     }
 }

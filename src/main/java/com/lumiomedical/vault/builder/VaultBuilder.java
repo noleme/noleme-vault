@@ -5,8 +5,12 @@ import com.lumiomedical.vault.container.Cellar;
 import com.lumiomedical.vault.container.definition.Definitions;
 import com.lumiomedical.vault.exception.VaultException;
 import com.lumiomedical.vault.factory.VaultFactory;
+import com.lumiomedical.vault.legacy.Key;
 import com.lumiomedical.vault.parser.adjuster.VaultAdjuster;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.inject.Provider;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +24,8 @@ public final class VaultBuilder
 {
     private final List<BuildStage> stages;
     private VaultFactory factory;
+
+    private static final Logger logger = LoggerFactory.getLogger(VaultBuilder.class);
 
     /**
      *
@@ -145,6 +151,33 @@ public final class VaultBuilder
 
     /**
      *
+     * @param key
+     * @param provider
+     * @param <T>
+     * @return
+     */
+    public <T> VaultBuilder with(Key<T> key, Provider<T> provider)
+    {
+        this.stages.add(new ProviderStage<>(key, provider));
+        return this;
+    }
+
+    /**
+     *
+     * @param key
+     * @param provider
+     * @param closeable
+     * @param <T>
+     * @return
+     */
+    public <T> VaultBuilder with(Key<T> key, Provider<T> provider, boolean closeable)
+    {
+        this.stages.add(new ProviderStage<>(key, provider, closeable));
+        return this;
+    }
+
+    /**
+     *
      * @param modules
      * @return
      */
@@ -163,8 +196,13 @@ public final class VaultBuilder
     {
         Vault vault = new Vault();
 
+        logger.debug("Building vault with {} registered stages", this.stages.size());
+
         for (BuildStage stage : this.stages)
+        {
+            logger.debug("Building vault stage {}", stage.getClass().getName());
             stage.build(vault);
+        }
 
         return vault;
     }

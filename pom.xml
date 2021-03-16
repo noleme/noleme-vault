@@ -6,7 +6,7 @@
 
     <groupId>com.lumiomedical</groupId>
     <artifactId>lumio-vault</artifactId>
-    <version>0.10</version>
+    <version>0.11</version>
     <packaging>jar</packaging>
 
     <name>Lumio Vault</name>
@@ -30,6 +30,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release>11</maven.compiler.release>
+        <slf4j.version>1.7.30</slf4j.version>
     </properties>
 
     <dependencies>
@@ -49,6 +50,19 @@
             <groupId>com.noleme</groupId>
             <artifactId>noleme-json</artifactId>
             <version>[0.9,)</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>${slf4j.version}</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>

@@ -6,6 +6,8 @@ import com.lumiomedical.vault.container.definition.Definitions;
 import com.lumiomedical.vault.exception.VaultException;
 import com.lumiomedical.vault.factory.VaultFactory;
 import com.lumiomedical.vault.parser.adjuster.VaultAdjuster;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.List;
@@ -23,6 +25,8 @@ public class CellarPathStage implements BuildStage
     private final VaultFactory factory;
     private final List<String> paths;
     private final VaultAdjuster adjuster;
+
+    private static final Logger logger = LoggerFactory.getLogger(CellarPathStage.class);
 
     /**
      *
@@ -73,6 +77,8 @@ public class CellarPathStage implements BuildStage
         Definitions definitions = new Definitions();
 
         definitions = this.factory.parser().extractOrigin(this.paths, definitions, this.adjuster);
+
+        logger.debug("Populating vault using configuration files {}", this.paths);
 
         Cellar cellar = this.factory.populate(new Cellar(), definitions);
 

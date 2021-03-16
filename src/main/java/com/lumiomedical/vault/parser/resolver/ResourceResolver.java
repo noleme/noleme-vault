@@ -3,6 +3,8 @@ package com.lumiomedical.vault.parser.resolver;
 import com.noleme.commons.file.Resources;
 import com.lumiomedical.vault.exception.VaultResolverException;
 import com.lumiomedical.vault.parser.resolver.source.Source;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
@@ -12,10 +14,14 @@ import java.io.IOException;
  */
 public class ResourceResolver implements VaultResolver
 {
+    private static final Logger logger = LoggerFactory.getLogger(ResourceResolver.class);
+
     @Override
     public Source resolve(String origin) throws VaultResolverException
     {
         try {
+            logger.debug("Resolving from resource located at {}", origin);
+
             return new Source<>(origin, Resources.streamFrom(origin));
         }
         catch (IOException e) {

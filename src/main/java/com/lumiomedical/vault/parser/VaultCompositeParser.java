@@ -14,6 +14,8 @@ import com.lumiomedical.vault.parser.resolver.source.Source;
 import com.noleme.commons.container.Lists;
 import com.noleme.json.Json;
 import com.noleme.json.JsonException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -38,6 +40,8 @@ public class VaultCompositeParser implements VaultParser
         new VariableReplacementModule(),
         new ServiceModule()
     );
+
+    private static final Logger logger = LoggerFactory.getLogger(VaultCompositeParser.class);
 
     public VaultCompositeParser()
     {
@@ -112,6 +116,8 @@ public class VaultCompositeParser implements VaultParser
     {
         try {
             ObjectNode json = source.interpret();
+
+            logger.debug("Running parser preprocessors ({} preprocessors registered)", this.preprocessors.size());
 
             /* The preprocessor pass can be used to perform compatibility adjustments or last-minute changes over uncontrolled inputs */
             for (VaultPreprocessor preprocessor : this.preprocessors)

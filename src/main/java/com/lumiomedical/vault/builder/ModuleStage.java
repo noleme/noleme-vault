@@ -3,6 +3,8 @@ package com.lumiomedical.vault.builder;
 import com.lumiomedical.vault.Vault;
 import com.lumiomedical.vault.exception.VaultException;
 import com.lumiomedical.vault.legacy.VaultLegacyCompiler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
 
@@ -16,6 +18,8 @@ public class ModuleStage implements BuildStage
 {
     private final Object[] modules;
 
+    private static final Logger logger = LoggerFactory.getLogger(ModuleStage.class);
+
     public ModuleStage(Object... modules)
     {
         this.modules = modules;
@@ -26,6 +30,8 @@ public class ModuleStage implements BuildStage
     {
         for (Object module : this.modules)
         {
+            logger.debug("Populating vault using module class {}", module.getClass().getName());
+
             if (module instanceof Class)
                 throw new VaultException(String.format("%s provided as class instead of an instance.", ((Class) module).getName()));
             for (Method providerMethod : VaultLegacyCompiler.providers(module.getClass()))
