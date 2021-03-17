@@ -58,14 +58,33 @@ We could perform injection via annotations on a dummy class such as:
 ```java
 public class MyService
 {
-    @Inject @Named("my_service")
-    public MyClass service;
-    @Inject @Named("my_other_service")
-    public MyOtherClass otherService;
+    private final MyClass service;
+    private final MyOtherClass otherService;
+
+    @Inject
+    public MyService(MyClass service, @Named("my_other_service") MyOtherClass otherService)
+    {
+        this.service = service;
+        this.otherService = otherService;
+    }
 }
 ```
 
 ..and do the following:
+
+```java
+MyService service = Vault.with("my_conf.yml").instance(MyService.class);
+```
+
+It's also possible to use field annotations and proceed the following way:
+
+```java
+public class MyService
+{
+    @Inject private MyClass service;
+    @Inject private MyOtherClass otherService;
+}
+```
 
 ```java
 MyService service = Vault.with("my_conf.yml").inject(new MyService());
