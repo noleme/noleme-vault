@@ -1,0 +1,49 @@
+{
+    "imports": [
+        "com/noleme/vault/parser/provider.string.json",
+        "com/noleme/vault/parser/provider.boolean.json",
+        "com/noleme/vault/parser/provider.integer.old_style.json"
+    ],
+    "variables": {
+        "provider.integer.value": 2345,
+        "provider.double.value": 12.34,
+        "provider.string.base_value": "SomeString",
+        "provider.string.value": "##provider.string.base_value##"
+    },
+    "services": [
+        {
+            "identifier": "alias.string",
+            "alias": "provider.string"
+        },
+        {
+            "identifier": "provider.boolean.base",
+            "class": "com.noleme.vault.service.BooleanProvider",
+            "constructor": [ false ]
+        },
+        {
+            "identifier": "provider.double",
+            "class": "com.noleme.vault.service.DoubleProvider",
+            "constructor": [
+                "##provider.double.value##"
+            ],
+            "invocations": [
+                ["provide"]
+            ]
+        },
+        {
+            "identifier": "provider.string",
+            "class": "com.noleme.vault.service.StringProvider",
+            "method": "build",
+            "arguments": [
+                "##provider.string.value##"
+            ]
+        },
+        {
+            "identifier": "provider.boolean",
+            "class": "com.noleme.vault.service.ServiceProvider",
+            "arguments": [
+                "@provider.boolean.base"
+            ]
+        }
+    ]
+}

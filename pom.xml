@@ -4,26 +4,26 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.lumiomedical</groupId>
-    <artifactId>lumio-vault</artifactId>
+    <groupId>com.noleme</groupId>
+    <artifactId>noleme-vault</artifactId>
     <version>0.11</version>
     <packaging>jar</packaging>
 
-    <name>Lumio Vault</name>
+    <name>Noleme Vault</name>
     <description>A library providing DI with JSR-330 annotations and extensible YML/JSON configuration</description>
-    <url>https://github.com/lumio-medical/lumio-vault</url>
+    <url>https://github.com/noleme/noleme-vault</url>
 
     <organization>
-        <name>Lumio Medical</name>
-        <url>https://lumiomedical.com</url>
+        <name>Noleme</name>
+        <url>https://noleme.com</url>
     </organization>
 
     <developers>
         <developer>
             <name>Pierre Lecerf</name>
-            <email>plecerf@lumiomedical.com</email>
-            <organization>Lumio Medical</organization>
-            <organizationUrl>https://lumiomedical.com</organizationUrl>
+            <email>pierre@noleme.com</email>
+            <organization>Noleme</organization>
+            <organizationUrl>https://noleme.com</organizationUrl>
         </developer>
     </developers>
 
@@ -75,21 +75,21 @@
 
     <issueManagement>
         <system>GitHub</system>
-        <url>https://github.com/lumio-medical/lumio-vault/issues</url>
+        <url>https://github.com/noleme/noleme-vault/issues</url>
     </issueManagement>
 
     <licenses>
         <license>
             <name>MIT License</name>
-            <url>https://github.com/lumio-medical/lumio-vault/blob/master/LICENSE</url>
+            <url>https://github.com/noleme/noleme-vault/blob/master/LICENSE</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
 
     <scm>
-        <connection>scm:git:git://github.com:lumio-medical/lumio-vault.git</connection>
-        <developerConnection>scm:git:ssh://github.com:lumio-medical/lumio-vault.git</developerConnection>
-        <url>https://github.com/lumio-medical/lumio-vault</url>
+        <connection>scm:git:git://github.com:noleme/noleme-vault.git</connection>
+        <developerConnection>scm:git:ssh://github.com:noleme/noleme-vault.git</developerConnection>
+        <url>https://github.com/noleme/noleme-vault</url>
     </scm>
 
     <build>

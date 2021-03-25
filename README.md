@@ -1,14 +1,17 @@
-# Lumio Vault
+# Noleme Vault
 
-[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/lumio-medical/lumio-vault/Java%20CI%20with%20Maven)](https://github.com/lumio-medical/lumio-vault/actions?query=workflow%3A%22Java+CI+with+Maven%22)
-[![Maven Central Repository](https://maven-badges.herokuapp.com/maven-central/com.lumiomedical/lumio-vault/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.lumiomedical/lumio-vault)
-[![javadoc](https://javadoc.io/badge2/com.lumiomedical/lumio-vault/javadoc.svg)](https://javadoc.io/doc/com.lumiomedical/lumio-vault)
-![GitHub](https://img.shields.io/github/license/lumio-medical/lumio-vault)
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Flumio-medical%2Flumio-vault.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Flumio-medical%2Flumio-vault?ref=badge_shield)
+[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/noleme/noleme-vault/Java%20CI%20with%20Maven)](https://github.com/noleme/noleme-vault/actions?query=workflow%3A%22Java+CI+with+Maven%22)
+[![Maven Central Repository](https://maven-badges.herokuapp.com/maven-central/com.noleme/noleme-vault/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.noleme/noleme-vault)
+[![javadoc](https://javadoc.io/badge2/com.noleme/noleme-vault/javadoc.svg)](https://javadoc.io/doc/com.noleme/noleme-vault)
+![GitHub](https://img.shields.io/github/license/noleme/noleme-vault)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fnoleme%2Fnoleme-vault.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fnoleme%2Fnoleme-vault?ref=badge_shield)
 
 A library providing DI with JSR-330 annotations and extensible YML/JSON configuration.
 
-Implementations found in this package shouldn't be tied to any specific Lumio project.
+It is a fork of [Lumio Vault](https://github.com/lumio-medical/lumio-vault) which unfortunately couldn't continue under Lumio Medical's banner.
+At the time of this writing `lumio-vault` is considered inactive and any further development will come to life in this repository.
+
+Implementations found in this package shouldn't be tied to any specific Noleme project.
 
 _Note: This library is considered as "in beta" and as such significant API changes may occur without prior warning._
 
@@ -18,8 +21,8 @@ Add the following in your `pom.xml`:
 
 ```xml
 <dependency>
-    <groupId>com.lumiomedical</groupId>
-    <artifactId>lumio-vault</artifactId>
+    <groupId>com.noleme</groupId>
+    <artifactId>noleme-vault</artifactId>
     <version>0.11</version>
 </dependency>
 ```
@@ -127,4 +130,4 @@ This project will require you to have the following:
 
 
 ## License
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Flumio-medical%2Flumio-vault.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Flumio-medical%2Flumio-vault?ref=badge_large)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fnoleme%2Fnoleme-vault.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fnoleme%2Fnoleme-vault?ref=badge_large)

@@ -1,0 +1,13 @@
+{
+    "variables": {
+        "provider.string.value": "SomeString"
+    },
+    "services": {
+        "provider.string": {
+            "class": "com.noleme.vault.service.StringProvider",
+            "constructor": [
+                "##provider.string.value##"
+            ]
+        }
+    }
+}

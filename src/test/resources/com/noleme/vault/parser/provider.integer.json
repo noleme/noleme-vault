@@ -1,0 +1,13 @@
+{
+    "variables": {
+        "provider.integer.value": 1234
+    },
+    "services": {
+        "provider.integer": {
+            "class": "com.noleme.vault.service.IntegerProvider",
+            "constructor": [
+                "##provider.integer.value##"
+            ]
+        }
+    }
+}

@@ -1,0 +1,8 @@
+variables:
+    provider.string.alt.value: "AlternateString"
+
+services:
+    provider.string.alt:
+        class: "com.noleme.vault.service.StringProvider"
+        constructor:
+            - "##provider.string.alt.value##"

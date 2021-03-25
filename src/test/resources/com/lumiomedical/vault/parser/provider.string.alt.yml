@@ -1,8 +1,0 @@
-variables:
-    provider.string.alt.value: "AlternateString"
-
-services:
-    provider.string.alt:
-        class: "com.lumiomedical.vault.service.StringProvider"
-        constructor:
-            - "##provider.string.alt.value##"

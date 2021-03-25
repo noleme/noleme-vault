@@ -1,0 +1,20 @@
+variables:
+    my_old_value: "this_is_my_old_string"
+    my_new_value: "this_is_my_new_string"
+
+custom:
+    value: "##my_new_value##"
+    providers:
+        - "my_provider.a"
+        - "my_provider.b"
+        - "my_provider.c"
+
+services:
+
+    # since the custom module is loaded after the variables and services modules, this definition should be overridden
+    # by whatever the custom module does above
+    my_provider.a:
+        class: "com.noleme.vault.service.StringProvider"
+        method: "build"
+        arguments:
+            - "##my_old_value##"

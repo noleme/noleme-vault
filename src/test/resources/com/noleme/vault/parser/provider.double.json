@@ -1,0 +1,13 @@
+{
+    "variables": {
+        "provider.double.value": 12.34
+    },
+    "services": {
+        "provider.double": {
+            "class": "com.noleme.vault.service.DoubleProvider",
+            "constructor": [
+                "##provider.double.value##"
+            ]
+        }
+    }
+}

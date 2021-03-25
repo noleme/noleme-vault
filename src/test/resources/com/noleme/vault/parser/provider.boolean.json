@@ -1,0 +1,13 @@
+{
+    "variables": {
+        "provider.boolean.value": true
+    },
+    "services": {
+        "provider.boolean": {
+            "class": "com.noleme.vault.service.BooleanProvider",
+            "constructor": [
+                "##provider.boolean.value##"
+            ]
+        }
+    }
+}
