@@ -4,7 +4,7 @@
 [![Maven Central Repository](https://maven-badges.herokuapp.com/maven-central/com.noleme/noleme-vault/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.noleme/noleme-vault)
 [![javadoc](https://javadoc.io/badge2/com.noleme/noleme-vault/javadoc.svg)](https://javadoc.io/doc/com.noleme/noleme-vault)
 ![GitHub](https://img.shields.io/github/license/noleme/noleme-vault)
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fnoleme%2Fnoleme-vault.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fnoleme%2Fnoleme-vault?ref=badge_shield)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FNoleme%2Fnoleme-vault.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FNoleme%2Fnoleme-vault?ref=badge_shield)
 
 A library providing DI with JSR-330 annotations and extensible YML/JSON configuration.
 
@@ -127,4 +127,4 @@ This project will require you to have the following:
 
 
 ## License
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fnoleme%2Fnoleme-vault.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fnoleme%2Fnoleme-vault?ref=badge_large)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FNoleme%2Fnoleme-vault.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FNoleme%2Fnoleme-vault?ref=badge_large)
