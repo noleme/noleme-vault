@@ -8,9 +8,6 @@
 
 A library providing DI with JSR-330 annotations and extensible YML/JSON configuration.
 
-It is a fork of [Lumio Vault](https://github.com/lumio-medical/lumio-vault) which unfortunately couldn't continue under Lumio Medical's banner.
-At the time of this writing `lumio-vault` is considered inactive and any further development will come to life in this repository.
-
 Implementations found in this package shouldn't be tied to any specific Noleme project.
 
 _Note: This library is considered as "in beta" and as such significant API changes may occur without prior warning._
