@@ -270,7 +270,7 @@ public final class Vault implements AutoCloseable
             this.register(key, () -> {
                 try {
                     var instance = constructor.newInstance(VaultLegacyCompiler.params(paramProviders));
-                    return (T) this.inject(instance);
+                    return this.inject(instance);
                 }
                 catch (IllegalAccessException | InstantiationException | InvocationTargetException | VaultException e) {
                     throw new RuntimeVaultException(String.format("Can't instantiate %s", key), e);
@@ -286,7 +286,7 @@ public final class Vault implements AutoCloseable
      * @param provider
      * @return
      */
-    public <T> Vault register(Key<T> key, Provider<T> provider)
+    public Vault register(Key<?> key, Provider<?> provider)
     {
         return this.register(key, provider, false);
     }
@@ -298,7 +298,7 @@ public final class Vault implements AutoCloseable
      * @param closeable
      * @return
      */
-    public <T> Vault register(Key<T> key, Provider<T> provider, boolean closeable)
+    public Vault register(Key<?> key, Provider<?> provider, boolean closeable)
     {
         if (key.type.getAnnotation(Singleton.class) != null)
         {
