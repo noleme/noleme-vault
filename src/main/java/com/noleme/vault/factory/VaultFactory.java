@@ -1,12 +1,13 @@
 package com.noleme.vault.factory;
 
+import com.noleme.commons.container.Pair;
 import com.noleme.vault.container.Cellar;
 import com.noleme.vault.container.Invocation;
 import com.noleme.vault.container.definition.*;
 import com.noleme.vault.exception.*;
 import com.noleme.vault.parser.VaultCompositeParser;
 import com.noleme.vault.parser.VaultParser;
-import com.noleme.vault.reflect.ClassUtils;
+import com.noleme.vault.reflect.LenientClassUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -289,13 +290,13 @@ public class VaultFactory
     private Object makeInstantiation(ServiceInstantiation definition, Cellar cellar) throws VaultInstantiationException
     {
         try {
-            Class c = this.classLoader != null
+            Class<?> c = this.classLoader != null
                 ? Class.forName(definition.getType(), true, this.classLoader)
                 : Class.forName(definition.getType())
             ;
 
             Object[] params = definition.getCtorParams();
-            Class[] paramTypes = new Class[params.length];
+            Class<?>[] paramTypes = new Class[params.length];
             for (int i = 0; i < params.length; ++i)
             {
                 Object o = params[i];
@@ -307,7 +308,11 @@ public class VaultFactory
                 }
                 paramTypes[i] = o != null ? o.getClass() : null;
             }
-            Constructor ctor = ClassUtils.getConstructor(c, paramTypes);
+
+            Pair<Constructor<?>, Object[]> resolvedCtor = LenientClassUtils.getLenientConstructor(c, paramTypes, params);
+            Constructor<?> ctor = resolvedCtor.first;
+            params = resolvedCtor.second;
+
             return ctor.newInstance(params);
         }
         catch (ClassNotFoundException e) {
@@ -343,14 +348,14 @@ public class VaultFactory
     private Object makeStaticCall(ServiceProvider definition, Cellar cellar) throws VaultInstantiationException
     {
         try {
-            Class c = this.classLoader != null
+            Class<?> c = this.classLoader != null
                 ? Class.forName(definition.getType(), true, this.classLoader)
                 : Class.forName(definition.getType())
             ;
 
             String methodName = definition.getMethod();
             Object[] args = definition.getMethodArgs();
-            Class[] argTypes = new Class[args.length];
+            Class<?>[] argTypes = new Class[args.length];
             for (int i = 0; i < args.length; ++i)
             {
                 Object o = args[i];
@@ -362,7 +367,10 @@ public class VaultFactory
                 }
                 argTypes[i] = o != null ? o.getClass() : null;
             }
-            Method method = ClassUtils.getMethod(c, methodName, argTypes);
+
+            Pair<Method, Object[]> resolvedCtor = LenientClassUtils.getLenientMethod(c, methodName, argTypes, args);
+            Method method = resolvedCtor.first;
+            args = resolvedCtor.second;
 
             if (!Modifier.isStatic(method.getModifiers()))
                 throw new VaultInstantiationException("The provider specified for service \""+definition.getIdentifier()+"\" has to be a static method.");
@@ -402,7 +410,7 @@ public class VaultFactory
             for (Invocation invocation : definition.getInvocations())
             {
                 Object[] params = invocation.getParams();
-                Class[] paramTypes = new Class[params.length];
+                Class<?>[] paramTypes = new Class[params.length];
                 for (int i = 0 ; i < params.length ; ++i)
                 {
                     Object o = params[i];
@@ -415,7 +423,10 @@ public class VaultFactory
                     paramTypes[i] = o != null ? o.getClass() : null;
                 }
 
-                Method method = ClassUtils.getMethod(instance.getClass(), invocation.getMethodName(), paramTypes);
+                Pair<Method, Object[]> resolvedCtor = LenientClassUtils.getLenientMethod(instance.getClass(), invocation.getMethodName(), paramTypes, params);
+                Method method = resolvedCtor.first;
+                params = resolvedCtor.second;
+
                 method.invoke(instance, params);
             }
         }

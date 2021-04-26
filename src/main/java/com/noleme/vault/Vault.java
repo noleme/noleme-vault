@@ -26,6 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Created on 23/05/2020.
  * Adapted from org.codejargon.feather
  */
+@SuppressWarnings("rawtypes")
 public final class Vault implements AutoCloseable
 {
     private final Map<Key, Provider<?>> providers = new ConcurrentHashMap<>();
@@ -266,13 +267,13 @@ public final class Vault implements AutoCloseable
                 chain
             );
 
-            this.register(key, (Provider<?>) () -> {
+            this.register(key, () -> {
                 try {
                     var instance = constructor.newInstance(VaultLegacyCompiler.params(paramProviders));
-                    return this.inject(instance);
+                    return (T) this.inject(instance);
                 }
                 catch (IllegalAccessException | InstantiationException | InvocationTargetException | VaultException e) {
-                    throw new RuntimeVaultException(String.format("Can't instantiate %s", key.toString()), e);
+                    throw new RuntimeVaultException(String.format("Can't instantiate %s", key), e);
                 }
             });
         }
@@ -285,7 +286,7 @@ public final class Vault implements AutoCloseable
      * @param provider
      * @return
      */
-    public Vault register(Key<?> key, Provider<?> provider)
+    public <T> Vault register(Key<T> key, Provider<T> provider)
     {
         return this.register(key, provider, false);
     }
@@ -297,7 +298,7 @@ public final class Vault implements AutoCloseable
      * @param closeable
      * @return
      */
-    public Vault register(Key<?> key, Provider<?> provider, boolean closeable)
+    public <T> Vault register(Key<T> key, Provider<T> provider, boolean closeable)
     {
         if (key.type.getAnnotation(Singleton.class) != null)
         {

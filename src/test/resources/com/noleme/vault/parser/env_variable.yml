@@ -1,0 +1,13 @@
+variables:
+    my_string: "default_value"
+    my_integer: 1234
+    my_double: 12.34
+    my_boolean: true
+    my_string_env: ${MY_STRING}
+    my_integer_env: ${MY_INTEGER}
+    my_double_env: ${MY_DOUBLE}
+    my_boolean_env: ${MY_BOOLEAN}
+    my_string_defval_env: ${MY_STRING-default_value}
+    my_integer_defval_env: ${MY_INTEGER-1234}
+    my_double_defval_env: ${MY_DOUBLE-12.34}
+    my_boolean_defval_env: ${MY_BOOLEAN-false}

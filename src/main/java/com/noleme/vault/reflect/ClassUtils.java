@@ -1,8 +1,10 @@
 package com.noleme.vault.reflect;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 
 /**
  * @author Pierre Lecerf (plecerf@lumiomedical.com)
@@ -10,6 +12,8 @@ import java.util.Arrays;
  */
 public final class ClassUtils
 {
+    private static final Logger logger = LoggerFactory.getLogger(ClassUtils.class);
+
     private ClassUtils() {}
 
     /**
@@ -20,24 +24,29 @@ public final class ClassUtils
      * @return a matching Constructor instance
      * @throws NoSuchMethodException thrown if no matching constructor could be found
      */
-    public static Constructor getConstructor(Class type, Class[] parameterTypes) throws NoSuchMethodException
+    public static Constructor<?> getConstructor(Class<?> type, Class<?>[] parameterTypes) throws NoSuchMethodException
     {
-        CTOR_LOOP: for (Constructor ctor : type.getConstructors())
-        {
-            if (ctor.getParameterTypes().length != parameterTypes.length)
-                continue;
-            Class[] ctorParameterTypes = ctor.getParameterTypes();
-            for (int p = 0 ; p < ctorParameterTypes.length ; ++p)
-            {
-                Class ctorParameterType = ctorParameterTypes[p];
-                Class parameterType = parameterTypes[p];
-
-                if (!matchesArgumentType(parameterType, ctorParameterType))
-                    continue CTOR_LOOP;
-            }
-            return ctor;
+        try {
+            return type.getConstructor(parameterTypes);
         }
-        throw new NoSuchMethodException(type.getName()+".<init>("+ Arrays.toString(parameterTypes)+")");
+        catch (NoSuchMethodException e) {
+            CTOR_LOOP: for (Constructor<?> ctor : type.getConstructors())
+            {
+                if (ctor.getParameterTypes().length != parameterTypes.length)
+                    continue;
+                Class<?>[] ctorParameterTypes = ctor.getParameterTypes();
+                for (int p = 0 ; p < ctorParameterTypes.length ; ++p)
+                {
+                    Class<?> ctorParameterType = ctorParameterTypes[p];
+                    Class<?> parameterType = parameterTypes[p];
+
+                    if (!matchesArgumentType(parameterType, ctorParameterType))
+                        continue CTOR_LOOP;
+                }
+                return ctor;
+            }
+            throw e;
+        }
     }
 
     /**
@@ -49,26 +58,31 @@ public final class ClassUtils
      * @return a matching Method instance
      * @throws NoSuchMethodException thrown if no matching method could be found
      */
-    public static Method getMethod(Class type, String methodName, Class[] parameterTypes) throws NoSuchMethodException
+    public static Method getMethod(Class<?> type, String methodName, Class<?>[] parameterTypes) throws NoSuchMethodException
     {
-        METHOD_LOOP: for (Method method : type.getMethods())
-        {
-            if (!method.getName().equals(methodName))
-                continue;
-            if (method.getParameterTypes().length != parameterTypes.length)
-                continue;
-            Class[] methodParameterTypes = method.getParameterTypes();
-            for (int p = 0 ; p < methodParameterTypes.length ; ++p)
-            {
-                Class methodParameterType = methodParameterTypes[p];
-                Class parameterType = parameterTypes[p];
-
-                if (!matchesArgumentType(parameterType, methodParameterType))
-                    continue METHOD_LOOP;
-            }
-            return method;
+        try {
+            return type.getMethod(methodName, parameterTypes);
         }
-        throw new NoSuchMethodException(type.getName()+"."+methodName+"("+Arrays.toString(parameterTypes)+")");
+        catch (NoSuchMethodException e) {
+            METHOD_LOOP: for (Method method : type.getMethods())
+            {
+                if (!method.getName().equals(methodName))
+                    continue;
+                if (method.getParameterTypes().length != parameterTypes.length)
+                    continue;
+                Class<?>[] methodParameterTypes = method.getParameterTypes();
+                for (int p = 0 ; p < methodParameterTypes.length ; ++p)
+                {
+                    Class<?> methodParameterType = methodParameterTypes[p];
+                    Class<?> parameterType = parameterTypes[p];
+
+                    if (!matchesArgumentType(parameterType, methodParameterType))
+                        continue METHOD_LOOP;
+                }
+                return method;
+            }
+            throw e;
+        }
     }
 
     /**
@@ -78,7 +92,7 @@ public final class ClassUtils
      * @param argumentType the type found in a method/ctor signature
      * @return true if the types are compatible, false otherwise
      */
-    private static boolean matchesArgumentType(Class<?> providedType, Class<?> argumentType)
+    public static boolean matchesArgumentType(Class<?> providedType, Class<?> argumentType)
     {
         if (providedType == null)
         {
@@ -99,7 +113,7 @@ public final class ClassUtils
      * @param c2
      * @return
      */
-    private static boolean isBoxedTypeFor(Class c1, Class c2)
+    public static boolean isBoxedTypeFor(Class<?> c1, Class<?> c2)
     {
         if (!c2.isPrimitive())
             return false;
@@ -113,5 +127,16 @@ public final class ClassUtils
             || (c1.equals(Short.class) && c2.equals(short.class))
             || (c1.equals(Character.class) && c2.equals(char.class))
         );
+    }
+
+    /**
+     *
+     * @param value
+     * @return
+     */
+    public static boolean isParseableAsBoolean(String value)
+    {
+        var lc = value.toLowerCase();
+        return lc.equals("true") || lc.equals("false");
     }
 }

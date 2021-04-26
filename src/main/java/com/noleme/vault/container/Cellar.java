@@ -1,7 +1,9 @@
 package com.noleme.vault.container;
 
 import com.noleme.vault.exception.RuntimeVaultException;
+import com.noleme.vault.exception.VaultInvalidTypeException;
 import com.noleme.vault.exception.VaultNotFoundException;
+import com.noleme.vault.reflect.LenientClassUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -83,8 +85,9 @@ public class Cellar implements AutoCloseable
 
     /**
      *
-     * @param name
-     * @return
+     * @param name The name of a service expected to be registered in the Cellar
+     * @return The corresponding service if found
+     * @throws VaultNotFoundException If no service could be found for the provided name
      */
     public Object getService(String name)
     {
@@ -95,17 +98,19 @@ public class Cellar implements AutoCloseable
 
     /**
      *
-     * @param name
-     * @param type
-     * @param <T>
-     * @return
+     * @param name The name of a service expected to be registered in the Cellar
+     * @param type The class of the expected type for the service
+     * @param <T> The expected type of the service
+     * @return The corresponding service if found
+     * @throws VaultNotFoundException If no service could be found for the provided name
+     * @throws VaultInvalidTypeException If the service is not of the expected type
      */
     public <T> T getService(String name, Class<T> type)
     {
         Object service = this.getService(name);
 
         if (!type.isInstance(service))
-            throw new VaultNotFoundException("The cellar has a \""+name+"\" service but its type does not match the required "+type.getName());
+            throw new VaultInvalidTypeException("The cellar has a \""+name+"\" service but its type does not match the required "+type.getName());
 
         return type.cast(service);
     }
@@ -139,6 +144,12 @@ public class Cellar implements AutoCloseable
     ** Variables
     */
 
+    /**
+     *
+     * @param name The name of a variable expected to be registered in the Cellar
+     * @return The corresponding variable if found
+     * @throws VaultNotFoundException If no variable could be found for the provided name
+     */
     public Object getVariable(String name)
     {
         if (!this.variables.containsKey(name))
@@ -146,11 +157,45 @@ public class Cellar implements AutoCloseable
         return this.variables.get(name);
     }
 
-    public boolean hasVariable(String name)         { return this.variables.containsKey(name); }
+    /**
+     *
+     * @param name The name of a variable expected to be registered in the Cellar
+     * @param type The class of the expected type for the variable
+     * @param <T> The expected type of the variable
+     * @return The corresponding variable if found
+     * @throws VaultNotFoundException If no variable could be found for the provided name
+     * @throws VaultInvalidTypeException If the variable is not of the expected type
+     */
+    public <T> T getVariable(String name, Class<T> type)
+    {
+        Object variable = this.getVariable(name);
 
-    public void putVariable(String name, Object o)  { this.variables.put(name, o); }
+        if (!type.isInstance(variable))
+        {
+            if (variable instanceof String)
+                return LenientClassUtils.attemptTypeConversion((String)variable, type);
 
-    public Map<String, Object> getVariables()       { return this.variables; }
+            throw new VaultInvalidTypeException("The cellar has a \""+name+"\" variable but its type does not match the required "+type.getName());
+        }
+
+        //noinspection unchecked
+        return (T) this.variables.get(name);
+    }
+
+    public boolean hasVariable(String name)
+    {
+        return this.variables.containsKey(name);
+    }
+
+    public void putVariable(String name, Object o)
+    {
+        this.variables.put(name, o);
+    }
+
+    public Map<String, Object> getVariables()
+    {
+        return this.variables;
+    }
 
     @Override
     public void close()
@@ -165,7 +210,7 @@ public class Cellar implements AutoCloseable
                     ((AutoCloseable)service).close();
             }
             catch (Exception e) {
-                System.err.println("The \""+closeable+"\" closeable service could not be successfully closed ("+e.getMessage()+").");
+                logger.error("The \""+closeable+"\" closeable service could not be successfully closed ("+e.getMessage()+").", e);
             }
         }
     }

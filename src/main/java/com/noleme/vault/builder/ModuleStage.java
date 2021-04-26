@@ -33,7 +33,7 @@ public class ModuleStage implements BuildStage
             logger.debug("Populating vault using module class {}", module.getClass().getName());
 
             if (module instanceof Class)
-                throw new VaultException(String.format("%s provided as class instead of an instance.", ((Class) module).getName()));
+                throw new VaultException(String.format("%s provided as class instead of an instance.", ((Class<?>) module).getName()));
             for (Method providerMethod : VaultLegacyCompiler.providers(module.getClass()))
                 VaultLegacyCompiler.providerMethod(vault, module, providerMethod);
         }
