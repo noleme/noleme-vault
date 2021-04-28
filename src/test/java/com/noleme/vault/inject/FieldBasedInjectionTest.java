@@ -42,6 +42,27 @@ public class FieldBasedInjectionTest
         Assertions.assertEquals(2345, service.integerProvider.provide());
     }
 
+    @Test
+    void lenientTypeInjection() throws VaultException
+    {
+        var vault = Vault.with("com/noleme/vault/parser/string_variable.yml");
+
+        var service = vault.inject(new MyLenientService());
+
+        Assertions.assertEquals(1234, service.integerVal);
+        Assertions.assertEquals(1234, service.integerPrimitive);
+        Assertions.assertEquals(12.34F, service.floatVal);
+        Assertions.assertEquals(12.34F, service.floatPrimitive);
+        Assertions.assertEquals(12.34D, service.doubleVal);
+        Assertions.assertEquals(12.34D, service.doublePrimitive);
+        Assertions.assertEquals(false, service.booleanVal);
+        Assertions.assertFalse(service.booleanPrimitive);
+        Assertions.assertEquals((byte) 0x6c, service.byteVal);
+        Assertions.assertEquals((byte) 0x6c, service.bytePrimitive);
+        Assertions.assertEquals('c', service.charVal);
+        Assertions.assertEquals('c', service.charPrimitive);
+    }
+
     private static class MyTypedService
     {
         @Inject StringProvider stringProvider;
@@ -54,5 +75,21 @@ public class FieldBasedInjectionTest
         @Inject @Named("provider.string") ValueProvider<String> stringProvider;
         @Inject @Named("provider.double") ValueProvider<Double> doubleProvider;
         @Inject @Named("provider.integer") ValueProvider<Integer> integerProvider;
+    }
+
+    private static class MyLenientService
+    {
+        @Inject @Named("integer_val.string") Integer integerVal;
+        @Inject @Named("integer_val.string") int integerPrimitive;
+        @Inject @Named("float_val.string") Float floatVal;
+        @Inject @Named("float_val.string") float floatPrimitive;
+        @Inject @Named("float_val.string") Double doubleVal;
+        @Inject @Named("float_val.string") double doublePrimitive;
+        @Inject @Named("boolean_val.string") Boolean booleanVal;
+        @Inject @Named("boolean_val.string") boolean booleanPrimitive;
+        @Inject @Named("char_val.string") Character charVal;
+        @Inject @Named("char_val.string") char charPrimitive;
+        @Inject @Named("byte_val.string") Byte byteVal;
+        @Inject @Named("byte_val.string") byte bytePrimitive;
     }
 }

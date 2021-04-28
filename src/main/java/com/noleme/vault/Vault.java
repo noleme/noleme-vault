@@ -6,9 +6,11 @@ import com.noleme.vault.container.Cellar;
 import com.noleme.vault.container.definition.Definitions;
 import com.noleme.vault.exception.RuntimeVaultException;
 import com.noleme.vault.exception.VaultException;
+import com.noleme.vault.legacy.InjectableField;
 import com.noleme.vault.legacy.Key;
 import com.noleme.vault.legacy.VaultLegacyCompiler;
 import com.noleme.vault.parser.adjuster.VaultAdjuster;
+import com.noleme.vault.reflect.LenientClassUtils;
 
 import javax.inject.Provider;
 import javax.inject.Singleton;
@@ -32,7 +34,7 @@ public final class Vault implements AutoCloseable
     private final Map<Key, Provider<?>> providers = new ConcurrentHashMap<>();
     private final Map<Key, Object> singletons = new ConcurrentHashMap<>();
     private final Map<String, Key> namedProviders = new ConcurrentHashMap<>();
-    private final Map<Class, Object[][]> injectFields = new ConcurrentHashMap<>(0);
+    private final Map<Class, InjectableField[]> injectFields = new ConcurrentHashMap<>(0);
     private final List<AutoCloseable> enclosedCloseables = new ArrayList<>();
 
     /**
@@ -220,13 +222,13 @@ public final class Vault implements AutoCloseable
         if (!this.injectFields.containsKey(target.getClass()))
             this.injectFields.put(target.getClass(), VaultLegacyCompiler.injectFields(target.getClass()));
 
-        for (Object[] f : this.injectFields.get(target.getClass()))
+        for (InjectableField injectable : this.injectFields.get(target.getClass()))
         {
-            Field field = (Field) f[0];
-            Key<?> key = (Key<?>) f[2];
+            Field field = injectable.getField();
+            Key<?> key = (Key<?>) injectable.getKey();
 
             try {
-                field.set(target, (boolean) f[1] ? this.provider(key) : this.instance(key));
+                field.set(target, injectable.isProvider() ? this.provider(key) : this.instance(key));
             }
             catch (IllegalAccessException e) {
                 throw new VaultException(String.format("Can't inject field %s in %s", field.getName(), target.getClass().getName()), e);
@@ -248,14 +250,26 @@ public final class Vault implements AutoCloseable
     {
         if (!this.providers.containsKey(key))
         {
-            if (key.name != null && this.namedProviders.containsKey(key.name))
-            {
-                Key potentialParentKey = this.namedProviders.get(key.name);
-                if (key.type.isAssignableFrom(potentialParentKey.type))
-                    return (Provider<T>) this.providers.get(potentialParentKey);
-            }
             if (key.name != null)
-                throw new RuntimeVaultException("No service could be found for name "+key.name+" and type "+key.type.getName()+".");
+            {
+                if (this.namedProviders.containsKey(key.name))
+                {
+                    Key potentialParentKey = this.namedProviders.get(key.name);
+                    if (key.type.isAssignableFrom(potentialParentKey.type))
+                        return (Provider<T>) this.providers.get(potentialParentKey);
+                    else if (potentialParentKey.type == String.class && LenientClassUtils.isConversionTarget(key.type))
+                    {
+                        Provider<String> originalProvider = (Provider<String>) this.providers.get(potentialParentKey);
+
+                        return () -> {
+                            String value = originalProvider.get();
+                            return LenientClassUtils.attemptTypeConversion(value, key.type);
+                        };
+                    }
+                }
+                else
+                    throw new RuntimeVaultException("No service could be found for name "+key.name+" and type "+key.type.getName()+".");
+            }
 
             final Constructor constructor = VaultLegacyCompiler.constructor(key);
             final Provider<?>[] paramProviders = VaultLegacyCompiler.paramProviders(

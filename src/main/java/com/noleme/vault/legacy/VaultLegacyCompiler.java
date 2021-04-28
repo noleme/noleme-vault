@@ -19,7 +19,7 @@ import java.util.*;
  * @author Pierre Lecerf (plecerf@lumiomedical.com)
  * Created on 2020/05/25
  */
-@SuppressWarnings("ALL")
+@SuppressWarnings("rawtypes")
 public class VaultLegacyCompiler
 {
     private static final Logger logger = LoggerFactory.getLogger(VaultLegacyCompiler.class);
@@ -29,29 +29,29 @@ public class VaultLegacyCompiler
      * @param target
      * @return
      */
-    public static Object[][] injectFields(Class<?> target)
+    public static InjectableField[] injectFields(Class<?> target)
     {
         Set<Field> fields = fields(target);
-        Object[][] fs = new Object[fields.size()][];
+        InjectableField[] injectableFields = new InjectableField[fields.size()];
 
         int i = 0;
-        for (Field f : fields)
+        for (Field field : fields)
         {
-            Class<?> providerType = f.getType().equals(Provider.class)
-                ? (Class<?>) ((ParameterizedType) f.getGenericType()).getActualTypeArguments()[0]
+            Class<?> providerType = field.getType().equals(Provider.class)
+                ? (Class<?>) ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0]
                 : null
             ;
 
-            fs[i++] = new Object[]{
-                f,
+            injectableFields[i++] = new InjectableField(
+                field,
                 providerType != null,
                 Key.of(
-                    (Class<?>)(providerType != null ? providerType : f.getType()),
-                    qualifier(f.getAnnotations())
+                    (Class<?>)(providerType != null ? providerType : field.getType()),
+                    qualifier(field.getAnnotations())
                 )
-            };
+            );
         }
-        return fs;
+        return injectableFields;
     }
 
     /**

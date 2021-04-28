@@ -63,7 +63,7 @@ public final class LenientClassUtils
                     /* Either the argument type already matches, or the type is one we can attempt to convert to */
                     if (ClassUtils.matchesArgumentType(parameterType, ctorParameterType))
                         continue;
-                    else if (conversionTargets.contains(ctorParameterType) && convertibleParametersIndexes.contains(p))
+                    else if (isConversionTarget(ctorParameterType) && convertibleParametersIndexes.contains(p))
                         convertibleArguments.put(p, ctorParameterType);
                     else
                         continue CTOR_LOOP;
@@ -123,7 +123,7 @@ public final class LenientClassUtils
                     /* Either the argument type already matches, or the type is one we can attempt to convert to */
                     if (ClassUtils.matchesArgumentType(parameterType, methodParameterType))
                         continue;
-                    else if (conversionTargets.contains(methodParameterType) && convertibleParametersIndexes.contains(p))
+                    else if (isConversionTarget(methodParameterType) && convertibleParametersIndexes.contains(p))
                         convertibleArguments.put(p, methodParameterType);
                     else
                         continue METHOD_LOOP;
@@ -188,7 +188,7 @@ public final class LenientClassUtils
         }
         /* If the type conversion fails, we'll look for another candidate */
         catch (VaultInvalidTypeException ite) {
-            logger.debug("An attempt at converting types in order to match arguments failed", ite);
+            logger.debug("An attempt at converting types in order to match arguments failed: {}", ite.getMessage());
             return null;
         }
     }
@@ -232,5 +232,15 @@ public final class LenientClassUtils
             throw new VaultInvalidTypeException("Value \""+value+"\" could not be converted to type "+type.getName(), e);
         }
         throw new VaultInvalidTypeException("Value \""+value+"\" could not be converted to type "+type.getName());
+    }
+
+    /**
+     *
+     * @param type
+     * @return
+     */
+    public static boolean isConversionTarget(Class<?> type)
+    {
+        return conversionTargets.contains(type);
     }
 }

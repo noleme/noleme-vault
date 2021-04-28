@@ -1,12 +1,12 @@
 package com.noleme.vault.reflect;
 
-import com.noleme.commons.container.Lists;
 import com.noleme.vault.exception.VaultInvalidTypeException;
+import com.noleme.vault.service.BooleanProvider;
+import com.noleme.vault.service.DoubleProvider;
+import com.noleme.vault.service.IntegerProvider;
+import com.noleme.vault.service.StringProvider;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * TODO: this needs many more tests in order to cover a variety of edge-cases (null values, complex overloading/override setups, etc.)
@@ -17,38 +17,51 @@ import java.util.List;
 public class LenientClassUtilsTest
 {
     @Test
-    @SuppressWarnings("unchecked")
     void constructorLookup()
     {
-
-        List<String> list = List.of("a", "b", "c");
+        Assertions.assertThrows(NoSuchMethodException.class, () -> {
+            LenientClassUtils.getLenientConstructor(IntegerProvider.class, classes(int.class), args("abc"));
+        });
 
         Assertions.assertDoesNotThrow(() -> {
-            var ctor = ClassUtils.getConstructor(ArrayList.class, new Class[]{list.getClass()});
+            LenientClassUtils.getLenientConstructor(StringProvider.class, classes(String.class), args("something"));
+            LenientClassUtils.getLenientConstructor(IntegerProvider.class, classes(String.class), args("123"));
+            LenientClassUtils.getLenientConstructor(BooleanProvider.class, classes(String.class), args("false"));
+            LenientClassUtils.getLenientConstructor(DoubleProvider.class, classes(String.class), args("12.34"));
+        });
 
-            List<String> myList = (List<String>) ctor.newInstance(list);
+        Assertions.assertDoesNotThrow(() -> {
+            LenientClassUtils.getLenientConstructor(TrapClass.class, classes(String.class), args("my_string"));
+            LenientClassUtils.getLenientConstructor(TrapClass.class, classes(String.class, String.class), args("my_string", "123"));
+        });
+        Assertions.assertThrows(NoSuchMethodException.class, () -> {
+            LenientClassUtils.getLenientConstructor(TrapClass.class, classes(String.class, String.class), args("123", "my_string"));
+        });
 
-            Assertions.assertIterableEquals(list, myList);
+        Assertions.assertDoesNotThrow(() -> {
+            Assertions.assertEquals(
+                ClassUtils.getConstructor(TrapClass.class, classes(String.class, Integer.class)),
+                LenientClassUtils.getLenientConstructor(TrapClass.class, classes(String.class, String.class), args("my_string", "123")).first
+            );
         });
     }
 
     @Test
     void methodLookup()
     {
-        List<String> list = Lists.of("a", "b", "c");
-
         Assertions.assertDoesNotThrow(() -> {
-            var method = ClassUtils.getMethod(list.getClass(), "get", new Class[]{ int.class });
-            Assertions.assertEquals(list.get(2), method.invoke(list, 2));
+            LenientClassUtils.getLenientMethod(TrapClass.class, "method", classes(String.class), args("my_string"));
+            LenientClassUtils.getLenientMethod(TrapClass.class, "method", classes(String.class, String.class), args("my_string", "123"));
         });
-
-        Assertions.assertDoesNotThrow(() -> {
-            var method = ClassUtils.getMethod(list.getClass(), "get", new Class[]{ Integer.class });
-            Assertions.assertEquals(list.get(2), method.invoke(list, 2));
-        });
-
         Assertions.assertThrows(NoSuchMethodException.class, () -> {
-            ClassUtils.getMethod(list.getClass(), "get", new Class[]{ Long.class });
+            LenientClassUtils.getLenientMethod(TrapClass.class, "method", classes(String.class, String.class), args("123", "my_string"));
+        });
+
+        Assertions.assertDoesNotThrow(() -> {
+            Assertions.assertEquals(
+                ClassUtils.getMethod(TrapClass.class, "method", classes(String.class, Integer.class)),
+                LenientClassUtils.getLenientMethod(TrapClass.class, "method", classes(String.class, String.class), args("my_string", "123")).first
+            );
         });
     }
 
@@ -94,5 +107,25 @@ public class LenientClassUtilsTest
         Assertions.assertEquals('\0', LenientClassUtils.attemptTypeConversion("\0", char.class));
         Assertions.assertThrows(VaultInvalidTypeException.class, () -> LenientClassUtils.attemptTypeConversion("", char.class));
         Assertions.assertThrows(VaultInvalidTypeException.class, () -> LenientClassUtils.attemptTypeConversion("anything", char.class));
+    }
+
+    private static Class<?>[] classes(Class<?>... classes)
+    {
+        return classes;
+    }
+
+    private static Object[] args(Object... args)
+    {
+        return args;
+    }
+
+    public static class TrapClass
+    {
+        public TrapClass(String arg) {}
+        public TrapClass(Integer arg) {}
+        public TrapClass(String arg1, Integer arg2) {}
+
+        public void method(String arg) {}
+        public void method(String arg, Integer arg2) {}
     }
 }
