@@ -101,7 +101,7 @@ MyService service = Vault.with("my_conf.yml", defs -> {
 Alternatively we could directly query one of the declared services:
 
 ```java
-MyClass myService = Vault.with("my_conf.yml").instance(Key.of(MyClass.class, "my_service"));
+MyClass myService = Vault.with("my_conf.yml").instance(MyClass.class, "my_service");
 ```
 
 Other features that will need to be documented include:
