@@ -1,0 +1,24 @@
+imports:
+    - "com/noleme/vault/parser/env_variable.yml"
+
+services:
+
+    my_provider.string:
+        class: "com.noleme.vault.service.StringProvider"
+        constructor:
+            - "##my_string_defval_env##"
+
+    my_provider.integer:
+        class: "com.noleme.vault.service.IntegerProvider"
+        constructor:
+            - "##my_integer_defval_env##"
+
+    my_provider.double:
+        class: "com.noleme.vault.service.DoubleProvider"
+        constructor:
+            - "##my_double_defval_env##"
+
+    my_provider.boolean:
+        class: "com.noleme.vault.service.BooleanProvider"
+        constructor:
+            - "##my_boolean_defval_env##"

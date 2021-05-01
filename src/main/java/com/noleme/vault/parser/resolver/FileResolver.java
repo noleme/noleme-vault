@@ -12,6 +12,7 @@ import java.io.FileNotFoundException;
  * @author Pierre Lecerf (pierre@noleme.com)
  * Created on 21/10/2018
  */
+@SuppressWarnings("rawtypes")
 public class FileResolver implements VaultResolver
 {
     private static final Logger logger = LoggerFactory.getLogger(FileResolver.class);

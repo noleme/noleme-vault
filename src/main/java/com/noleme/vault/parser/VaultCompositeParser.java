@@ -25,6 +25,7 @@ import static com.noleme.commons.function.RethrowFunction.rethrower;
 /**
  * @author Pierre Lecerf (pierre@noleme.com) on 05/02/15.
  */
+@SuppressWarnings("rawtypes")
 public class VaultCompositeParser implements VaultParser
 {
     private final VaultResolver resolver;

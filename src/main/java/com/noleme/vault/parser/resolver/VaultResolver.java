@@ -7,6 +7,7 @@ import com.noleme.vault.parser.resolver.source.Source;
  * @author Pierre Lecerf (pierre@noleme.com)
  * Created on 21/10/2018
  */
+@SuppressWarnings("rawtypes")
 public interface VaultResolver
 {
     /**

@@ -49,4 +49,15 @@ public class ClassUtilsTest
             ClassUtils.getMethod(list.getClass(), "get", new Class[]{ Long.class });
         });
     }
+
+    @Test
+    void parseableAsBoolean()
+    {
+        Assertions.assertTrue(ClassUtils.isParseableAsBoolean("true"));
+        Assertions.assertTrue(ClassUtils.isParseableAsBoolean("false"));
+        Assertions.assertTrue(ClassUtils.isParseableAsBoolean("True"));
+        Assertions.assertTrue(ClassUtils.isParseableAsBoolean("TruE"));
+        Assertions.assertFalse(ClassUtils.isParseableAsBoolean("anything"));
+        Assertions.assertFalse(ClassUtils.isParseableAsBoolean("1"));
+    }
 }

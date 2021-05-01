@@ -13,6 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Pierre Lecerf (plecerf@lumiomedical.com)
  * Created on 2020/05/23
  */
+@SuppressWarnings("rawtypes")
 public final class Dialect
 {
     public static final DialectInterpreter<InputStream> JSON = new JsonInterpreter();

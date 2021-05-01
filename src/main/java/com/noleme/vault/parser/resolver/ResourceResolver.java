@@ -12,6 +12,7 @@ import java.io.IOException;
  * @author Pierre Lecerf (pierre@noleme.com)
  * Created on 21/10/2018
  */
+@SuppressWarnings("rawtypes")
 public class ResourceResolver implements VaultResolver
 {
     private static final Logger logger = LoggerFactory.getLogger(ResourceResolver.class);
