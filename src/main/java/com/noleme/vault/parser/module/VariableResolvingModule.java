@@ -17,8 +17,13 @@ import java.util.regex.Pattern;
  */
 public class VariableResolvingModule implements VaultModule
 {
+    /* TODO: env:
+     * - handle default values
+     * - handle injection failure within container -> parseInt, parseFloat, etc.
+     * - handle injection failure outside container -> ???
+     */
     private static final Pattern variablePattern = Pattern.compile("(##(.*?)##)");
-    private static final Pattern envPattern = Pattern.compile("(\\$\\{(.*?)})");
+    private static final Pattern envPattern = Pattern.compile("(\\$\\{([A-Za-z0-9_.-].*?)(-(.*?))?})");
 
     @Override
     public String identifier()
@@ -169,7 +174,17 @@ public class VariableResolvingModule implements VaultModule
         if (matcher.find())
         {
             return matcher.replaceAll(mr -> {
-                String env = System.getenv(mr.group(2));
+                String variable = mr.group(2);
+                String defaultValue = mr.group(4);
+
+                if (variable == null)
+                    return "";
+
+                String env = System.getenv(variable);
+
+                if (env == null)
+                    env = defaultValue;
+
                 return env != null ? env : "";
             });
         }

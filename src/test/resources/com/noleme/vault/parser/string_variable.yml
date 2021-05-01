@@ -1,0 +1,6 @@
+variables:
+    integer_val.string: "1234"
+    float_val.string: "12.34"
+    boolean_val.string: "false"
+    char_val.string: "c"
+    byte_val.string: "0x6c"

@@ -19,6 +19,7 @@ import java.util.*;
  * @author Pierre Lecerf (plecerf@lumiomedical.com)
  * Created on 2020/05/25
  */
+@SuppressWarnings("rawtypes")
 public class VaultLegacyCompiler
 {
     private static final Logger logger = LoggerFactory.getLogger(VaultLegacyCompiler.class);
@@ -28,29 +29,29 @@ public class VaultLegacyCompiler
      * @param target
      * @return
      */
-    public static Object[][] injectFields(Class<?> target)
+    public static InjectableField[] injectFields(Class<?> target)
     {
         Set<Field> fields = fields(target);
-        Object[][] fs = new Object[fields.size()][];
+        InjectableField[] injectableFields = new InjectableField[fields.size()];
 
         int i = 0;
-        for (Field f : fields)
+        for (Field field : fields)
         {
-            Class<?> providerType = f.getType().equals(Provider.class)
-                ? (Class<?>) ((ParameterizedType) f.getGenericType()).getActualTypeArguments()[0]
+            Class<?> providerType = field.getType().equals(Provider.class)
+                ? (Class<?>) ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0]
                 : null
             ;
 
-            fs[i++] = new Object[]{
-                f,
+            injectableFields[i++] = new InjectableField(
+                field,
                 providerType != null,
                 Key.of(
-                    (Class<?>)(providerType != null ? providerType : f.getType()),
-                    qualifier(f.getAnnotations())
+                    (Class<?>)(providerType != null ? providerType : field.getType()),
+                    qualifier(field.getAnnotations())
                 )
-            };
+            );
         }
-        return fs;
+        return injectableFields;
     }
 
     /**
@@ -83,11 +84,11 @@ public class VaultLegacyCompiler
      * @return
      * @throws RuntimeVaultException
      */
-    public static Constructor constructor(Key key) throws RuntimeVaultException
+    public static Constructor<?> constructor(Key key) throws RuntimeVaultException
     {
-        Constructor inject = null;
-        Constructor noarg = null;
-        for (Constructor c : key.type.getDeclaredConstructors())
+        Constructor<?> inject = null;
+        Constructor<?> noarg = null;
+        for (Constructor<?> c : key.type.getDeclaredConstructors())
         {
             if (c.isAnnotationPresent(Inject.class))
             {
@@ -100,7 +101,7 @@ public class VaultLegacyCompiler
                 noarg = c;
         }
 
-        Constructor constructor = inject != null ? inject : noarg;
+        Constructor<?> constructor = inject != null ? inject : noarg;
         if (constructor != null)
         {
             constructor.setAccessible(true);
@@ -176,7 +177,7 @@ public class VaultLegacyCompiler
     {
         final Key<?> key = Key.of(m.getReturnType(), VaultLegacyCompiler.qualifier(m.getAnnotations()));
         if (vault.hasProvider(key))
-            logger.debug("{} has multiple providers, module {}", key.toString(), module.getClass());
+            logger.debug("{} has multiple providers, module {}", key, module.getClass());
 
         Singleton singleton = m.getAnnotation(Singleton.class) != null
             ? m.getAnnotation(Singleton.class)
@@ -197,7 +198,7 @@ public class VaultLegacyCompiler
                 return m.invoke(module, params(paramProviders));
             }
             catch (IllegalAccessException | InvocationTargetException e) {
-                throw new RuntimeVaultException(String.format("Can't instantiate %s with provider", key.toString()), e);
+                throw new RuntimeVaultException(String.format("Can't instantiate %s with provider", key), e);
             }
         };
 

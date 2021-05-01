@@ -56,6 +56,21 @@ public class ConstructorBasedInjectionTest
         Assertions.assertEquals(2345, service.integerProvider.provide());
     }
 
+    @Test
+    void lenientTypeInjection() throws VaultException
+    {
+        var vault = Vault.with("com/noleme/vault/parser/string_variable.yml");
+
+        var service = vault.instance(MyLenientService.class);
+
+        Assertions.assertEquals(1234, service.integerVal);
+        Assertions.assertEquals(12.34F, service.floatVal);
+        Assertions.assertEquals(12.34D, service.doubleVal);
+        Assertions.assertFalse(service.booleanVal);
+        Assertions.assertEquals((byte) 0x6c, service.byteVal);
+        Assertions.assertEquals('c', service.charVal);
+    }
+
     private static class MyTypedService
     {
         final StringProvider stringProvider;
@@ -101,6 +116,34 @@ public class ConstructorBasedInjectionTest
         {
             this.stringProvider = stringProvider;
             this.doubleProvider = doubleProvider;
+        }
+    }
+
+    private static class MyLenientService
+    {
+        final int integerVal;
+        final float floatVal;
+        final double doubleVal;
+        final boolean booleanVal;
+        final char charVal;
+        final byte byteVal;
+
+        @Inject
+        private MyLenientService(
+            @Named("integer_val.string") int integerVal,
+            @Named("float_val.string") float floatVal,
+            @Named("float_val.string") double doubleVal,
+            @Named("boolean_val.string") boolean booleanVal,
+            @Named("char_val.string") char charVal,
+            @Named("byte_val.string") byte byteVal
+        )
+        {
+            this.integerVal = integerVal;
+            this.floatVal = floatVal;
+            this.doubleVal = doubleVal;
+            this.booleanVal = booleanVal;
+            this.charVal = charVal;
+            this.byteVal = byteVal;
         }
     }
 }

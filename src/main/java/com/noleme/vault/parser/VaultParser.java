@@ -14,6 +14,7 @@ import java.util.Collections;
 /**
  * @author Pierre Lecerf (pierre@noleme.com) on 05/02/15.
  */
+@SuppressWarnings("rawtypes")
 public interface VaultParser
 {
     default Definitions extract(Source source) throws VaultParserException

@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
  * @author Pierre Lecerf (plecerf@lumiomedical.com)
  * Created on 2020/05/24
  */
+@SuppressWarnings("rawtypes")
 public class CellarStage implements BuildStage
 {
     private final Cellar cellar;
