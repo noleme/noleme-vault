@@ -1,0 +1,11 @@
+variables:
+    my_unknown: 'abcde'
+    my_map:
+        my_string: "MY_VAR"
+        my_integer: 2345
+        my_double: 12.34
+        my_unknown: ${MY_VAR}
+        my_ref: '##my_unknown##'
+        my_map:
+            my_string: "MY_VAR"
+            my_integer: 2345

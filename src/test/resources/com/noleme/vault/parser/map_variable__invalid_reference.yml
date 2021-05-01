@@ -1,0 +1,13 @@
+variables:
+
+    my_map:
+        my_string: "MY_VAR"
+        my_integer: 2345
+        my_double: 12.34
+        my_ref: '##my_unknown##'
+
+services:
+    provider.map.1:
+        class: com.noleme.vault.service.MapProvider
+        constructor:
+            - '##my_map## within a string'
