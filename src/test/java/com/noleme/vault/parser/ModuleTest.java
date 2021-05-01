@@ -18,7 +18,7 @@ public class ModuleTest
     void test() throws VaultInjectionException
     {
         VaultFactory.defaultParser.register(new CustomModule());
-        var container = new VaultFactory().populate(new Cellar(), "com/noleme/vault/parser/module.yml");
+        var container = new VaultFactory().populate(new Cellar(), "com/noleme/vault/parser/module/module.yml");
 
         Assertions.assertEquals("this_is_my_new_string", container.getService("my_provider.a", StringProvider.class).provide());
         Assertions.assertEquals("this_is_my_new_string", container.getService("my_provider.b", StringProvider.class).provide());

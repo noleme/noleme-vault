@@ -32,8 +32,8 @@ public class BuildTest
     {
         Vault vault = Vault.builder()
             .with("com/noleme/vault/parser/simple.yml")
-            .with(new VaultFactory().populate(new Cellar(), "com/noleme/vault/parser/provider.integer.json"))
-            .with("com/noleme/vault/parser/provider.integer.json")
+            .with(new VaultFactory().populate(new Cellar(), "com/noleme/vault/parser/provider/provider.integer.json"))
+            .with("com/noleme/vault/parser/provider/provider.integer.json")
             .with(Key.of(IntegerProvider.class, "provider.integer"), () -> new IntegerProvider(5432))
             .with(new ProviderModule())
             .with(Key.of(BooleanProvider.class, "provider.boolean"), () -> new BooleanProvider(true))
