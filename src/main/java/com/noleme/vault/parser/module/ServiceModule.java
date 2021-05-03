@@ -54,7 +54,7 @@ public class ServiceModule implements VaultModule
         else
             def = this.generateInstantiation(definition);
 
-        definitions.setDefinition(def.getIdentifier(), def);
+        definitions.getDefinitions().set(def.getIdentifier(), def);
     }
 
     /**

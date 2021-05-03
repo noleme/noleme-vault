@@ -27,7 +27,7 @@ public class CustomModule implements VaultModule
             var def = new ServiceProvider(id, StringProvider.class.getName(), "build");
             def.setMethodArgs(new Object[]{ value });
 
-            definitions.setDefinition(id, def);
+            definitions.getDefinitions().set(id, def);
         });
     }
 }
