@@ -1,0 +1,5 @@
+services:
+    provider.map:
+        class: com.noleme.vault.service.MapProvider
+        constructor:
+            - '##provider.map.value## within a string'

@@ -1,5 +1,5 @@
 imports:
-    - "com/noleme/vault/parser/env_variable.yml"
+    - "com/noleme/vault/parser/variable/env_variable.yml"
 
 services:
 

@@ -18,11 +18,6 @@ import java.util.regex.Pattern;
  */
 public class VariableResolvingModule implements VaultModule
 {
-    /* TODO: env:
-     * - handle default values
-     * - handle injection failure within container -> parseInt, parseFloat, etc.
-     * - handle injection failure outside container -> ???
-     */
     private static final Pattern variablePattern = Pattern.compile("(##(.*?)##)");
     private static final Pattern envPattern = Pattern.compile("(\\$\\{([A-Za-z0-9_.-].*?)(-(.*?))?})");
 
@@ -32,6 +27,7 @@ public class VariableResolvingModule implements VaultModule
         return "variables";
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void process(ObjectNode json, Definitions definitions) throws VaultParserException
     {
@@ -42,12 +38,20 @@ public class VariableResolvingModule implements VaultModule
 
         for (Map.Entry<String, Object> varDef : definitions.getVariables().dictionary().entrySet())
         {
+            Collection<String> dependencies;
+            if (varDef.getValue() instanceof String)
+                dependencies = findVariables((String)varDef.getValue());
+            else if (varDef.getValue() instanceof List)
+                dependencies = findVariablesInList((List<?>) varDef.getValue());
+            else if (varDef.getValue() instanceof Map)
+                dependencies = findVariablesInMap((Map<?, ?>) varDef.getValue());
+            else
+                dependencies = Collections.emptyList();
+
             Variable var = new Variable(
                 varDef.getKey(),
                 varDef.getValue(),
-                varDef.getValue() instanceof String
-                    ? findVariables((String)varDef.getValue())
-                    : Collections.emptyList()
+                dependencies
             );
 
             variables.put(varDef.getKey(), var);
@@ -83,20 +87,19 @@ public class VariableResolvingModule implements VaultModule
         for (String vk : sorted)
         {
             Variable v = variables.get(vk);
+            Object replaced;
 
-            if (!(v.getValue() instanceof String))
+            if (v.getValue() instanceof String)
+                replaced = replaceForString((String) v.getValue(), v, variables);
+            else if (v.getValue() instanceof List)
+                replaced = replaceForList((List<Object>) v.getValue(), v, variables);
+            else if (v.getValue() instanceof Map)
+                replaced = replaceForMap((Map<String, Object>) v.getValue(), v, variables);
+            else
                 continue;
 
-            String val = (String)v.getValue();
-            for (String dep : v.getDependencies())
-            {
-                var value = variables.get(dep).getValue();
-                val = val.replace("##"+dep+"##", value != null ? value.toString() : "");
-            }
-            val = replaceEnv(val);
-
-            v.setValue(val);
-            definitions.getVariables().set(vk, val);
+            v.setValue(replaced);
+            definitions.getVariables().set(v.getName(), replaced);
         }
     }
 
@@ -141,6 +144,99 @@ public class VariableResolvingModule implements VaultModule
         }
 
         return variables;
+    }
+
+    /**
+     *
+     * @param list
+     * @return
+     */
+    private static Collection<String> findVariablesInList(List<?> list)
+    {
+        List<String> variables = new ArrayList<>();
+
+        list.stream()
+            .filter(item -> item instanceof String)
+            .forEach(item -> variables.addAll(findVariables((String) item)))
+        ;
+
+        return variables;
+    }
+
+    /**
+     *
+     * @param map
+     * @return
+     */
+    private static Collection<String> findVariablesInMap(Map<?, ?> map)
+    {
+        List<String> variables = new ArrayList<>();
+
+        map.values().stream()
+            .filter(item -> item instanceof String)
+            .forEach(item -> variables.addAll(findVariables((String) item)))
+        ;
+
+        return variables;
+    }
+
+    /**
+     *
+     * @param val
+     * @param variable
+     * @param dictionary
+     * @return
+     */
+    private static Object replaceForString(String val, Variable variable, Map<String, Variable> dictionary)
+    {
+        for (String dep : variable.getDependencies())
+        {
+            var value = dictionary.get(dep).getValue();
+            val = val.replace("##"+dep+"##", value != null ? value.toString() : "");
+        }
+        val = replaceEnv(val);
+
+        return val;
+    }
+
+    /**
+     *
+     * @param val
+     * @param variable
+     * @param dictionary
+     * @return
+     */
+    private static Object replaceForList(List<Object> val, Variable variable, Map<String, Variable> dictionary)
+    {
+        for (int i = 0 ; i < val.size() ; ++i)
+        {
+            Object item = val.get(i);
+
+            if (item instanceof String)
+                val.set(i, replaceForString((String) item, variable, dictionary));
+        }
+
+        return val;
+    }
+
+    /**
+     *
+     * @param val
+     * @param variable
+     * @param dictionary
+     * @return
+     */
+    private static Object replaceForMap(Map<String, Object> val, Variable variable, Map<String, Variable> dictionary)
+    {
+        for (String key : val.keySet())
+        {
+            Object item = val.get(key);
+
+            if (item instanceof String)
+                val.put(key, replaceForString((String) item, variable, dictionary));
+        }
+
+        return val;
     }
 
     /**

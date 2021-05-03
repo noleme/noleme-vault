@@ -1,0 +1,8 @@
+variables:
+    provider.list.value: []
+
+services:
+    provider.list:
+        class: com.noleme.vault.service.ListProvider
+        constructor:
+            - '##provider.list.value##'

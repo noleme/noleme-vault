@@ -1,0 +1,5 @@
+services:
+    provider.list:
+        class: com.noleme.vault.service.ListProvider
+        constructor:
+            - '##provider.list.value## within a string'
