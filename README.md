@@ -20,7 +20,7 @@ Add the following in your `pom.xml`:
 <dependency>
     <groupId>com.noleme</groupId>
     <artifactId>noleme-vault</artifactId>
-    <version>0.12</version>
+    <version>0.12.1</version>
 </dependency>
 ```
 
@@ -73,7 +73,8 @@ public class MyService
 ..and do the following:
 
 ```java
-MyService service = Vault.with("my_conf.yml").instance(MyService.class);
+var vault = Vault.with("my_conf.yml");
+MyService service = vault.instance(MyService.class);
 ```
 
 It's also possible to use field annotations and proceed the following way:
@@ -87,21 +88,13 @@ public class MyService
 ```
 
 ```java
-MyService service = Vault.with("my_conf.yml").inject(new MyService());
-```
-
-..one of the neat things we can do, is programmatically override parts of the configuration:
-
-```java
-MyService service = Vault.with("my_conf.yml", defs -> {
-    defs.setVariable("my_var", 34.56); //my_var will now equal 34.56 upon injection
-}).inject(new MyService());
+MyService service = vault.inject(new MyService());
 ```
 
 Alternatively we could directly query one of the declared services:
 
 ```java
-MyClass myService = Vault.with("my_conf.yml").instance(MyClass.class, "my_service");
+MyClass myService = vault.instance(MyClass.class, "my_service");
 ```
 
 Other features that will need to be documented include:
