@@ -2,10 +2,11 @@ package com.noleme.vault.parser.module;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.noleme.json.Json;
 import com.noleme.vault.container.definition.Definitions;
+import com.noleme.vault.container.definition.Definitions.Variables;
 import com.noleme.vault.container.definition.Variable;
 import com.noleme.vault.exception.VaultParserException;
-import com.noleme.json.Json;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -35,7 +36,7 @@ public class VariableResolvingModule implements VaultModule
         List<Variable> heap = new ArrayList<>();
         List<String> sorted = new ArrayList<>();
 
-        for (Map.Entry<String, Object> varDef : definitions.getVariables().entrySet())
+        for (Map.Entry<String, Object> varDef : definitions.getVariables().dictionary().entrySet())
         {
             Collection<String> dependencies;
             if (varDef.getValue() instanceof String)
@@ -98,25 +99,25 @@ public class VariableResolvingModule implements VaultModule
                 continue;
 
             v.setValue(replaced);
-            definitions.setVariable(v.getName(), replaced);
+            definitions.getVariables().set(v.getName(), replaced);
         }
     }
 
     /**
      *
      * @param string
-     * @param definitions
+     * @param variables
      * @return
      */
-    private static Map<String, Object> findReplacements(String string, Definitions definitions) throws VaultParserException
+    private static Map<String, Object> findReplacements(String string, Variables variables) throws VaultParserException
     {
         Map<String, Object> replacements = new HashMap<>();
 
         for (String var : findVariables(string))
         {
-            if (!definitions.hasVariable(var))
+            if (!variables.has(var))
                 throw new VaultParserException("The requested variable '"+var+"' could not be found in the container.");
-            replacements.put("##"+var+"##", definitions.getVariable(var));
+            replacements.put("##"+var+"##", variables.get(var));
         }
 
         return replacements;
@@ -247,7 +248,7 @@ public class VariableResolvingModule implements VaultModule
     public static JsonNode replace(String string, Definitions definitions) throws VaultParserException
     {
         String newString = string;
-        for (Map.Entry<String, Object> replacement : findReplacements(string, definitions).entrySet())
+        for (Map.Entry<String, Object> replacement : findReplacements(string, definitions.getVariables()).entrySet())
         {
             if (replacement.getValue() == null || newString.length() == replacement.getKey().length())
                 return Json.toJson(replacement.getValue());

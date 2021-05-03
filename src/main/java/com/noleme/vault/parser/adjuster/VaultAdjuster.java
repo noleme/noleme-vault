@@ -11,8 +11,8 @@ public interface VaultAdjuster
 {
     /**
      *
-     * @param definitions
+     * @param variables
      * @throws VaultParserException
      */
-    void adjust(Definitions definitions) throws VaultParserException;
+    void adjust(Definitions.Variables variables) throws VaultParserException;
 }
