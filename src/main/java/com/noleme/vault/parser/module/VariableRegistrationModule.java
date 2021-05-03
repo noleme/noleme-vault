@@ -19,7 +19,7 @@ public class VariableRegistrationModule implements VaultModule
     @Override
     public void process(ObjectNode json, Definitions definitions)
     {
-        json.fields().forEachRemaining(entry -> definitions.setVariable(entry.getKey(), value(entry.getValue())));
+        json.fields().forEachRemaining(entry -> definitions.getVariables().set(entry.getKey(), value(entry.getValue())));
     }
 
     /**

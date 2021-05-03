@@ -18,11 +18,11 @@ public class AdjusterTest
         var parser = new VaultCompositeParser();
         int value = 1234;
 
-        Definitions def = parser.extract("com/noleme/vault/parser/simple.json", new Definitions(), defs -> {
-            defs.setVariable("my_variable", value);
+        Definitions def = parser.extract("com/noleme/vault/parser/simple.json", new Definitions(), vars -> {
+            vars.set("my_variable", value);
         });
 
-        Assertions.assertEquals(value, def.getVariable("my_variable"));
+        Assertions.assertEquals(value, def.getVariables().get("my_variable"));
     }
 
     @Test
@@ -34,8 +34,8 @@ public class AdjusterTest
         Definitions defA = parser.extract("com/noleme/vault/parser/simple.json");
         Assertions.assertEquals("SomeString", ((ServiceProvider)defA.getDefinitions().get("provider.string")).getMethodArgs()[0]);
 
-        Definitions defB = parser.extract("com/noleme/vault/parser/simple.json", new Definitions(), defs -> {
-            defs.setVariable("provider.string.base_value", string);
+        Definitions defB = parser.extract("com/noleme/vault/parser/simple.json", new Definitions(), vars -> {
+            vars.set("provider.string.base_value", string);
         });
         Assertions.assertEquals(string, ((ServiceProvider)defB.getDefinitions().get("provider.string")).getMethodArgs()[0]);
     }
@@ -49,8 +49,8 @@ public class AdjusterTest
         Definitions defA = parser.extract("com/noleme/vault/parser/simple.json");
         Assertions.assertEquals("SomeString", ((ServiceProvider)defA.getDefinitions().get("provider.string")).getMethodArgs()[0]);
 
-        Definitions defB = parser.extract("com/noleme/vault/parser/simple.json", new Definitions(), defs -> {
-            defs.setVariable("provider.string.value", string);
+        Definitions defB = parser.extract("com/noleme/vault/parser/simple.json", new Definitions(), vars -> {
+            vars.set("provider.string.value", string);
         });
         Assertions.assertEquals(string, ((ServiceProvider)defB.getDefinitions().get("provider.string")).getMethodArgs()[0]);
     }
