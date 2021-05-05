@@ -45,7 +45,7 @@ public class FieldBasedInjectionTest
     @Test
     void lenientTypeInjection() throws VaultException
     {
-        var vault = Vault.with("com/noleme/vault/parser/string_variable.yml");
+        var vault = Vault.with("com/noleme/vault/parser/variable/string_variable.yml");
 
         var service = vault.inject(new MyLenientService());
 

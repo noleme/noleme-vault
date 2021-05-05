@@ -25,7 +25,7 @@ public class ModuleTest
     void test() throws VaultInjectionException
     {
         VaultParser parser = new VaultCompositeParser().register(new TestModule());
-        var cellar = new VaultFactory(parser).populate(new Cellar(), "com/noleme/vault/parser/module.yml");
+        var cellar = new VaultFactory(parser).populate(new Cellar(), "com/noleme/vault/parser/module/module.yml");
 
         makeAssertions(cellar);
     }
@@ -35,7 +35,7 @@ public class ModuleTest
     {
         VaultParser parser = new VaultCompositeParser().register(new GenericModule<>("custom", NonMatchingTestConfig.class, (config, defs) -> {}));
         Assertions.assertThrows(VaultInjectionException.class, () -> {
-            new VaultFactory(parser).populate(new Cellar(), "com/noleme/vault/parser/module.yml");
+            new VaultFactory(parser).populate(new Cellar(), "com/noleme/vault/parser/module/module.yml");
         });
     }
 
@@ -47,10 +47,10 @@ public class ModuleTest
                 var def = new ServiceProvider(id, StringProvider.class.getName(), "build");
                 def.setMethodArgs(new Object[]{ config.value });
 
-                defs.setDefinition(id, def);
+                defs.getDefinitions().set(id, def);
             });
         }));
-        var cellar = new VaultFactory(parser).populate(new Cellar(), "com/noleme/vault/parser/module.yml");
+        var cellar = new VaultFactory(parser).populate(new Cellar(), "com/noleme/vault/parser/module/module.yml");
 
         makeAssertions(cellar);
     }
@@ -59,7 +59,7 @@ public class ModuleTest
     void genericClassTest() throws VaultInjectionException
     {
         VaultParser parser = new VaultCompositeParser().register(new TypedTestModule());
-        var cellar = new VaultFactory(parser).populate(new Cellar(), "com/noleme/vault/parser/module.yml");
+        var cellar = new VaultFactory(parser).populate(new Cellar(), "com/noleme/vault/parser/module/module.yml");
 
         makeAssertions(cellar);
     }
@@ -82,7 +82,7 @@ public class ModuleTest
                 var def = new ServiceProvider(id, StringProvider.class.getName(), "build");
                 def.setMethodArgs(new Object[]{ value });
 
-                definitions.setDefinition(id, def);
+                definitions.getDefinitions().set(id, def);
             });
         }
     }
@@ -119,7 +119,7 @@ public class ModuleTest
                 var def = new ServiceProvider(id, StringProvider.class.getName(), "build");
                 def.setMethodArgs(new Object[]{ config.value });
 
-                definitions.setDefinition(id, def);
+                definitions.getDefinitions().set(id, def);
             });
         }
     }

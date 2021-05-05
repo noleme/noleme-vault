@@ -1,0 +1,7 @@
+variables:
+    my_list:
+        - 'something'
+        - 2345
+        - 12.34
+        - false
+        - ['an', 'invalid', 'sublist']

@@ -2,10 +2,11 @@ package com.noleme.vault.parser.module;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.noleme.json.Json;
 import com.noleme.vault.container.definition.Definitions;
+import com.noleme.vault.container.definition.Definitions.Variables;
 import com.noleme.vault.container.definition.Variable;
 import com.noleme.vault.exception.VaultParserException;
-import com.noleme.json.Json;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -17,11 +18,6 @@ import java.util.regex.Pattern;
  */
 public class VariableResolvingModule implements VaultModule
 {
-    /* TODO: env:
-     * - handle default values
-     * - handle injection failure within container -> parseInt, parseFloat, etc.
-     * - handle injection failure outside container -> ???
-     */
     private static final Pattern variablePattern = Pattern.compile("(##(.*?)##)");
     private static final Pattern envPattern = Pattern.compile("(\\$\\{([A-Za-z0-9_.-].*?)(-(.*?))?})");
 
@@ -31,6 +27,7 @@ public class VariableResolvingModule implements VaultModule
         return "variables";
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void process(ObjectNode json, Definitions definitions) throws VaultParserException
     {
@@ -39,14 +36,22 @@ public class VariableResolvingModule implements VaultModule
         List<Variable> heap = new ArrayList<>();
         List<String> sorted = new ArrayList<>();
 
-        for (Map.Entry<String, Object> varDef : definitions.getVariables().entrySet())
+        for (Map.Entry<String, Object> varDef : definitions.getVariables().dictionary().entrySet())
         {
+            Collection<String> dependencies;
+            if (varDef.getValue() instanceof String)
+                dependencies = findVariables((String)varDef.getValue());
+            else if (varDef.getValue() instanceof List)
+                dependencies = findVariablesInList((List<?>) varDef.getValue());
+            else if (varDef.getValue() instanceof Map)
+                dependencies = findVariablesInMap((Map<?, ?>) varDef.getValue());
+            else
+                dependencies = Collections.emptyList();
+
             Variable var = new Variable(
                 varDef.getKey(),
                 varDef.getValue(),
-                varDef.getValue() instanceof String
-                    ? findVariables((String)varDef.getValue())
-                    : Collections.emptyList()
+                dependencies
             );
 
             variables.put(varDef.getKey(), var);
@@ -82,38 +87,37 @@ public class VariableResolvingModule implements VaultModule
         for (String vk : sorted)
         {
             Variable v = variables.get(vk);
+            Object replaced;
 
-            if (!(v.getValue() instanceof String))
+            if (v.getValue() instanceof String)
+                replaced = replaceForString((String) v.getValue(), v, variables);
+            else if (v.getValue() instanceof List)
+                replaced = replaceForList((List<Object>) v.getValue(), v, variables);
+            else if (v.getValue() instanceof Map)
+                replaced = replaceForMap((Map<String, Object>) v.getValue(), v, variables);
+            else
                 continue;
 
-            String val = (String)v.getValue();
-            for (String dep : v.getDependencies())
-            {
-                var value = variables.get(dep).getValue();
-                val = val.replace("##"+dep+"##", value != null ? value.toString() : "");
-            }
-            val = replaceEnv(val);
-
-            v.setValue(val);
-            definitions.setVariable(vk, val);
+            v.setValue(replaced);
+            definitions.getVariables().set(v.getName(), replaced);
         }
     }
 
     /**
      *
      * @param string
-     * @param definitions
+     * @param variables
      * @return
      */
-    private static Map<String, Object> findReplacements(String string, Definitions definitions) throws VaultParserException
+    private static Map<String, Object> findReplacements(String string, Variables variables) throws VaultParserException
     {
         Map<String, Object> replacements = new HashMap<>();
 
         for (String var : findVariables(string))
         {
-            if (!definitions.hasVariable(var))
+            if (!variables.has(var))
                 throw new VaultParserException("The requested variable '"+var+"' could not be found in the container.");
-            replacements.put("##"+var+"##", definitions.getVariable(var));
+            replacements.put("##"+var+"##", variables.get(var));
         }
 
         return replacements;
@@ -144,6 +148,99 @@ public class VariableResolvingModule implements VaultModule
 
     /**
      *
+     * @param list
+     * @return
+     */
+    private static Collection<String> findVariablesInList(List<?> list)
+    {
+        List<String> variables = new ArrayList<>();
+
+        list.stream()
+            .filter(item -> item instanceof String)
+            .forEach(item -> variables.addAll(findVariables((String) item)))
+        ;
+
+        return variables;
+    }
+
+    /**
+     *
+     * @param map
+     * @return
+     */
+    private static Collection<String> findVariablesInMap(Map<?, ?> map)
+    {
+        List<String> variables = new ArrayList<>();
+
+        map.values().stream()
+            .filter(item -> item instanceof String)
+            .forEach(item -> variables.addAll(findVariables((String) item)))
+        ;
+
+        return variables;
+    }
+
+    /**
+     *
+     * @param val
+     * @param variable
+     * @param dictionary
+     * @return
+     */
+    private static Object replaceForString(String val, Variable variable, Map<String, Variable> dictionary)
+    {
+        for (String dep : variable.getDependencies())
+        {
+            var value = dictionary.get(dep).getValue();
+            val = val.replace("##"+dep+"##", value != null ? value.toString() : "");
+        }
+        val = replaceEnv(val);
+
+        return val;
+    }
+
+    /**
+     *
+     * @param val
+     * @param variable
+     * @param dictionary
+     * @return
+     */
+    private static Object replaceForList(List<Object> val, Variable variable, Map<String, Variable> dictionary)
+    {
+        for (int i = 0 ; i < val.size() ; ++i)
+        {
+            Object item = val.get(i);
+
+            if (item instanceof String)
+                val.set(i, replaceForString((String) item, variable, dictionary));
+        }
+
+        return val;
+    }
+
+    /**
+     *
+     * @param val
+     * @param variable
+     * @param dictionary
+     * @return
+     */
+    private static Object replaceForMap(Map<String, Object> val, Variable variable, Map<String, Variable> dictionary)
+    {
+        for (String key : val.keySet())
+        {
+            Object item = val.get(key);
+
+            if (item instanceof String)
+                val.put(key, replaceForString((String) item, variable, dictionary));
+        }
+
+        return val;
+    }
+
+    /**
+     *
      * @param string
      * @param definitions
      * @return
@@ -151,7 +248,7 @@ public class VariableResolvingModule implements VaultModule
     public static JsonNode replace(String string, Definitions definitions) throws VaultParserException
     {
         String newString = string;
-        for (Map.Entry<String, Object> replacement : findReplacements(string, definitions).entrySet())
+        for (Map.Entry<String, Object> replacement : findReplacements(string, definitions.getVariables()).entrySet())
         {
             if (replacement.getValue() == null || newString.length() == replacement.getKey().length())
                 return Json.toJson(replacement.getValue());

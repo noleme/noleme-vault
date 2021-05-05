@@ -1,8 +1,8 @@
 {
     "imports": [
-        "com/noleme/vault/parser/provider.string.json",
-        "com/noleme/vault/parser/provider.boolean.json",
-        "com/noleme/vault/parser/provider.integer.old_style.json"
+        "com/noleme/vault/parser/provider/provider.string.json",
+        "com/noleme/vault/parser/provider/provider.boolean.json",
+        "com/noleme/vault/parser/provider/provider.integer.old_style.json"
     ],
     "variables": {
         "provider.integer.value": 2345,

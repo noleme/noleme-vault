@@ -10,7 +10,6 @@ custom:
         - "my_provider.c"
 
 services:
-
     # since the custom module is loaded after the variables and services modules, this definition should be overridden
     # by whatever the custom module does above
     my_provider.a:

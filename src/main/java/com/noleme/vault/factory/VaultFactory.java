@@ -97,7 +97,7 @@ public class VaultFactory
             logger.debug("Populating cellar with definitions ({} service and {} variable definitions found)", definitions.getDefinitions().size(), definitions.getVariables().size());
 
             this.checkCompleteness(definitions, cellar);
-            List<ServiceDefinition> instantiations = this.checkStructure(definitions.listDefinitions(), cellar);
+            List<ServiceDefinition> instantiations = this.checkStructure(definitions.getDefinitions().values(), cellar);
 
             this.registerVariables(definitions, cellar);
             this.instantiate(instantiations, cellar);
@@ -128,11 +128,11 @@ public class VaultFactory
      */
     private void checkCompleteness(Definitions definitions, Cellar cellar) throws VaultCompilationException
     {
-        for (ServiceDefinition definition : definitions.listDefinitions())
+        for (ServiceDefinition definition : definitions.getDefinitions().values())
         {
             for (String dependency : definition.getDependencies())
             {
-                if (!definitions.hasDefinition(dependency) && !cellar.hasService(dependency))
+                if (!definitions.getDefinitions().has(dependency) && !cellar.hasService(dependency))
                     throw new VaultCompilationException("The service "+definition.getIdentifier()+" has a dependency over a non-existing "+dependency+" service.");
             }
         }
@@ -230,8 +230,7 @@ public class VaultFactory
      */
     private void registerVariables(Definitions definitions, Cellar cellar)
     {
-        for (Map.Entry<String, Object> e : definitions.getVariables().entrySet())
-            cellar.putVariable(e.getKey(), e.getValue());
+        definitions.getVariables().dictionary().forEach(cellar::putVariable);
     }
 
     /**

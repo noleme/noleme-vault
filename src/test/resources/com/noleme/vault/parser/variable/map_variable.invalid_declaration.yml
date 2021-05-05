@@ -1,0 +1,13 @@
+variables:
+    my_variable: 'abcde'
+    my_map:
+        my_string: 'MY_VAR'
+        my_integer: 2345
+        my_double: 12.34
+        my_boolean: false
+        my_ref: '##my_variable##'
+        my_env: ${MY_VAR}
+        my_map:
+            my_string: "MY_VAR"
+            my_integer: 2345
+            my_boolean: false

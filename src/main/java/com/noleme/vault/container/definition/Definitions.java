@@ -1,7 +1,5 @@
 package com.noleme.vault.container.definition;
 
-import com.noleme.vault.container.Invocation;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,152 +10,107 @@ import java.util.Map;
  */
 public class Definitions
 {
-    private final Map<String, Object> variables;
-    private final Map<String, ServiceDefinition> definitions;
+    private final Variables variables;
+    private final Services definitions;
 
     public Definitions()
     {
-        this.variables = new HashMap<>();
-        this.definitions = new HashMap<>();
-    }
-
-    /**
-     *
-     * @param name
-     * @return
-     */
-    public boolean hasVariable(String name)
-    {
-        return this.variables.containsKey(name);
-    }
-
-    /**
-     *
-     * @param name
-     * @return
-     */
-    public Object getVariable(String name)
-    {
-        return this.variables.get(name);
+        this.variables = new Variables();
+        this.definitions = new Services();
     }
 
     /**
      *
      * @return
      */
-    public Map<String, Object> getVariables()
+    public Variables getVariables()
     {
         return this.variables;
     }
 
     /**
      *
-     * @param name
-     * @param value
-     */
-    public Definitions setVariable(String name, Object value)
-    {
-        this.variables.put(name, value);
-        return this;
-    }
-
-    /**
-     *
-     * @param identifier
      * @return
      */
-    public boolean hasDefinition(String identifier)
-    {
-        return this.definitions.containsKey(identifier);
-    }
-
-    /**
-     *
-     * @return
-     */
-    public Collection<ServiceDefinition> listDefinitions()
-    {
-        return this.definitions.values();
-    }
-
-    /**
-     *
-     * @return
-     */
-    public Map<String, ServiceDefinition> getDefinitions()
+    public Services getDefinitions()
     {
         return this.definitions;
     }
 
-    /**
-     *
-     * @param identifier
-     * @param def
-     */
-    public Definitions setDefinition(String identifier, ServiceDefinition def)
+    public static class Variables extends Dictionary<Object>
     {
-        this.definitions.put(identifier, def);
-        return this;
+        @Override
+        public Variables set(String name, Object value)
+        {
+            return (Variables) super.set(name, value);
+        }
+
+        @Override
+        public Variables remove(String name)
+        {
+            return (Variables) super.remove(name);
+        }
     }
 
-    /**
-     *
-     * @param identifier
-     */
-    public Definitions removeDefinition(String identifier)
+    public static class Services extends Dictionary<ServiceDefinition>
     {
-        this.definitions.remove(identifier);
-        return this;
+        @Override
+        public Services set(String name, ServiceDefinition value)
+        {
+            return (Services) super.set(name, value);
+        }
+
+        @Override
+        public Services remove(String name)
+        {
+            return (Services) super.remove(name);
+        }
     }
 
-    /**
-     *
-     * @return
-     */
-    public String dumpContents()
+    private static abstract class Dictionary <T>
     {
-        StringBuilder sb = new StringBuilder();
-        if (!this.variables.isEmpty())
+        private final Map<String, T> dictionary;
+
+        private Dictionary()
         {
-            sb.append("variables:\n");
-            for (Map.Entry<String, Object> v : this.variables.entrySet())
-                sb.append("\t").append(v.getKey()).append(":").append(v.getValue()).append("\n");
+            this.dictionary = new HashMap<>();
         }
-        if (!this.definitions.isEmpty())
+
+        public boolean has(String name)
         {
-            sb.append("definitions:\n");
-            for (Map.Entry<String, ServiceDefinition> d : this.definitions.entrySet())
-            {
-                sb.append("\t").append(d.getKey()).append("\n");
-                if (!d.getValue().getDependencies().isEmpty())
-                {
-                    sb.append("\t\tdeps:\n");
-                    for (String dep : d.getValue().getDependencies())
-                        sb.append("\t\t\t").append(dep).append("\n");
-                }
-                if (!d.getValue().getInvocations().isEmpty())
-                {
-                    sb.append("\t\tinvocations:\n");
-                    for (Invocation invocation : d.getValue().getInvocations())
-                    {
-                        sb.append("\t\t\t").append(invocation.getMethodName()).append("\n");
-                        for (Object param : invocation.getParams())
-                            sb.append("\t\t\t\t- ").append(param.toString()).append("\n");
-                    }
-                }
-                if (d.getValue() instanceof ServiceInstantiation)
-                {
-                    if (((ServiceInstantiation) d.getValue()).getCtorParams().length > 0)
-                    {
-                        sb.append("\t\tctor:\n");
-                        for (Object param : ((ServiceInstantiation)d.getValue()).getCtorParams())
-                            sb.append("\t\t\t").append(param).append("\n");
-                    }
-                    else
-                        sb.append("\t\tctor: no arguments\n");
-                }
-            }
+            return this.dictionary.containsKey(name);
         }
-        return sb.length() > 0 ? sb.toString() : "The Definitions set is empty.";
+
+        public Object get(String name)
+        {
+            return this.dictionary.get(name);
+        }
+
+        public Dictionary<T> set(String name, T value)
+        {
+            this.dictionary.put(name, value);
+            return this;
+        }
+
+        public Dictionary<T> remove(String name)
+        {
+            this.dictionary.remove(name);
+            return this;
+        }
+
+        public int size()
+        {
+            return this.dictionary.size();
+        }
+
+        public Map<String, T> dictionary()
+        {
+            return this.dictionary;
+        }
+
+        public Collection<T> values()
+        {
+            return this.dictionary.values();
+        }
     }
 }

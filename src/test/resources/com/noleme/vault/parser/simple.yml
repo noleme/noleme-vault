@@ -1,7 +1,7 @@
 imports:
-    - "com/noleme/vault/parser/provider.string.json"
-    - "com/noleme/vault/parser/provider.boolean.json"
-    - "com/noleme/vault/parser/provider.integer.json"
+    - "com/noleme/vault/parser/provider/provider.string.json"
+    - "com/noleme/vault/parser/provider/provider.boolean.json"
+    - "com/noleme/vault/parser/provider/provider.integer.json"
 
 variables:
     provider.integer.value: 2345
