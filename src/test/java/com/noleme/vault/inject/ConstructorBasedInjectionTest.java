@@ -34,7 +34,7 @@ public class ConstructorBasedInjectionTest
     {
         var vault = Vault.with(
             "com/noleme/vault/parser/simple.yml",
-            "com/noleme/vault/parser/provider.string.alt.yml"
+            "com/noleme/vault/parser/provider/provider.string.alt.yml"
         );
 
         var service = vault.instance(MyNamedService.class);
@@ -59,7 +59,7 @@ public class ConstructorBasedInjectionTest
     @Test
     void lenientTypeInjection() throws VaultException
     {
-        var vault = Vault.with("com/noleme/vault/parser/string_variable.yml");
+        var vault = Vault.with("com/noleme/vault/parser/variable/string_variable.yml");
 
         var service = vault.instance(MyLenientService.class);
 

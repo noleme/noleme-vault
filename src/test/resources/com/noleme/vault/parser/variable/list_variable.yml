@@ -1,0 +1,10 @@
+variables:
+    my_variable: 'abcde'
+    my_list:
+        - 'something'
+        - 2345
+        - 12.34
+        - false
+        - '##my_variable##'
+        - ${MY_VAR}
+    my_int_list: [12, 34, 56, 78]

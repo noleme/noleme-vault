@@ -54,7 +54,7 @@ public class EnvTest
         setEnv("MY_DOUBLE", "23.45");
         setEnv("MY_BOOLEAN", "true");
 
-        var cellar = factory.populate(new Cellar(), "com/noleme/vault/parser/env_variable.yml");
+        var cellar = factory.populate(new Cellar(), "com/noleme/vault/parser/variable/env_variable.yml");
 
         Assertions.assertEquals("custom_value", cellar.getVariable("my_string_env"));
         Assertions.assertEquals(2345, cellar.getVariable("my_integer_env", int.class));
@@ -65,7 +65,7 @@ public class EnvTest
     @Test
     void envVariablesWithDefaultValues_shouldBeInterpreted() throws VaultException
     {
-        var noEnvCellar = factory.populate(new Cellar(), "com/noleme/vault/parser/env_variable.yml");
+        var noEnvCellar = factory.populate(new Cellar(), "com/noleme/vault/parser/variable/env_variable.yml");
 
         Assertions.assertEquals("default_value", noEnvCellar.getVariable("my_string_defval_env"));
         Assertions.assertEquals("1234", noEnvCellar.getVariable("my_integer_defval_env"));
@@ -77,7 +77,7 @@ public class EnvTest
         setEnv("MY_DOUBLE", "23.45");
         setEnv("MY_BOOLEAN", "true");
 
-        var cellar = factory.populate(new Cellar(), "com/noleme/vault/parser/env_variable.yml");
+        var cellar = factory.populate(new Cellar(), "com/noleme/vault/parser/variable/env_variable.yml");
 
         Assertions.assertEquals("custom_value", cellar.getVariable("my_string_defval_env"));
         Assertions.assertEquals("2345", cellar.getVariable("my_integer_defval_env"));
@@ -88,7 +88,7 @@ public class EnvTest
     @Test
     void envVariablesWithDefaultValues_shouldBeConvertible() throws VaultException
     {
-        var noEnvCellar = factory.populate(new Cellar(), "com/noleme/vault/parser/env_variable.yml");
+        var noEnvCellar = factory.populate(new Cellar(), "com/noleme/vault/parser/variable/env_variable.yml");
 
         Assertions.assertEquals("default_value", noEnvCellar.getVariable("my_string_defval_env"));
         Assertions.assertEquals(1234, noEnvCellar.getVariable("my_integer_defval_env", int.class));
@@ -100,7 +100,7 @@ public class EnvTest
         setEnv("MY_DOUBLE", "23.45");
         setEnv("MY_BOOLEAN", "true");
 
-        var cellar = factory.populate(new Cellar(), "com/noleme/vault/parser/env_variable.yml");
+        var cellar = factory.populate(new Cellar(), "com/noleme/vault/parser/variable/env_variable.yml");
 
         Assertions.assertEquals("custom_value", cellar.getVariable("my_string_defval_env"));
         Assertions.assertEquals(2345, cellar.getVariable("my_integer_defval_env", int.class));
@@ -127,7 +127,7 @@ public class EnvTest
      * @param value
      */
     @SuppressWarnings("unchecked")
-    private static void setEnv(String name, String value)
+    public static void setEnv(String name, String value)
     {
         try {
             Map<String, String> env = System.getenv();
@@ -145,7 +145,7 @@ public class EnvTest
      * This produces a warning for illegal reflective access, should not be an issue in this context.
      */
     @SuppressWarnings("unchecked")
-    private static void clearEnv()
+    public static void clearEnv()
     {
         try {
             Map<String, String> env = System.getenv();

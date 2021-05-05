@@ -49,9 +49,11 @@ public class RawSourceTest
 
     void makeAssertions(Definitions def)
     {
-        Assertions.assertEquals(true, def.getVariable("provider.boolean.value"));
-        Assertions.assertEquals(12.34, def.getVariable("provider.double.value"));
-        Assertions.assertEquals("SomeString", def.getVariable("provider.string.value"));
-        Assertions.assertEquals(2345, def.getVariable("provider.integer.value"));
+        var vars = def.getVariables();
+
+        Assertions.assertEquals(true, vars.get("provider.boolean.value"));
+        Assertions.assertEquals(12.34, vars.get("provider.double.value"));
+        Assertions.assertEquals("SomeString", vars.get("provider.string.value"));
+        Assertions.assertEquals(2345, vars.get("provider.integer.value"));
     }
 }

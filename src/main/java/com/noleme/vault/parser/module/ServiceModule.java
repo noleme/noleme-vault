@@ -9,6 +9,7 @@ import com.noleme.vault.exception.VaultParserException;
 
 import static com.noleme.vault.parser.module.VariableRegistrationModule.value;
 import static com.noleme.commons.function.RethrowConsumer.rethrower;
+import static com.noleme.vault.parser.module.VariableRegistrationModule.valueOrContainer;
 
 /**
  * @author Pierre Lecerf (plecerf@lumiomedical.com)
@@ -54,7 +55,7 @@ public class ServiceModule implements VaultModule
         else
             def = this.generateInstantiation(definition);
 
-        definitions.setDefinition(def.getIdentifier(), def);
+        definitions.getDefinitions().set(def.getIdentifier(), def);
     }
 
     /**
@@ -132,7 +133,7 @@ public class ServiceModule implements VaultModule
             ArrayNode params = (ArrayNode) definition.get("constructor");
             Object[] ctorParams = new Object[params.size()];
             for (int pi = 0 ; pi < params.size() ; ++pi)
-                ctorParams[pi] = value(params.get(pi));
+                ctorParams[pi] = valueOrContainer(params.get(pi));
             def.setCtorParams(ctorParams);
         }
     }
@@ -149,7 +150,7 @@ public class ServiceModule implements VaultModule
             ArrayNode args = (ArrayNode) definition.get("arguments");
             Object[] methodArgs = new Object[args.size()];
             for (int pi = 0 ; pi < args.size() ; ++pi)
-                methodArgs[pi] = value(args.get(pi));
+                methodArgs[pi] = valueOrContainer(args.get(pi));
             def.setMethodArgs(methodArgs);
         }
     }
