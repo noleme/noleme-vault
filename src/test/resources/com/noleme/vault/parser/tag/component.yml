@@ -1,0 +1,24 @@
+services:
+    component.a:
+        class: com.noleme.vault.service.tag.ComponentService
+        constructor:
+            - 'string_a'
+        tags:
+            - composite_service_components
+
+    component.b:
+        class: com.noleme.vault.service.tag.ComponentService
+        constructor:
+            - 'string_b'
+        tags:
+            - composite_service_components
+            - { id: composite_service_components, arg1: 123, arg2: 'oh-wow' }
+            - { id: composite_service_components.alt }
+
+    component.c:
+        class: com.noleme.vault.service.tag.ComponentService
+        constructor:
+            - 'string_c'
+        tags:
+            - composite_service_components
+            - composite_service_components.alt

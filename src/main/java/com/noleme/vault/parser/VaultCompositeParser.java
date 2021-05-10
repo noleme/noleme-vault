@@ -67,7 +67,7 @@ public class VaultCompositeParser implements VaultParser
 
         this.launchModules(this.preModules, json, definitions);
         for (VaultAdjuster adjuster : adjusters)
-            adjuster.adjust(definitions.getVariables());
+            adjuster.adjust(definitions.variables());
         this.launchModules(this.modules, json, definitions);
 
         return definitions;

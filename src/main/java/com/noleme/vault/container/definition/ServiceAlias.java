@@ -28,4 +28,10 @@ public class ServiceAlias extends ServiceDefinition
 
         this.dependencies.add(this.target);
     }
+
+    @Override
+    public String toString()
+    {
+        return "ServiceAlias#"+this.identifier+"->"+this.target;
+    }
 }

@@ -101,9 +101,14 @@ public class ServiceProvider extends ServiceDefinition
             if (o instanceof String && !((String)o).isEmpty() && ((String)o).startsWith("@"))
             {
                 String dep = ((String)o).substring(1);
-                if (!this.dependencies.contains(dep))
-                    this.dependencies.add(dep);
+                this.dependencies.add(dep);
             }
         }
+    }
+
+    @Override
+    public String toString()
+    {
+        return "ServiceProvider#"+this.identifier+"("+this.type+"::"+this.method+")";
     }
 }

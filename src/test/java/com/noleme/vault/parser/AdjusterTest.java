@@ -22,7 +22,7 @@ public class AdjusterTest
             vars.set("my_variable", value);
         });
 
-        Assertions.assertEquals(value, def.getVariables().get("my_variable"));
+        Assertions.assertEquals(value, def.variables().get("my_variable"));
     }
 
     @Test
@@ -32,12 +32,12 @@ public class AdjusterTest
         var string = "this is an entirely new string";
 
         Definitions defA = parser.extract("com/noleme/vault/parser/simple.json");
-        Assertions.assertEquals("SomeString", ((ServiceProvider)defA.getDefinitions().get("provider.string")).getMethodArgs()[0]);
+        Assertions.assertEquals("SomeString", ((ServiceProvider)defA.services().get("provider.string")).getMethodArgs()[0]);
 
         Definitions defB = parser.extract("com/noleme/vault/parser/simple.json", new Definitions(), vars -> {
             vars.set("provider.string.base_value", string);
         });
-        Assertions.assertEquals(string, ((ServiceProvider)defB.getDefinitions().get("provider.string")).getMethodArgs()[0]);
+        Assertions.assertEquals(string, ((ServiceProvider)defB.services().get("provider.string")).getMethodArgs()[0]);
     }
 
     @Test
@@ -47,11 +47,11 @@ public class AdjusterTest
         var string = "this is an entirely new string";
 
         Definitions defA = parser.extract("com/noleme/vault/parser/simple.json");
-        Assertions.assertEquals("SomeString", ((ServiceProvider)defA.getDefinitions().get("provider.string")).getMethodArgs()[0]);
+        Assertions.assertEquals("SomeString", ((ServiceProvider)defA.services().get("provider.string")).getMethodArgs()[0]);
 
         Definitions defB = parser.extract("com/noleme/vault/parser/simple.json", new Definitions(), vars -> {
             vars.set("provider.string.value", string);
         });
-        Assertions.assertEquals(string, ((ServiceProvider)defB.getDefinitions().get("provider.string")).getMethodArgs()[0]);
+        Assertions.assertEquals(string, ((ServiceProvider)defB.services().get("provider.string")).getMethodArgs()[0]);
     }
 }

@@ -28,7 +28,7 @@ public class VariableRegistrationModule implements VaultModule
     public void process(ObjectNode json, Definitions definitions) throws VaultParserException
     {
         try {
-            json.fields().forEachRemaining(entry -> definitions.getVariables().set(entry.getKey(), valueOrContainer(entry.getValue())));
+            json.fields().forEachRemaining(entry -> definitions.variables().set(entry.getKey(), valueOrContainer(entry.getValue())));
         }
         catch (RuntimeVaultException e) {
             throw new VaultParserException(e.getMessage(), e);

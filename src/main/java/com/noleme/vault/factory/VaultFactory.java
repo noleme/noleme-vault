@@ -94,10 +94,12 @@ public class VaultFactory
     public Cellar populate(Cellar cellar, Definitions definitions) throws VaultInjectionException
     {
         try {
-            logger.debug("Populating cellar with definitions ({} service and {} variable definitions found)", definitions.getDefinitions().size(), definitions.getVariables().size());
+            logger.debug("Populating cellar with definitions ({} service and {} variable definitions found)", definitions.services().size(), definitions.variables().size());
 
-            this.checkCompleteness(definitions, cellar);
-            List<ServiceDefinition> instantiations = this.checkStructure(definitions.getDefinitions().values(), cellar);
+            Map<String, ServiceDefinition> definitionMap = this.computeDefinitionMap(definitions);
+
+            this.checkCompleteness(definitionMap, cellar);
+            List<ServiceDefinition> instantiations = this.checkStructure(definitionMap.values(), cellar);
 
             this.registerVariables(definitions, cellar);
             this.instantiate(instantiations, cellar);
@@ -124,15 +126,48 @@ public class VaultFactory
     /**
      *
      * @param definitions
+     * @return
      * @throws VaultCompilationException
      */
-    private void checkCompleteness(Definitions definitions, Cellar cellar) throws VaultCompilationException
+    private Map<String, ServiceDefinition> computeDefinitionMap(Definitions definitions) throws VaultCompilationException
     {
-        for (ServiceDefinition definition : definitions.getDefinitions().values())
+        Map<String, ServiceDefinition> map = new HashMap<>();
+
+        for (ServiceDefinition def : definitions.services().values())
+            map.put(def.getIdentifier(), def);
+
+        for (String identifier : definitions.tags().identifiers())
         {
+            if (definitions.services().has(identifier) && !(definitions.services().get(identifier) instanceof ServiceTag))
+                throw new VaultCompilationException("Tag identifier "+identifier+" is in conflict with service definition "+definitions.services().get(identifier).toString());
+
+            var serviceTag = definitions.services().has(identifier)
+                ? (ServiceTag) definitions.services().get(identifier)
+                : new ServiceTag(identifier)
+            ;
+
+            for (Tag tag : definitions.tags().forIdentifier(identifier))
+                serviceTag.addEntry(tag.getService());
+
+            map.put(identifier, serviceTag);
+        }
+
+        return map;
+    }
+
+    /**
+     *
+     * @param definitions
+     * @throws VaultCompilationException
+     */
+    private void checkCompleteness(Map<String, ServiceDefinition> definitions, Cellar cellar) throws VaultCompilationException
+    {
+        for (Map.Entry<String, ServiceDefinition> defEntry : definitions.entrySet())
+        {
+            ServiceDefinition definition = defEntry.getValue();
             for (String dependency : definition.getDependencies())
             {
-                if (!definitions.getDefinitions().has(dependency) && !cellar.hasService(dependency))
+                if (!definitions.containsKey(dependency) && !cellar.hasService(dependency))
                     throw new VaultCompilationException("The service "+definition.getIdentifier()+" has a dependency over a non-existing "+dependency+" service.");
             }
         }
@@ -230,7 +265,7 @@ public class VaultFactory
      */
     private void registerVariables(Definitions definitions, Cellar cellar)
     {
-        definitions.getVariables().dictionary().forEach(cellar::putVariable);
+        definitions.variables().dictionary().forEach(cellar::putVariable);
     }
 
     /**
@@ -271,6 +306,16 @@ public class VaultFactory
                             throw new VaultInstantiationException("The \""+def.getIdentifier()+"\" service was marked as closeable but its implementation is not a java.lang.AutoCloseable subtype.");
                         cellar.registerCloseable(def.getIdentifier());
                     }
+                }
+                else if (def instanceof ServiceTag)
+                {
+                    List<String> entriesIds = ((ServiceTag) def).getEntries();
+
+                    List<Object> collection = new ArrayList<>(entriesIds.size());
+                    for (String entryId : entriesIds)
+                        collection.add(cellar.getService(entryId));
+
+                    cellar.putService(def.getIdentifier(), collection);
                 }
             }
         }
