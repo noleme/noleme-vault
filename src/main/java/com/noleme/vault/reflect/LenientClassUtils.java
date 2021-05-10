@@ -109,6 +109,8 @@ public final class LenientClassUtils
             /* Then, we perform a method lookup in order to find signatures where we can convert non-matching types using one or several of the indexed convertible arguments */
             METHOD_LOOP: for (Method method : type.getMethods())
             {
+                if (!method.getName().equals(methodName))
+                    continue;
                 if (method.getParameterTypes().length != parameterTypes.length)
                     continue;
 

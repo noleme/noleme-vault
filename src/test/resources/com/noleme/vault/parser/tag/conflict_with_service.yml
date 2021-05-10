@@ -1,3 +1,7 @@
+tags:
+    composite_service_components: {}
+    composite_service_components.alt: {}
+
 services:
     composite_service_components:
         class: com.noleme.vault.service.StringProvider

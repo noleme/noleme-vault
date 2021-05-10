@@ -32,7 +32,7 @@ public class ServiceModule implements VaultModule
             String identifier = entry.getKey();
             JsonNode node = entry.getValue();
             ObjectNode serviceNode = node.isTextual()
-                ? Json.newObject().put("value", node.asText())
+                ? Json.newObject().put("marker", node.asText())
                 : (ObjectNode) entry.getValue()
             ;
 
@@ -58,7 +58,7 @@ public class ServiceModule implements VaultModule
             def = this.generateAlias(definition, definitions.tags());
         else if (definition.has("method"))
             def = this.generateProvider(definition, definitions.tags());
-        else if (definition.has("value"))
+        else if (definition.has("marker"))
             def = this.generateMarkerDefinition(definition, definitions.tags());
         else
             def = this.generateInstantiation(definition, definitions.tags());
@@ -115,6 +115,8 @@ public class ServiceModule implements VaultModule
     }
 
     /**
+     * Marker definitions rely on short-hand string notations.
+     * As it stands, no feature relies on markers ; tag declarations did for a short lapse, but were moved to a separate module.
      *
      * @param definition
      * @param tags
@@ -123,11 +125,9 @@ public class ServiceModule implements VaultModule
      */
     private ServiceDefinition generateMarkerDefinition(ObjectNode definition, Tags tags) throws VaultParserException
     {
-        String value = definition.get("value").asText();
-        if (value.equals("tag"))
-            return new ServiceTag(definition.get("identifier").asText());
+        String marker = definition.get("marker").asText();
 
-        throw new VaultParserException("An unknown marker of type "+value+" was found.");
+        throw new VaultParserException("An unknown marker of type "+marker+" was found.");
     }
 
     /**
@@ -229,19 +229,17 @@ public class ServiceModule implements VaultModule
 
         for (JsonNode tagNode : definition.get("tags"))
         {
-            Tag tag;
-            if (tagNode.isTextual())
-                tag = new Tag(tagNode.asText(), serviceIdentifier);
-            else {
-                if (!tagNode.has("id"))
-                    throw new VaultParserException("Service "+serviceIdentifier+" has an object tag declaration without and 'id'.");
+            ObjectNode node = tagNode.isTextual()
+                ? Json.newObject().put("id", tagNode.asText())
+                : (ObjectNode) tagNode
+            ;
 
-                String id = tagNode.get("id").asText();
+            if (!node.has("id"))
+                throw new VaultParserException("Service "+serviceIdentifier+" has an object tag declaration without and 'id'.");
 
-                tag = new Tag(id, serviceIdentifier);
-            }
+            String id = node.get("id").asText();
 
-            tags.register(tag);
+            tags.register(new Tag(id, serviceIdentifier, node));
         }
     }
 }

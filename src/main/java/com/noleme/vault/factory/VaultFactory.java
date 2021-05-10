@@ -138,13 +138,18 @@ public class VaultFactory
 
         for (String identifier : definitions.tags().identifiers())
         {
-            if (definitions.services().has(identifier) && !(definitions.services().get(identifier) instanceof ServiceTag))
-                throw new VaultCompilationException("Tag identifier "+identifier+" is in conflict with service definition "+definitions.services().get(identifier).toString());
+            if (!definitions.services().has(identifier))
+            {
+                logger.debug("Tag identifier {} has not been declared and thus automatic tag aggregation cannot be performed", identifier);
+                continue;
+            }
+            if (!(definitions.services().get(identifier) instanceof ServiceTag))
+            {
+                logger.debug("Tag aggregate {} has apparently been overridden by definition {}", identifier, definitions.services().get(identifier).toString());
+                continue;
+            }
 
-            var serviceTag = definitions.services().has(identifier)
-                ? (ServiceTag) definitions.services().get(identifier)
-                : new ServiceTag(identifier)
-            ;
+            ServiceTag serviceTag = (ServiceTag) definitions.services().get(identifier);
 
             for (Tag tag : definitions.tags().forIdentifier(identifier))
                 serviceTag.addEntry(tag.getService());

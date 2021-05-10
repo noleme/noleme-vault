@@ -39,6 +39,7 @@ public class VaultCompositeParser implements VaultParser
     private final List<VaultModule> modules = Lists.of(
         new VariableResolvingModule(),
         new VariableReplacementModule(),
+        new TagModule(),
         new ServiceModule()
     );
 

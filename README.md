@@ -20,7 +20,7 @@ Add the following in your `pom.xml`:
 <dependency>
     <groupId>com.noleme</groupId>
     <artifactId>noleme-vault</artifactId>
-    <version>0.13</version>
+    <version>0.14</version>
 </dependency>
 ```
 
@@ -105,7 +105,8 @@ Other features that will need to be documented include:
 * service aliasing
 * service closing
 * service container composition
-* custom modules
+* service tagging & aggregation
+* custom and generic modules
 * custom preprocessing routines
 
 _TODO_
