@@ -1,0 +1,13 @@
+custom:
+    enabled: true
+    name: my_custom_composite
+    tag_names:
+        - "composite_service_components.alt"
+
+services:
+    component.d:
+        class: com.noleme.vault.service.tag.ComponentService
+        constructor:
+            - 'string_d'
+        tags:
+            - { id: composite_service_components.alt, weight: 7 }

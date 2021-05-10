@@ -33,7 +33,7 @@ public class ParserTest
 
     public static void makeAssertions(Definitions def)
     {
-        var vars = def.getVariables();
+        var vars = def.variables();
 
         Assertions.assertEquals(true, vars.get("provider.boolean.value"));
         Assertions.assertEquals(12.34, vars.get("provider.double.value"));

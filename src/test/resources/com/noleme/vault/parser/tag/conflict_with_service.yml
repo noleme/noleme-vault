@@ -1,0 +1,24 @@
+tags:
+    composite_service_components: {}
+    composite_service_components.alt: {}
+
+services:
+    composite_service_components:
+        class: com.noleme.vault.service.StringProvider
+        constructor:
+            - "anything"
+
+    component.a:
+        class: com.noleme.vault.service.tag.ComponentService
+        constructor:
+            - "string_a"
+        tags:
+            - composite_service_components
+
+    component.b:
+        class: com.noleme.vault.service.tag.ComponentService
+        constructor:
+            - "string_b"
+        tags:
+            - composite_service_components
+            - composite_service_components.alt

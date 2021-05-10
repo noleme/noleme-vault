@@ -74,9 +74,7 @@ public class CellarPathStage implements BuildStage
     @Override
     public void build(Vault vault) throws VaultException
     {
-        Definitions definitions = new Definitions();
-
-        definitions = this.factory.parser().extractOrigin(this.paths, definitions, this.adjuster);
+        Definitions definitions = this.factory.parser().extractOrigin(this.paths, new Definitions(), this.adjuster);
 
         logger.debug("Populating vault using configuration files {}", this.paths);
 

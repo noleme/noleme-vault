@@ -1,0 +1,14 @@
+tags:
+    composite_service_components: {}
+    composite_service_components.alt: {}
+
+services:
+    composite_service:
+        class: com.noleme.vault.service.tag.CompositeService
+        constructor:
+            - '@composite_service_components'
+
+    composite_service.alt:
+        class: com.noleme.vault.service.tag.CompositeService
+        constructor:
+            - '@composite_service_components.alt'

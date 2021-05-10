@@ -47,7 +47,7 @@ public class ModuleTest
                 var def = new ServiceProvider(id, StringProvider.class.getName(), "build");
                 def.setMethodArgs(new Object[]{ config.value });
 
-                defs.getDefinitions().set(id, def);
+                defs.services().set(id, def);
             });
         }));
         var cellar = new VaultFactory(parser).populate(new Cellar(), "com/noleme/vault/parser/module/module.yml");
@@ -82,7 +82,7 @@ public class ModuleTest
                 var def = new ServiceProvider(id, StringProvider.class.getName(), "build");
                 def.setMethodArgs(new Object[]{ value });
 
-                definitions.getDefinitions().set(id, def);
+                definitions.services().set(id, def);
             });
         }
     }
@@ -119,7 +119,7 @@ public class ModuleTest
                 var def = new ServiceProvider(id, StringProvider.class.getName(), "build");
                 def.setMethodArgs(new Object[]{ config.value });
 
-                definitions.getDefinitions().set(id, def);
+                definitions.services().set(id, def);
             });
         }
     }

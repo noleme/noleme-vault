@@ -94,9 +94,14 @@ public class ServiceInstantiation extends ServiceDefinition
             if (o instanceof String && !((String)o).isEmpty() && ((String)o).startsWith("@"))
             {
                 String dep = ((String)o).substring(1);
-                if (!this.dependencies.contains(dep))
-                    this.dependencies.add(dep);
+                this.dependencies.add(dep);
             }
         }
+    }
+
+    @Override
+    public String toString()
+    {
+        return "ServiceInstantiation#"+this.identifier+"("+this.type+")";
     }
 }

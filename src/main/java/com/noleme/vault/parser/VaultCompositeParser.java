@@ -39,6 +39,7 @@ public class VaultCompositeParser implements VaultParser
     private final List<VaultModule> modules = Lists.of(
         new VariableResolvingModule(),
         new VariableReplacementModule(),
+        new TagModule(),
         new ServiceModule()
     );
 
@@ -67,7 +68,7 @@ public class VaultCompositeParser implements VaultParser
 
         this.launchModules(this.preModules, json, definitions);
         for (VaultAdjuster adjuster : adjusters)
-            adjuster.adjust(definitions.getVariables());
+            adjuster.adjust(definitions.variables());
         this.launchModules(this.modules, json, definitions);
 
         return definitions;

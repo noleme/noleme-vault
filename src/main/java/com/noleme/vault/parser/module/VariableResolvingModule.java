@@ -36,7 +36,7 @@ public class VariableResolvingModule implements VaultModule
         List<Variable> heap = new ArrayList<>();
         List<String> sorted = new ArrayList<>();
 
-        for (Map.Entry<String, Object> varDef : definitions.getVariables().dictionary().entrySet())
+        for (Map.Entry<String, Object> varDef : definitions.variables().dictionary().entrySet())
         {
             Collection<String> dependencies;
             if (varDef.getValue() instanceof String)
@@ -99,7 +99,7 @@ public class VariableResolvingModule implements VaultModule
                 continue;
 
             v.setValue(replaced);
-            definitions.getVariables().set(v.getName(), replaced);
+            definitions.variables().set(v.getName(), replaced);
         }
     }
 
@@ -248,7 +248,7 @@ public class VariableResolvingModule implements VaultModule
     public static JsonNode replace(String string, Definitions definitions) throws VaultParserException
     {
         String newString = string;
-        for (Map.Entry<String, Object> replacement : findReplacements(string, definitions.getVariables()).entrySet())
+        for (Map.Entry<String, Object> replacement : findReplacements(string, definitions.variables()).entrySet())
         {
             if (replacement.getValue() == null || newString.length() == replacement.getKey().length())
                 return Json.toJson(replacement.getValue());
