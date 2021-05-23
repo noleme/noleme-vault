@@ -9,8 +9,8 @@ import java.util.Collection;
 public class Variable
 {
     private final String name;
-    private final Collection<String> dependencies;
     private Object value;
+    private final Collection<String> dependencies;
 
     /**
      *

@@ -3,7 +3,7 @@ package com.noleme.vault.tag;
 import com.noleme.json.Json;
 import com.noleme.vault.container.Cellar;
 import com.noleme.vault.container.Invocation;
-import com.noleme.vault.container.definition.Definitions;
+import com.noleme.vault.container.register.Definitions;
 import com.noleme.vault.container.definition.ServiceInstantiation;
 import com.noleme.vault.container.definition.ServiceTag;
 import com.noleme.vault.container.definition.Tag;
@@ -131,7 +131,7 @@ public class CompositeTest
                 {
                     CustomTag ctag = Json.fromJson(tag.getNode(), CustomTag.class);
 
-                    definition.addInvocation(new Invocation("addComponent", "@"+tag.getService()));
+                    definition.addInvocation(new Invocation("addComponent", defs.services().reference(tag.getService())));
                     definition.addInvocation(new Invocation("addWeight", ctag.weight));
                 }
             }

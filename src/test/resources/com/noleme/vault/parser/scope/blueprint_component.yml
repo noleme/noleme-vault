@@ -1,0 +1,8 @@
+variables:
+    component_name: 'my_name'
+
+services:
+    component:
+        class: com.noleme.vault.service.tag.ComponentService
+        constructor:
+            - '##component_name##'

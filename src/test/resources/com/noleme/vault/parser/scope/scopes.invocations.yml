@@ -1,0 +1,12 @@
+scopes:
+    scope_a: 'com/noleme/vault/parser/scope/blueprint_invocation.yml'
+    scope_b: 'com/noleme/vault/parser/scope/blueprint_invocation.yml'
+
+services:
+    stateful_a: { use: stateful_service@scope_a }
+
+    stateful_b:
+        from: scope_b
+        use: stateful_service
+        invocations:
+            - ['setValue', 'custom_value']

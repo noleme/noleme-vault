@@ -1,0 +1,6 @@
+scopes:
+    basic_scope: 'com/noleme/vault/parser/scope/blueprint.yml'
+
+services:
+    basic_service: { use: base_service@basic_scope }
+    basic_provider: { use: base_provider@basic_scope }

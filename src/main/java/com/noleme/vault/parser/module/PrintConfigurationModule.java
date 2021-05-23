@@ -1,7 +1,7 @@
 package com.noleme.vault.parser.module;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.noleme.vault.container.definition.Definitions;
+import com.noleme.vault.container.register.Definitions;
 import com.noleme.json.Yaml;
 
 /**

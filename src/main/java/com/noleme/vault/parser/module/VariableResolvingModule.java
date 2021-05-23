@@ -3,9 +3,9 @@ package com.noleme.vault.parser.module;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.noleme.json.Json;
-import com.noleme.vault.container.definition.Definitions;
-import com.noleme.vault.container.definition.Definitions.Variables;
 import com.noleme.vault.container.definition.Variable;
+import com.noleme.vault.container.register.Definitions;
+import com.noleme.vault.container.register.index.Variables;
 import com.noleme.vault.exception.VaultParserException;
 
 import java.util.*;

@@ -2,11 +2,12 @@ package com.noleme.vault.parser;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.noleme.vault.container.definition.Definitions;
+import com.noleme.vault.container.register.Definitions;
 import com.noleme.vault.exception.VaultParserException;
 import com.noleme.vault.exception.VaultStructureException;
 import com.noleme.vault.parser.adjuster.VaultAdjuster;
 import com.noleme.vault.parser.module.*;
+import com.noleme.vault.parser.module.scope.ScopeModule;
 import com.noleme.vault.parser.preprocessor.VaultPreprocessor;
 import com.noleme.vault.parser.resolver.FlexibleResolver;
 import com.noleme.vault.parser.resolver.VaultResolver;
@@ -29,20 +30,12 @@ import static com.noleme.commons.function.RethrowFunction.rethrower;
 public class VaultCompositeParser implements VaultParser
 {
     private final VaultResolver resolver;
+    private final List<VaultPreprocessor> preprocessors = new ArrayList<>();
+    private final List<VaultModule> preModules;
+    private final List<VaultModule> postModules;
+
     private static final String rootIdentifier = "*";
     private static final Set<String> coreDirectives = Set.of("imports");
-    private final List<VaultPreprocessor> preprocessors = new ArrayList<>();
-    /* Module stacks */
-    private final List<VaultModule> preModules = Lists.of(
-        new VariableRegistrationModule()
-    );
-    private final List<VaultModule> modules = Lists.of(
-        new VariableResolvingModule(),
-        new VariableReplacementModule(),
-        new TagModule(),
-        new ServiceModule()
-    );
-
     private static final Logger logger = LoggerFactory.getLogger(VaultCompositeParser.class);
 
     public VaultCompositeParser()
@@ -50,13 +43,34 @@ public class VaultCompositeParser implements VaultParser
         this(new FlexibleResolver());
     }
 
-    /**
-     *
-     * @param resolver
-     */
     public VaultCompositeParser(VaultResolver resolver)
     {
+        this(resolver, defaultPostModules());
+    }
+
+    public VaultCompositeParser(VaultResolver resolver, List<VaultModule> modules)
+    {
         this.resolver = resolver;
+        this.preModules = defaultPreModules();
+        this.postModules = modules;
+    }
+
+    public static List<VaultModule> defaultPreModules()
+    {
+        return Lists.of(
+            new VariableRegistrationModule()
+        );
+    }
+
+    public static List<VaultModule> defaultPostModules()
+    {
+        return Lists.of(
+            new VariableResolvingModule(),
+            new VariableReplacementModule(),
+            new ScopeModule(),
+            new TagModule(),
+            new ServiceModule()
+        );
     }
 
     @Override
@@ -67,9 +81,11 @@ public class VaultCompositeParser implements VaultParser
             json = this.compileNode(source, json);
 
         this.launchModules(this.preModules, json, definitions);
+
         for (VaultAdjuster adjuster : adjusters)
             adjuster.adjust(definitions.variables());
-        this.launchModules(this.modules, json, definitions);
+
+        this.launchModules(this.postModules, json, definitions);
 
         return definitions;
     }
@@ -181,7 +197,7 @@ public class VaultCompositeParser implements VaultParser
     @Override
     public VaultParser register(VaultModule module)
     {
-        this.modules.add(module);
+        this.postModules.add(module);
         return this;
     }
 
@@ -195,7 +211,7 @@ public class VaultCompositeParser implements VaultParser
 
         Set<String> validKeys = new HashSet<>(coreDirectives);
         validKeys.addAll(getModuleIdentifiers(preModules));
-        validKeys.addAll(getModuleIdentifiers(modules));
+        validKeys.addAll(getModuleIdentifiers(postModules));
 
         while (keys.hasNext())
         {

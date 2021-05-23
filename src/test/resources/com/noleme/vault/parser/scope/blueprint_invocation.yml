@@ -1,0 +1,5 @@
+services:
+    stateful_service:
+        class: com.noleme.vault.service.StatefulService
+        invocations:
+            - ['setValue', 'default_value']

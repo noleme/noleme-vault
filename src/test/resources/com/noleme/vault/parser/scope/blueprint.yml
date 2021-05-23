@@ -1,0 +1,18 @@
+imports:
+    - "com/noleme/vault/parser/scope/import.yml"
+
+variables:
+    name: "base_name"
+    value: 123
+
+services:
+    base_service:
+      class: com.noleme.vault.service.scope.BaseService
+      constructor:
+          - "##name##"
+          - "@provider"
+
+    base_provider:
+        class: com.noleme.vault.service.IntegerProvider
+        constructor:
+            - "##value##"

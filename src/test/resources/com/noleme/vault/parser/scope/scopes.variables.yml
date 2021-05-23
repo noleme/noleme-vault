@@ -1,0 +1,13 @@
+variables:
+    some_variable: 567
+
+scopes:
+    variable_scope:
+        from: 'com/noleme/vault/parser/scope/blueprint.yml'
+        variables:
+            name: 'variable_name'
+            value: '##some_variable##'
+
+services:
+    variable_service: { use: base_service@variable_scope }
+    variable_provider: { use: base_provider@variable_scope }

@@ -1,25 +1,30 @@
 package com.noleme.vault.container.definition;
 
+import com.noleme.vault.container.register.index.Reference;
+
 /**
  * @author Pierre Lecerf (pierre@noleme.com) on 21/08/2015.
  */
 public class ServiceAlias extends ServiceDefinition
 {
-    private final String target;
+    private final Reference target;
 
     /**
      *
      * @param identifier
      * @param target
      */
-    public ServiceAlias(String identifier, String target)
+    public ServiceAlias(String identifier, Reference target)
     {
         this.identifier = identifier;
         this.target = target;
         this.dependencies.add(target);
     }
 
-    public String getTarget()   { return this.target; }
+    public Reference getTarget()
+    {
+        return this.target;
+    }
 
     @Override
     public void syncDependencies()

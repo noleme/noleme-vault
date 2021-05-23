@@ -1,5 +1,7 @@
 package com.noleme.vault.container.definition;
 
+import com.noleme.vault.container.register.index.Reference;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +11,7 @@ import java.util.List;
  */
 public class ServiceTag extends ServiceDefinition
 {
-    private final List<String> entries;
+    private final List<Reference> entries;
 
     public ServiceTag(String identifier)
     {
@@ -17,15 +19,15 @@ public class ServiceTag extends ServiceDefinition
         this.entries = new ArrayList<>();
     }
 
-    public List<String> getEntries()
+    public List<Reference> getEntries()
     {
         return this.entries;
     }
 
-    public ServiceTag addEntry(String identifier)
+    public ServiceTag addEntry(Reference entry)
     {
-        this.entries.add(identifier);
-        this.dependencies.add(identifier);
+        this.entries.add(entry);
+        this.dependencies.add(entry);
         return this;
     }
 
