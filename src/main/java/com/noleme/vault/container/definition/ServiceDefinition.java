@@ -1,6 +1,7 @@
 package com.noleme.vault.container.definition;
 
 import com.noleme.vault.container.Invocation;
+import com.noleme.vault.container.register.index.Reference;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -14,14 +15,14 @@ public abstract class ServiceDefinition
 {
     protected String identifier;
     protected List<Invocation> invocations = new ArrayList<>();
-    protected Set<String> dependencies = new HashSet<>();
+    protected Set<Reference> dependencies = new HashSet<>();
 
     public String getIdentifier()
     {
         return this.identifier;
     }
 
-    public Set<String> getDependencies()
+    public Set<Reference> getDependencies()
     {
         return this.dependencies;
     }
@@ -41,8 +42,8 @@ public abstract class ServiceDefinition
     {
         for (Object o : invocation.getParams())
         {
-            if (o instanceof String && !((String)o).isEmpty() && ((String)o).startsWith("@"))
-                this.dependencies.add(((String)o).substring(1));
+            if (o instanceof Reference)
+                this.dependencies.add((Reference) o);
         }
         this.invocations.add(invocation);
         return this;
@@ -59,12 +60,15 @@ public abstract class ServiceDefinition
         {
             for (Object o : invocation.getParams())
             {
-                if (o instanceof String && !((String)o).isEmpty() && ((String)o).startsWith("@"))
-                {
-                    String dep = ((String)o).substring(1);
-                    this.dependencies.add(dep);
-                }
+                if (o instanceof Reference)
+                    this.dependencies.add((Reference) o);
             }
         }
+    }
+
+    @Override
+    public String toString()
+    {
+        return "ServiceDefinition#"+this.getIdentifier();
     }
 }

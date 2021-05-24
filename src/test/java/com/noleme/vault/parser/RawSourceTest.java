@@ -1,6 +1,6 @@
 package com.noleme.vault.parser;
 
-import com.noleme.vault.container.definition.Definitions;
+import com.noleme.vault.container.register.Definitions;
 import com.noleme.vault.exception.VaultParserException;
 import com.noleme.vault.parser.resolver.dialect.Dialect;
 import com.noleme.vault.parser.resolver.source.RawSource;

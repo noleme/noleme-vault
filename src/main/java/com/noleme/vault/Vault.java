@@ -3,7 +3,7 @@ package com.noleme.vault;
 import com.noleme.vault.builder.BuildStage;
 import com.noleme.vault.builder.VaultBuilder;
 import com.noleme.vault.container.Cellar;
-import com.noleme.vault.container.definition.Definitions;
+import com.noleme.vault.container.register.Definitions;
 import com.noleme.vault.exception.RuntimeVaultException;
 import com.noleme.vault.exception.VaultException;
 import com.noleme.vault.legacy.InjectableField;

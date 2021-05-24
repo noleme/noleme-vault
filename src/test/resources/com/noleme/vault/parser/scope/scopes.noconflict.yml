@@ -1,0 +1,36 @@
+variables:
+    some_variable: 567
+
+scopes:
+    noconflict_scope:
+        from: 'com/noleme/vault/parser/scope/blueprint.yml'
+        variables:
+            name: 'noconflict_name'
+            value: '##some_variable##'
+        aliases:
+            provider: my_provider
+
+services:
+    noconflict_service: { use: base_service@noconflict_scope }
+    noconflict_provider: { use: base_provider@noconflict_scope }
+
+    my_provider:
+        class: com.noleme.vault.service.StringProvider
+        constructor:
+            - 'noconflict_string'
+
+    base_service:
+        class: com.noleme.vault.service.scope.BaseService
+        constructor:
+            - "some_name"
+            - "@provider"
+
+    provider:
+        class: com.noleme.vault.service.StringProvider
+        constructor:
+            - "some_string"
+
+    base_provider:
+        class: com.noleme.vault.service.IntegerProvider
+        constructor:
+            - 234

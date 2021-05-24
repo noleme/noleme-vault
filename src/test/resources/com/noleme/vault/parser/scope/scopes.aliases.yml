@@ -1,0 +1,14 @@
+scopes:
+    alias_scope:
+        from: 'com/noleme/vault/parser/scope/blueprint.yml'
+        aliases:
+            provider: my_provider
+
+services:
+    alias_service: { use: base_service@alias_scope }
+    alias_provider: { use: base_provider@alias_scope }
+
+    my_provider:
+        class: com.noleme.vault.service.StringProvider
+        constructor:
+            - 'alias_string'

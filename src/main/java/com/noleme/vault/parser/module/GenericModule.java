@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.noleme.json.Json;
 import com.noleme.json.JsonException;
-import com.noleme.vault.container.definition.Definitions;
+import com.noleme.vault.container.register.Definitions;
 import com.noleme.vault.exception.VaultParserException;
 
 /**

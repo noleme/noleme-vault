@@ -2,7 +2,7 @@ package com.noleme.vault.builder;
 
 import com.noleme.vault.Vault;
 import com.noleme.vault.container.Cellar;
-import com.noleme.vault.container.definition.Definitions;
+import com.noleme.vault.container.register.Definitions;
 import com.noleme.vault.exception.VaultException;
 import com.noleme.vault.factory.VaultFactory;
 import org.slf4j.Logger;

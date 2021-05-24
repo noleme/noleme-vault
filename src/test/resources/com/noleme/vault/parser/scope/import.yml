@@ -1,0 +1,8 @@
+services:
+    provider:
+        alias: actual_provider
+
+    actual_provider:
+        class: com.noleme.vault.service.StringProvider
+        constructor:
+            - "generic_string"

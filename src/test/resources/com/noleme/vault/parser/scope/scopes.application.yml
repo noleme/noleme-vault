@@ -1,0 +1,46 @@
+# TODO: rework this test configuration file so as to showcase concurrent scope testing in a straightforward manner
+
+variables:
+    some_variable: 567
+
+scopes:
+    my_vanilla: 'com/noleme/vault/parser/scope/blueprint.yml'
+
+    my_a:
+        from: 'com/noleme/vault/parser/scope/blueprint.yml'
+        variables:
+            name: 'a_name'
+
+    my_b:
+        from: 'com/noleme/vault/parser/scope/blueprint.yml'
+        variables:
+            name: 'b_name'
+            value: '##some_variable##'
+        aliases:
+            provider: my_provider
+
+    my_c:
+        from: 'com/noleme/vault/parser/scope/blueprint.yml'
+        variables:
+            name: 'c_name'
+        aliases:
+            provider: my_other_provider
+
+services:
+    my_service: { use: base_service@my_vanilla }
+    my_service.a: { use: base_service@my_a }
+    my_service.b: { use: base_service@my_b }
+
+    my_service.c:
+        from: my_c
+        use: base_service
+
+    my_provider:
+        class: com.noleme.vault.service.StringProvider
+        constructor:
+            - 'my_string'
+
+    my_other_provider:
+        class: com.noleme.vault.service.StringProvider
+        constructor:
+            - 'other_string'

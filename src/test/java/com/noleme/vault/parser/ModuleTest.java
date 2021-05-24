@@ -2,7 +2,7 @@ package com.noleme.vault.parser;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.noleme.vault.container.Cellar;
-import com.noleme.vault.container.definition.Definitions;
+import com.noleme.vault.container.register.Definitions;
 import com.noleme.vault.container.definition.ServiceProvider;
 import com.noleme.vault.exception.VaultInjectionException;
 import com.noleme.vault.factory.VaultFactory;

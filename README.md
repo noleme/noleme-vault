@@ -8,6 +8,9 @@
 
 A library providing DI with JSR-330 annotations and extensible YML/JSON configuration.
 
+The intended goal is to have both "traditional" DI capabilities and a non-intrusive, runtime-evaluated configuration system with an emphasis on composition.
+Each configuration file represents a small graph of objects that can be composed with others in order to obtain an application.
+
 Implementations found in this package shouldn't be tied to any specific Noleme project.
 
 _Note: This library is considered as "in beta" and as such significant API changes may occur without prior warning._
@@ -20,7 +23,7 @@ Add the following in your `pom.xml`:
 <dependency>
     <groupId>com.noleme</groupId>
     <artifactId>noleme-vault</artifactId>
-    <version>0.14</version>
+    <version>0.15</version>
 </dependency>
 ```
 
@@ -106,6 +109,7 @@ Other features that will need to be documented include:
 * service closing
 * service container composition
 * service tagging & aggregation
+* service blueprints (scoped imports)
 * custom and generic modules
 * custom preprocessing routines
 

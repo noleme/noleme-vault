@@ -1,5 +1,7 @@
 package com.noleme.vault.container.definition;
 
+import com.noleme.vault.container.register.index.Reference;
+
 /**
  * @author Pierre Lecerf (pierre@noleme.com) on 13/09/2014.
  */
@@ -66,8 +68,8 @@ public class ServiceInstantiation extends ServiceDefinition
     {
         for (Object o : ctorParams)
         {
-            if (o instanceof String && !((String)o).isEmpty() && ((String)o).startsWith("@"))
-                this.dependencies.add(((String)o).substring(1));
+            if (o instanceof Reference)
+                this.dependencies.add((Reference) o);
         }
         this.ctorParams = ctorParams;
         return this;
@@ -91,11 +93,8 @@ public class ServiceInstantiation extends ServiceDefinition
 
         for (Object o : this.ctorParams)
         {
-            if (o instanceof String && !((String)o).isEmpty() && ((String)o).startsWith("@"))
-            {
-                String dep = ((String)o).substring(1);
-                this.dependencies.add(dep);
-            }
+            if (o instanceof Reference)
+                this.dependencies.add((Reference) o);
         }
     }
 

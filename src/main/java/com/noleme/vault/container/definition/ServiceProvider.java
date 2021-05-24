@@ -1,5 +1,7 @@
 package com.noleme.vault.container.definition;
 
+import com.noleme.vault.container.register.index.Reference;
+
 /**
  * @author Pierre Lecerf (plecerf@lumiomedical.com)
  * Created on 2020/05/29
@@ -73,8 +75,8 @@ public class ServiceProvider extends ServiceDefinition
     {
         for (Object o : methodArgs)
         {
-            if (o instanceof String && !((String)o).isEmpty() && ((String)o).startsWith("@"))
-                this.dependencies.add(((String)o).substring(1));
+            if (o instanceof Reference)
+                this.dependencies.add((Reference) o);
         }
         this.methodArgs = methodArgs;
         return this;
@@ -98,11 +100,8 @@ public class ServiceProvider extends ServiceDefinition
 
         for (Object o : this.methodArgs)
         {
-            if (o instanceof String && !((String)o).isEmpty() && ((String)o).startsWith("@"))
-            {
-                String dep = ((String)o).substring(1);
-                this.dependencies.add(dep);
-            }
+            if (o instanceof Reference)
+                this.dependencies.add((Reference) o);
         }
     }
 

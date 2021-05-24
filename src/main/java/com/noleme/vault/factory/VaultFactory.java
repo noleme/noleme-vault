@@ -4,6 +4,10 @@ import com.noleme.commons.container.Pair;
 import com.noleme.vault.container.Cellar;
 import com.noleme.vault.container.Invocation;
 import com.noleme.vault.container.definition.*;
+import com.noleme.vault.container.register.Definitions;
+import com.noleme.vault.container.register.index.Reference;
+import com.noleme.vault.container.register.index.Services;
+import com.noleme.vault.container.register.index.Tags;
 import com.noleme.vault.exception.*;
 import com.noleme.vault.parser.VaultCompositeParser;
 import com.noleme.vault.parser.VaultParser;
@@ -80,7 +84,7 @@ public class VaultFactory
             return this.populate(cellar, definitions);
         }
         catch (VaultParserException e) {
-            throw new VaultInjectionException("An error occurred while attempting to parse the provided configuration.", e);
+            throw new VaultInjectionException("An error occurred while attempting to parse the provided configuration at "+path, e);
         }
     }
 
@@ -131,38 +135,54 @@ public class VaultFactory
      */
     private Map<String, ServiceDefinition> computeDefinitionMap(Definitions definitions) throws VaultCompilationException
     {
+        Services services = definitions.services();
         Map<String, ServiceDefinition> map = new HashMap<>();
 
-        for (ServiceDefinition def : definitions.services().values())
+        for (ServiceDefinition def : services.values())
             map.put(def.getIdentifier(), def);
 
-        for (String identifier : definitions.tags().identifiers())
-        {
-            if (!definitions.services().has(identifier))
-            {
-                logger.debug("Tag identifier {} has not been declared and thus automatic tag aggregation cannot be performed", identifier);
-                continue;
-            }
-            if (!(definitions.services().get(identifier) instanceof ServiceTag))
-            {
-                logger.debug("Tag aggregate {} has apparently been overridden by definition {}", identifier, definitions.services().get(identifier).toString());
-                continue;
-            }
-
-            ServiceTag serviceTag = (ServiceTag) definitions.services().get(identifier);
-
-            for (Tag tag : definitions.tags().forIdentifier(identifier))
-                serviceTag.addEntry(tag.getService());
-
-            map.put(identifier, serviceTag);
-        }
+        this.aggregateTags(services, definitions.tags(), map);
 
         return map;
     }
 
     /**
+     * Tag aggregation (instantiation of service collections) is currently done at the last moment due to how tag declarations work.
+     * Not declaring a tag before using it is valid, but results in no aggregation being performed.
+     * This should probably be re-introduced back into the parsing process as a module, but we might need another stack of post-op modules for that.
+     *
+     * @param services
+     * @param tags
+     * @param serviceMap
+     */
+    private void aggregateTags(Services services, Tags tags, Map<String, ServiceDefinition> serviceMap)
+    {
+        for (String identifier : tags.identifiers())
+        {
+            if (!services.has(identifier))
+            {
+                logger.debug("Tag identifier {} has not been declared and thus automatic tag aggregation cannot be performed", identifier);
+                continue;
+            }
+            if (!(services.get(identifier) instanceof ServiceTag))
+            {
+                logger.debug("Tag aggregate {} has apparently been overridden by definition {}", identifier, services.get(identifier).toString());
+                continue;
+            }
+
+            ServiceTag serviceTag = (ServiceTag) services.get(identifier);
+
+            for (Tag tag : tags.forIdentifier(identifier))
+                serviceTag.addEntry(services.reference(tag.getService()));
+
+            serviceMap.put(identifier, serviceTag);
+        }
+    }
+
+    /**
      *
      * @param definitions
+     * @param cellar
      * @throws VaultCompilationException
      */
     private void checkCompleteness(Map<String, ServiceDefinition> definitions, Cellar cellar) throws VaultCompilationException
@@ -170,10 +190,10 @@ public class VaultFactory
         for (Map.Entry<String, ServiceDefinition> defEntry : definitions.entrySet())
         {
             ServiceDefinition definition = defEntry.getValue();
-            for (String dependency : definition.getDependencies())
+            for (Reference dependency : definition.getDependencies())
             {
-                if (!definitions.containsKey(dependency) && !cellar.hasService(dependency))
-                    throw new VaultCompilationException("The service "+definition.getIdentifier()+" has a dependency over a non-existing "+dependency+" service.");
+                if (!definitions.containsKey(dependency.getIdentifier()) && !cellar.hasService(dependency.getIdentifier()))
+                    throw new VaultCompilationException("The service "+definition.getIdentifier()+" has a dependency over a non-existing "+dependency.getIdentifier()+" service.");
             }
         }
     }
@@ -207,9 +227,9 @@ public class VaultFactory
              */
             else {
                 boolean isSatisfiedByContainer = true;
-                for (String dependencyIdentifier : def.getDependencies())
+                for (Reference dependency : def.getDependencies())
                 {
-                    if (!cellar.hasService(dependencyIdentifier))
+                    if (!cellar.hasService(dependency.getIdentifier()))
                         isSatisfiedByContainer = false;
                 }
                 if (isSatisfiedByContainer)
@@ -232,7 +252,7 @@ public class VaultFactory
 
                 dependentService
                     .getDependencies()
-                    .removeIf(s -> s.equals(def.getIdentifier()))
+                    .removeIf(s -> s.getIdentifier().equals(def.getIdentifier()))
                 ;
 
                 if (dependentService.getDependencies().isEmpty())
@@ -275,17 +295,17 @@ public class VaultFactory
 
     /**
      *
-     * @param definitions
+     * @param instantiations
      * @param cellar
      * @throws VaultInstantiationException
      */
-    private void instantiate(List<ServiceDefinition> definitions, Cellar cellar) throws VaultInstantiationException
+    private void instantiate(List<ServiceDefinition> instantiations, Cellar cellar) throws VaultInstantiationException
     {
         try {
-            for (ServiceDefinition def : definitions)
+            for (ServiceDefinition def : instantiations)
             {
                 if (def instanceof ServiceAlias)
-                    cellar.putService(def.getIdentifier(), cellar.getService(((ServiceAlias)def).getTarget()));
+                    cellar.putService(def.getIdentifier(), cellar.getService(((ServiceAlias)def).getTarget().getIdentifier()));
                 else if (def instanceof ServiceInstantiation)
                 {
                     Object instance = this.makeInstantiation((ServiceInstantiation)def, cellar);
@@ -314,13 +334,20 @@ public class VaultFactory
                 }
                 else if (def instanceof ServiceTag)
                 {
-                    List<String> entriesIds = ((ServiceTag) def).getEntries();
+                    List<Reference> entries = ((ServiceTag) def).getEntries();
 
-                    List<Object> collection = new ArrayList<>(entriesIds.size());
-                    for (String entryId : entriesIds)
-                        collection.add(cellar.getService(entryId));
+                    List<Object> collection = new ArrayList<>(entries.size());
+                    for (Reference entry : entries)
+                        collection.add(cellar.getService(entry.getIdentifier()));
 
                     cellar.putService(def.getIdentifier(), collection);
+                }
+                else if (def instanceof ServiceScopedImport)
+                {
+                    Reference extractedService = ((ServiceScopedImport) def).getService();
+                    Object instance = cellar.getService(extractedService.getIdentifier());
+                    this.makeInvocations(def, instance, cellar);
+                    cellar.putService(def.getIdentifier(), instance);
                 }
             }
         }
@@ -349,9 +376,9 @@ public class VaultFactory
             for (int i = 0; i < params.length; ++i)
             {
                 Object o = params[i];
-                if (o instanceof String && ((String)o).startsWith("@"))
+                if (o instanceof Reference)
                 {
-                    String id = ((String)o).substring(1);
+                    String id = ((Reference) o).getIdentifier();
                     o = cellar.getService(id);
                     params[i] = o;
                 }
@@ -408,9 +435,9 @@ public class VaultFactory
             for (int i = 0; i < args.length; ++i)
             {
                 Object o = args[i];
-                if (o instanceof String && ((String)o).startsWith("@"))
+                if (o instanceof Reference)
                 {
-                    String id = ((String)o).substring(1);
+                    String id = ((Reference) o).getIdentifier();
                     o = cellar.getService(id);
                     args[i] = o;
                 }
@@ -463,9 +490,9 @@ public class VaultFactory
                 for (int i = 0 ; i < params.length ; ++i)
                 {
                     Object o = params[i];
-                    if (o instanceof String && ((String)o).startsWith("@"))
+                    if (o instanceof Reference)
                     {
-                        String id = ((String)o).substring(1);
+                        String id = ((Reference) o).getIdentifier();
                         o = cellar.getService(id);
                         params[i] = o;
                     }

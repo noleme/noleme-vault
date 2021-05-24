@@ -1,0 +1,32 @@
+scopes:
+    scope_a:
+        from: 'com/noleme/vault/parser/scope/blueprint_tagged_component.yml'
+        variables: { component_name: 'a' }
+
+    scope_b:
+        from: 'com/noleme/vault/parser/scope/blueprint_component.yml'
+        variables: { component_name: 'b' }
+
+tags:
+    composite_service_components: {}
+
+services:
+    composite_service:
+        class: com.noleme.vault.service.tag.CompositeService
+        constructor:
+            - '@composite_service_components'
+
+    a_component: { use: component@scope_a }
+
+    b_component:
+        from: scope_b
+        use: component
+        tags:
+            - composite_service_components
+
+    local_component:
+        class: com.noleme.vault.service.tag.ComponentService
+        constructor:
+            - 'local'
+        tags:
+            - composite_service_components
