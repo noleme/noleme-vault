@@ -1,6 +1,6 @@
 # Noleme Vault
 
-[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/noleme/noleme-vault/Java%20CI%20with%20Maven)](https://github.com/noleme/noleme-vault/actions?query=workflow%3A%22Java+CI+with+Maven%22)
+[![Maven Build](https://github.com/noleme/noleme-vault/actions/workflows/maven.yml/badge.svg?branch=master)](https://github.com/noleme/noleme-vault/actions/workflows/maven.yml)
 [![Maven Central Repository](https://maven-badges.herokuapp.com/maven-central/com.noleme/noleme-vault/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.noleme/noleme-vault)
 [![javadoc](https://javadoc.io/badge2/com.noleme/noleme-vault/javadoc.svg)](https://javadoc.io/doc/com.noleme/noleme-vault)
 ![GitHub](https://img.shields.io/github/license/noleme/noleme-vault)
@@ -9,7 +9,7 @@
 A library providing DI with JSR-330 annotations and extensible YML/JSON configuration.
 
 The intended goal is to have both "traditional" DI capabilities and a non-intrusive, runtime-evaluated configuration system with an emphasis on composition.
-Each configuration file represents a small graph of objects that can be composed with others in order to obtain an application.
+Each configuration file represents a small graph of objects that can be composed with others in order to create an application.
 
 Implementations found in this package shouldn't be tied to any specific Noleme project.
 
