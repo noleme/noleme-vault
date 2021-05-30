@@ -47,6 +47,17 @@ public class EnvTest
     }
 
     @Test
+    void envVariables_absentShouldBeNull() throws VaultException
+    {
+        setEnv("MY_VAR", "some interesting value");
+
+        var cellar = factory.populate(new Cellar(), "com/noleme/vault/parser/simple_variable.yml");
+
+        Assertions.assertEquals("some interesting value", ((StringProvider)cellar.getService("provider.string.1")).provide());
+        Assertions.assertNull(((StringProvider)cellar.getService("provider.string.2")).provide());
+    }
+
+    @Test
     void envVariables_shouldBeConvertible() throws VaultException
     {
         setEnv("MY_STRING", "custom_value");

@@ -189,12 +189,28 @@ public class VariableResolvingModule implements VaultModule
      */
     private static Object replaceForString(String val, Variable variable, Map<String, Variable> dictionary)
     {
+        if (val == null)
+            return null;
+
         for (String dep : variable.getDependencies())
         {
-            var value = dictionary.get(dep).getValue();
-            val = val.replace("##"+dep+"##", value != null ? value.toString() : "");
+            String key = "##"+dep+"##";
+            if (!val.contains(key))
+                continue;
+
+            Object value = dictionary.get(dep).getValue();
+
+            if (key.equals(val))
+            {
+                val = value == null ? null : value.toString();
+                break;
+            }
+            else
+                val = val.replace(key, value == null ? "" : value.toString());
         }
-        val = replaceEnv(val);
+
+        if (val != null)
+            val = replaceEnv(val);
 
         return val;
     }
@@ -267,24 +283,54 @@ public class VariableResolvingModule implements VaultModule
      */
     private static String replaceEnv(String value)
     {
+        StringBuilder builder = new StringBuilder();
+        int lastStart = 0;
+        int lastEnd = 0;
+
         Matcher matcher = envPattern.matcher(value);
-        if (matcher.find())
+        while (matcher.find())
         {
-            return matcher.replaceAll(mr -> {
-                String variable = mr.group(2);
-                String defaultValue = mr.group(4);
+            String match = matcher.group();
+            String variable = matcher.group(2);
+            String defaultValue = matcher.group(4);
 
-                if (variable == null)
-                    return "";
+            String replacement = null;
 
+            /* If we have a key to work with, we attempt to get the corresponding env variable value */
+            if (variable != null)
+            {
                 String env = System.getenv(variable);
 
                 if (env == null)
                     env = defaultValue;
 
-                return env != null ? env : "";
-            });
+                replacement = env;
+            }
+
+            /* If the match spans over the whole variable, we return immediately (possibly a null value) */
+            if (match.length() == value.length())
+                return replacement;
+
+            /* Otherwise, we'll need to make string replacements, so we transform any null value to an empty string */
+            if (replacement == null)
+                replacement = "";
+
+            if (lastStart < matcher.start())
+                builder.append(value, lastEnd, matcher.start());
+
+            builder.append(replacement);
+
+            lastStart = matcher.start();
+            lastEnd = matcher.end();
         }
-        return value;
+
+        /* If we didn't match anything, we simply return the original value */
+        if (builder.length() == 0)
+            return value;
+
+        if (lastEnd < value.length() - 1)
+            builder.append(value.substring(lastEnd));
+
+        return builder.toString();
     }
 }
