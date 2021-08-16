@@ -306,6 +306,8 @@ public class VaultFactory
             {
                 if (def instanceof ServiceAlias)
                     cellar.putService(def.getIdentifier(), cellar.getService(((ServiceAlias)def).getTarget().getIdentifier()));
+                else if (def instanceof ServiceValue<?>)
+                    cellar.putService(def.getIdentifier(), ((ServiceValue<?>) def).getValue());
                 else if (def instanceof ServiceInstantiation)
                 {
                     Object instance = this.makeInstantiation((ServiceInstantiation)def, cellar);

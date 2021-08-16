@@ -64,6 +64,18 @@ public class ModuleTest
         makeAssertions(cellar);
     }
 
+    @Test
+    void genericDirectAccessTest() throws VaultInjectionException
+    {
+        VaultParser parser = new VaultCompositeParser().register(new GenericModule<>("custom", TestConfig.class, "custom_config"));
+        var cellar = new VaultFactory(parser).populate(new Cellar(), "com/noleme/vault/parser/module/module.yml");
+
+        var config = cellar.getService("custom_config", TestConfig.class);
+
+        Assertions.assertEquals("this_is_my_new_string", config.value);
+        Assertions.assertIterableEquals(List.of("my_provider.a", "my_provider.b", "my_provider.c"), config.providers);
+    }
+
     public static class TestModule implements VaultModule
     {
         @Override
