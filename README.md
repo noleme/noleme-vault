@@ -23,7 +23,7 @@ Add the following in your `pom.xml`:
 <dependency>
     <groupId>com.noleme</groupId>
     <artifactId>noleme-vault</artifactId>
-    <version>0.16</version>
+    <version>0.16.1</version>
 </dependency>
 ```
 
