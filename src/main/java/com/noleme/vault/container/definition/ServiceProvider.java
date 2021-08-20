@@ -25,6 +25,7 @@ public class ServiceProvider extends ServiceDefinition
         this.type = type;
         this.method = method;
         this.closeable = false;
+        this.methodArgs = new Object[0];
     }
 
     public String getType()
