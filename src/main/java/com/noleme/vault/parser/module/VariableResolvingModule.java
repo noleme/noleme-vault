@@ -202,11 +202,11 @@ public class VariableResolvingModule implements VaultModule
 
             if (key.equals(val))
             {
-                val = value == null ? null : value.toString();
+                val = getValueAsString(value, null);
                 break;
             }
             else
-                val = val.replace(key, value == null ? "" : value.toString());
+                val = val.replace(key, getValueAsString(value, ""));
         }
 
         if (val != null)
@@ -332,5 +332,24 @@ public class VariableResolvingModule implements VaultModule
             builder.append(value.substring(lastEnd));
 
         return builder.toString();
+    }
+
+    /**
+     *
+     * @param value
+     * @param defaultValue
+     * @return
+     */
+    private static String getValueAsString(Object value, String defaultValue)
+    {
+        if (value == null)
+            return defaultValue;
+        else if (value instanceof JsonNode)
+        {
+            if (((JsonNode) value).isNull())
+                return defaultValue;
+            return ((JsonNode) value).asText();
+        }
+        return value.toString();
     }
 }
