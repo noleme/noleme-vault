@@ -2,19 +2,20 @@ package com.noleme.vault.parser;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.noleme.commons.container.Lists;
+import com.noleme.json.Json;
+import com.noleme.json.JsonException;
 import com.noleme.vault.container.register.Definitions;
 import com.noleme.vault.exception.VaultParserException;
 import com.noleme.vault.exception.VaultStructureException;
 import com.noleme.vault.parser.adjuster.VaultAdjuster;
 import com.noleme.vault.parser.module.*;
 import com.noleme.vault.parser.module.scope.ScopeModule;
+import com.noleme.vault.parser.module.scope.ScopePruningModule;
 import com.noleme.vault.parser.preprocessor.VaultPreprocessor;
 import com.noleme.vault.parser.resolver.FlexibleResolver;
 import com.noleme.vault.parser.resolver.VaultResolver;
 import com.noleme.vault.parser.resolver.source.Source;
-import com.noleme.commons.container.Lists;
-import com.noleme.json.Json;
-import com.noleme.json.JsonException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,7 +70,8 @@ public class VaultCompositeParser implements VaultParser
             new VariableReplacementModule(),
             new ScopeModule(),
             new TagModule(),
-            new ServiceModule()
+            new ServiceModule(),
+            new ScopePruningModule()
         );
     }
 

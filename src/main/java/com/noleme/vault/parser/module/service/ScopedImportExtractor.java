@@ -49,6 +49,8 @@ public class ScopedImportExtractor implements ServiceDefinitionExtractor
         if (!scope.services().has(expectedIdentifier))
             throw new VaultParserException("Service "+identifier+" makes a reference to a non-existing "+use+" service in scope "+from);
 
+        scope.incrementActiveReferenceCount();
+
         Reference ref = scope.services().reference(expectedIdentifier);
 
         ServiceScopedImport def = new ServiceScopedImport(identifier, from, ref);
