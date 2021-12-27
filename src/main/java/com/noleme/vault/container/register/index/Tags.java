@@ -2,10 +2,7 @@ package com.noleme.vault.container.register.index;
 
 import com.noleme.vault.container.definition.Tag;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Pierre LECERF (pierre@noleme.com)
@@ -34,11 +31,15 @@ public class Tags
 
     public Set<Tag> forIdentifier(String identifier)
     {
+        if (!this.tagsByIdentifier.containsKey(identifier))
+            return Collections.emptySet();
         return this.tagsByIdentifier.get(identifier);
     }
 
     public Set<Tag> forService(String service)
     {
+        if (!this.tagsByService.containsKey(service))
+            return Collections.emptySet();
         return this.tagsByService.get(service);
     }
 
