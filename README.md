@@ -1,6 +1,6 @@
 # Noleme Vault
 
-[![Maven Build](https://github.com/noleme/noleme-vault/actions/workflows/maven.yml/badge.svg?branch=master)](https://github.com/noleme/noleme-vault/actions/workflows/maven.yml)
+[![Maven Build](https://github.com/noleme/noleme-vault/actions/workflows/maven-build.yml/badge.svg?branch=master)](https://github.com/noleme/noleme-vault/actions/workflows/maven-build.yml)
 [![Maven Central Repository](https://maven-badges.herokuapp.com/maven-central/com.noleme/noleme-vault/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.noleme/noleme-vault)
 [![javadoc](https://javadoc.io/badge2/com.noleme/noleme-vault/javadoc.svg)](https://javadoc.io/doc/com.noleme/noleme-vault)
 [![coverage](https://codecov.io/gh/noleme/noleme-vault/branch/master/graph/badge.svg?token=Y9FD38RLDE)](https://codecov.io/gh/noleme/noleme-vault)
