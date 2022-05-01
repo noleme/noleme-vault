@@ -71,7 +71,7 @@ public class VariableListTest
         setEnv("MY_VAR", "my_value");
 
         Assertions.assertDoesNotThrow(() -> Vault.with(
-            vars -> vars.set("provider.list.value", vars.get("my_list")),
+            defs -> defs.variables().set("provider.list.value", defs.variables().get("my_list")),
             "com/noleme/vault/parser/variable/list_variable.yml",
             "com/noleme/vault/parser/provider/provider.list.yml"
         ));
@@ -83,7 +83,7 @@ public class VariableListTest
         setEnv("MY_VAR", "my_value");
 
         Assertions.assertThrows(VaultInjectionException.class, () -> Vault.with(
-            vars -> vars.set("provider.list.value", vars.get("my_list")),
+            defs -> defs.variables().set("provider.list.value", defs.variables().get("my_list")),
             "com/noleme/vault/parser/variable/list_variable.yml",
             "com/noleme/vault/parser/provider/provider.list.invalid_reference.yml"
         ));

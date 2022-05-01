@@ -79,4 +79,9 @@ public class Tags
 
         return this;
     }
+
+    public Tags register(String tag, String service)
+    {
+        return this.register(new Tag(tag, service, null));
+    }
 }

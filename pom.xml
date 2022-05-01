@@ -6,7 +6,7 @@
 
     <groupId>com.noleme</groupId>
     <artifactId>noleme-vault</artifactId>
-    <version>0.16.4</version>
+    <version>0.17</version>
     <packaging>jar</packaging>
 
     <name>Noleme Vault</name>
