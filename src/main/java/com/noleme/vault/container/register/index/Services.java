@@ -26,6 +26,11 @@ public class Services extends Index<ServiceDefinition>
         return (Services) super.set(name, value);
     }
 
+    public Services set(ServiceDefinition def)
+    {
+        return this.set(def.getIdentifier(), def);
+    }
+
     @Override
     public Services remove(String name)
     {

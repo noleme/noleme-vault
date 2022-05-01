@@ -1,6 +1,6 @@
 package com.noleme.vault.parser.adjuster;
 
-import com.noleme.vault.container.register.index.Variables;
+import com.noleme.vault.container.register.Definitions;
 import com.noleme.vault.exception.VaultParserException;
 
 /**
@@ -11,8 +11,8 @@ public interface VaultAdjuster
 {
     /**
      *
-     * @param variables
+     * @param definitions
      * @throws VaultParserException
      */
-    void adjust(Variables variables) throws VaultParserException;
+    void adjust(Definitions definitions) throws VaultParserException;
 }
