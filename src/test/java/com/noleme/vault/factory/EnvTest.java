@@ -82,6 +82,10 @@ public class EnvTest
         Assertions.assertEquals("1234", noEnvCellar.getVariable("my_integer_defval_env"));
         Assertions.assertEquals("12.34", noEnvCellar.getVariable("my_double_defval_env"));
         Assertions.assertEquals("false", noEnvCellar.getVariable("my_boolean_defval_env"));
+        Assertions.assertEquals("default_value", noEnvCellar.getVariable("my_string_defval_alt_env"));
+        Assertions.assertEquals("1234", noEnvCellar.getVariable("my_integer_defval_alt_env"));
+        Assertions.assertEquals("12.34", noEnvCellar.getVariable("my_double_defval_alt_env"));
+        Assertions.assertEquals("false", noEnvCellar.getVariable("my_boolean_defval_alt_env"));
 
         setEnv("MY_STRING", "custom_value");
         setEnv("MY_INTEGER", "2345");
@@ -94,6 +98,10 @@ public class EnvTest
         Assertions.assertEquals("2345", cellar.getVariable("my_integer_defval_env"));
         Assertions.assertEquals("23.45", cellar.getVariable("my_double_defval_env"));
         Assertions.assertEquals("true", cellar.getVariable("my_boolean_defval_env"));
+        Assertions.assertEquals("custom_value", cellar.getVariable("my_string_defval_alt_env"));
+        Assertions.assertEquals("2345", cellar.getVariable("my_integer_defval_alt_env"));
+        Assertions.assertEquals("23.45", cellar.getVariable("my_double_defval_alt_env"));
+        Assertions.assertEquals("true", cellar.getVariable("my_boolean_defval_alt_env"));
     }
 
     @Test
@@ -105,6 +113,10 @@ public class EnvTest
         Assertions.assertEquals(1234, noEnvCellar.getVariable("my_integer_defval_env", int.class));
         Assertions.assertEquals(12.34, noEnvCellar.getVariable("my_double_defval_env", double.class));
         Assertions.assertEquals(false, noEnvCellar.getVariable("my_boolean_defval_env", boolean.class));
+        Assertions.assertEquals("default_value", noEnvCellar.getVariable("my_string_defval_alt_env"));
+        Assertions.assertEquals(1234, noEnvCellar.getVariable("my_integer_defval_alt_env", int.class));
+        Assertions.assertEquals(12.34, noEnvCellar.getVariable("my_double_defval_alt_env", double.class));
+        Assertions.assertEquals(false, noEnvCellar.getVariable("my_boolean_defval_alt_env", boolean.class));
 
         setEnv("MY_STRING", "custom_value");
         setEnv("MY_INTEGER", "2345");
@@ -117,6 +129,10 @@ public class EnvTest
         Assertions.assertEquals(2345, cellar.getVariable("my_integer_defval_env", int.class));
         Assertions.assertEquals(23.45, cellar.getVariable("my_double_defval_env", double.class));
         Assertions.assertEquals(true, cellar.getVariable("my_boolean_defval_env", boolean.class));
+        Assertions.assertEquals("custom_value", cellar.getVariable("my_string_defval_alt_env"));
+        Assertions.assertEquals(2345, cellar.getVariable("my_integer_defval_alt_env", int.class));
+        Assertions.assertEquals(23.45, cellar.getVariable("my_double_defval_alt_env", double.class));
+        Assertions.assertEquals(true, cellar.getVariable("my_boolean_defval_alt_env", boolean.class));
     }
 
     @Test

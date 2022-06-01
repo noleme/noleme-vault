@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
 public class VariableResolvingModule implements VaultModule
 {
     private static final Pattern variablePattern = Pattern.compile("(##(.*?)##)");
-    private static final Pattern envPattern = Pattern.compile("(\\$\\{([A-Za-z0-9_.-].*?)(-(.*?))?})");
+    private static final Pattern envPattern = Pattern.compile("(\\$\\{([A-Za-z0-9_.-].*?)([-:](.*?))?})");
 
     @Override
     public String identifier()

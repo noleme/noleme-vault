@@ -24,7 +24,7 @@ Add the following in your `pom.xml`:
 <dependency>
     <groupId>com.noleme</groupId>
     <artifactId>noleme-vault</artifactId>
-    <version>0.17</version>
+    <version>0.17.1</version>
 </dependency>
 ```
 
@@ -42,7 +42,7 @@ Given a dummy configuration file `my_conf.yml`:
 variables:
     my_var: 12.34
     my_other_var: "interesting"
-    my_env_var: ${MY_VAR}
+    my_env_var: ${MY_VAR:default_value}
 
 services:
     my_service:

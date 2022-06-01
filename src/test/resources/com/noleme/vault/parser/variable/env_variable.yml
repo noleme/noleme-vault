@@ -11,3 +11,7 @@ variables:
     my_integer_defval_env: ${MY_INTEGER-1234}
     my_double_defval_env: ${MY_DOUBLE-12.34}
     my_boolean_defval_env: ${MY_BOOLEAN-false}
+    my_string_defval_alt_env: ${MY_STRING:default_value}
+    my_integer_defval_alt_env: ${MY_INTEGER:1234}
+    my_double_defval_alt_env: ${MY_DOUBLE:12.34}
+    my_boolean_defval_alt_env: ${MY_BOOLEAN:false}
