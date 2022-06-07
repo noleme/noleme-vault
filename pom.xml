@@ -39,7 +39,7 @@
         <junit.version>5.8.2</junit.version>
         <jacoco.version>0.8.8</jacoco.version>
         <noleme-commons.version>0.17.1</noleme-commons.version>
-        <noleme-json.version>0.9.2</noleme-json.version>
+        <noleme-json.version>0.9.3</noleme-json.version>
     </properties>
 
     <dependencies>
