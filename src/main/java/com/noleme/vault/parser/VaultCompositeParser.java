@@ -9,6 +9,8 @@ import com.noleme.vault.container.register.Definitions;
 import com.noleme.vault.exception.VaultParserException;
 import com.noleme.vault.exception.VaultStructureException;
 import com.noleme.vault.parser.adjuster.VaultAdjuster;
+import com.noleme.vault.parser.adjuster.VaultAdjuster.VaultAdjusterAccessor;
+import com.noleme.vault.parser.adjuster.VaultAdjuster.VaultAdjusterMapper;
 import com.noleme.vault.parser.module.*;
 import com.noleme.vault.parser.module.scope.ScopeModule;
 import com.noleme.vault.parser.module.scope.ScopePruningModule;
@@ -27,17 +29,22 @@ import static com.noleme.commons.function.RethrowFunction.rethrower;
 /**
  * @author Pierre Lecerf (pierre@noleme.com) on 05/02/15.
  */
-@SuppressWarnings("rawtypes")
 public class VaultCompositeParser implements VaultParser
 {
     private final VaultResolver resolver;
     private final List<VaultPreprocessor> preprocessors = new ArrayList<>();
-    private final List<VaultModule> preModules;
-    private final List<VaultModule> postModules;
+    private final List<VaultModule> modules;
 
     private static final String rootIdentifier = "*";
     private static final Set<String> coreDirectives = Set.of("imports");
     private static final Logger logger = LoggerFactory.getLogger(VaultCompositeParser.class);
+    /* The mapper is used to define modules after which a specific section of the Definitions is to be subjected to a matching section of the VaultAdjuster */
+    private static final VaultAdjusterMapper adjusterMapper = new VaultAdjusterMapper()
+        .register(VariableRegistrationModule.class, new VaultAdjusterAccessor<>(Definitions::variables, adjuster -> adjuster::adjust))
+        .register(ScopeModule.class, new VaultAdjusterAccessor<>(Definitions::scopes, adjuster -> adjuster::adjust))
+        .register(TagModule.class, new VaultAdjusterAccessor<>(Definitions::tags, adjuster -> adjuster::adjust))
+        .register(ServiceModule.class, new VaultAdjusterAccessor<>(Definitions::services, adjuster -> adjuster::adjust))
+    ;
 
     public VaultCompositeParser()
     {
@@ -46,26 +53,19 @@ public class VaultCompositeParser implements VaultParser
 
     public VaultCompositeParser(VaultResolver resolver)
     {
-        this(resolver, defaultPostModules());
+        this(resolver, defaultModules());
     }
 
     public VaultCompositeParser(VaultResolver resolver, List<VaultModule> modules)
     {
         this.resolver = resolver;
-        this.preModules = defaultPreModules();
-        this.postModules = modules;
+        this.modules = modules;
     }
 
-    public static List<VaultModule> defaultPreModules()
+    public static List<VaultModule> defaultModules()
     {
         return Lists.of(
-            new VariableRegistrationModule()
-        );
-    }
-
-    public static List<VaultModule> defaultPostModules()
-    {
-        return Lists.of(
+            new VariableRegistrationModule(),
             new VariableResolvingModule(),
             new VariableReplacementModule(),
             new ScopeModule(),
@@ -76,52 +76,39 @@ public class VaultCompositeParser implements VaultParser
     }
 
     @Override
-    public Definitions extract(Collection<Source> sources, Definitions definitions, Collection<VaultAdjuster> adjusters) throws VaultParserException
+    @SuppressWarnings("rawtypes")
+    public Definitions extract(Collection<Source> sources, Definitions definitions, VaultAdjuster adjuster) throws VaultParserException
     {
         ObjectNode json = Json.newObject();
         for (Source source : sources)
             json = this.compileNode(source, json);
 
-        this.launchModules(this.preModules, json, definitions);
-
-        for (VaultAdjuster adjuster : adjusters)
-            adjuster.adjust(definitions);
-
-        this.launchModules(this.postModules, json, definitions);
-
-        return definitions;
-    }
-
-    @Override
-    public Definitions extractOrigin(Collection<String> origins, Definitions definitions, Collection<VaultAdjuster> adjusters) throws VaultParserException
-    {
-        try {
-            return this.extract(
-                origins.stream().map(rethrower(this.resolver::resolve)).collect(Collectors.toList()),
-                definitions,
-                adjusters
-            );
-        }
-        catch (JsonException e) {
-            throw new VaultParserException("The configuration file could not be loaded, the input appears to contain invalid JSON.", e);
-        }
-    }
-
-    /**
-     *
-     * @param modules
-     * @param json
-     * @param definitions
-     * @throws VaultParserException
-     */
-    private void launchModules(List<VaultModule> modules, ObjectNode json, Definitions definitions) throws VaultParserException
-    {
-        for (VaultModule module : modules)
+        for (VaultModule module : this.modules)
         {
             if (rootIdentifier.equals(module.identifier()))
                 module.process(json, definitions);
             else if (json.has(module.identifier()))
                 module.process((ObjectNode) json.get(module.identifier()), definitions);
+
+            if (adjusterMapper.knows(module))
+                adjusterMapper.get(module).adjust(adjuster, definitions);
+        }
+
+        return definitions;
+    }
+
+    @Override
+    public Definitions extractOrigin(Collection<String> origins, Definitions definitions, VaultAdjuster adjuster) throws VaultParserException
+    {
+        try {
+            return this.extract(
+                origins.stream().map(rethrower(this.resolver::resolve)).collect(Collectors.toList()),
+                definitions,
+                adjuster
+            );
+        }
+        catch (JsonException e) {
+            throw new VaultParserException("The configuration file could not be loaded, the input appears to contain invalid JSON.", e);
         }
     }
 
@@ -132,6 +119,7 @@ public class VaultCompositeParser implements VaultParser
      * @return
      * @throws VaultParserException
      */
+    @SuppressWarnings("rawtypes")
     private ObjectNode compileNode(Source source, ObjectNode rootNode) throws VaultParserException
     {
         try {
@@ -199,7 +187,7 @@ public class VaultCompositeParser implements VaultParser
     @Override
     public VaultParser register(VaultModule module)
     {
-        this.postModules.add(module);
+        this.modules.add(module);
         return this;
     }
 
@@ -212,8 +200,7 @@ public class VaultCompositeParser implements VaultParser
         Iterator<String> keys = json.fieldNames();
 
         Set<String> validKeys = new HashSet<>(coreDirectives);
-        validKeys.addAll(getModuleIdentifiers(preModules));
-        validKeys.addAll(getModuleIdentifiers(postModules));
+        validKeys.addAll(getModuleIdentifiers(modules));
 
         while (keys.hasNext())
         {
