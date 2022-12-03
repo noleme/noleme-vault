@@ -31,67 +31,63 @@ public class CompositeTest
     @Test
     void compositeTest__builds()
     {
-        Assertions.assertDoesNotThrow(() -> {
-            var definitions = factory.parser().extractOrigin(List.of(
+        Cellar cellar = Assertions.assertDoesNotThrow(() -> {
+            Definitions definitions = factory.parser().extractOrigin(List.of(
                 "com/noleme/vault/parser/tag/composite.yml",
                 "com/noleme/vault/parser/tag/component.yml"
             ), new Definitions());
 
-            var cellar = factory.populate(new Cellar(), definitions);
-
-            var composite = cellar.getService("composite_service", CompositeService.class);
-            Assertions.assertTrue(composite.contains("string_a"));
-            Assertions.assertTrue(composite.contains("string_b"));
-            Assertions.assertTrue(composite.contains("string_c"));
-            Assertions.assertEquals(4, composite.size());
-
-            var compositeAlt = cellar.getService("composite_service.alt", CompositeService.class);
-            Assertions.assertFalse(compositeAlt.contains("string_a"));
-            Assertions.assertTrue(compositeAlt.contains("string_b"));
-            Assertions.assertTrue(compositeAlt.contains("string_c"));
-            Assertions.assertEquals(2, compositeAlt.size());
+            return factory.populate(new Cellar(), definitions);
         });
+
+        var composite = cellar.getService("composite_service", CompositeService.class);
+
+        Assertions.assertTrue(composite.contains("string_a"));
+        Assertions.assertTrue(composite.contains("string_b"));
+        Assertions.assertTrue(composite.contains("string_c"));
+        Assertions.assertEquals(4, composite.size());
+
+        var compositeAlt = cellar.getService("composite_service.alt", CompositeService.class);
+
+        Assertions.assertFalse(compositeAlt.contains("string_a"));
+        Assertions.assertTrue(compositeAlt.contains("string_b"));
+        Assertions.assertTrue(compositeAlt.contains("string_c"));
+        Assertions.assertEquals(2, compositeAlt.size());
     }
 
     @Test
     void compositeTest__does_not_build()
     {
-        Assertions.assertThrows(VaultInjectionException.class, () -> {
-            var definitions = factory.parser().extractOrigin(List.of(
-                "com/noleme/vault/parser/tag/composite_without_declaration.yml",
-                "com/noleme/vault/parser/tag/component.yml"
-            ), new Definitions());
+        Definitions definitions = Assertions.assertDoesNotThrow(() -> factory.parser().extractOrigin(List.of(
+            "com/noleme/vault/parser/tag/composite_without_declaration.yml",
+            "com/noleme/vault/parser/tag/component.yml"
+        ), new Definitions()));
 
-            factory.populate(new Cellar(), definitions);
-        });
+        Assertions.assertThrows(VaultInjectionException.class, () -> factory.populate(new Cellar(), definitions));
     }
 
     @Test
     void emptyCompositeTest__builds()
     {
-        Assertions.assertDoesNotThrow(() -> {
-            var cellar = factory.populate(new Cellar(), "com/noleme/vault/parser/tag/composite.yml");
+        Cellar cellar = Assertions.assertDoesNotThrow(() -> factory.populate(new Cellar(), "com/noleme/vault/parser/tag/composite.yml"));
 
-            var composite = cellar.getService("composite_service", CompositeService.class);
-            Assertions.assertEquals(0, composite.size());
-        });
+        var composite = cellar.getService("composite_service", CompositeService.class);
+        Assertions.assertEquals(0, composite.size());
     }
 
     @Test
     void compositeTest__conflictsWithService()
     {
-        Assertions.assertDoesNotThrow(() -> {
-            var cellar = factory.populate(new Cellar(), "com/noleme/vault/parser/tag/conflict_with_service.yml");
+        Cellar cellar = Assertions.assertDoesNotThrow(() -> factory.populate(new Cellar(), "com/noleme/vault/parser/tag/conflict_with_service.yml"));
 
-            var notComposite = cellar.getService("composite_service_components");
-            Assertions.assertTrue(notComposite instanceof StringProvider);
-        });
+        var notComposite = cellar.getService("composite_service_components");
+        Assertions.assertTrue(notComposite instanceof StringProvider);
     }
 
     @Test
     void customConfig__builds()
     {
-        Assertions.assertDoesNotThrow(() -> {
+        Cellar cellar = Assertions.assertDoesNotThrow(() -> {
             var parser = new VaultCompositeParser().register(new CustomModule());
             var factory = new VaultFactory(parser);
 
@@ -100,12 +96,12 @@ public class CompositeTest
                 "com/noleme/vault/parser/tag/component.yml"
             ), new Definitions());
 
-            var cellar = factory.populate(new Cellar(), definitions);
-
-            var composite = cellar.getService("my_custom_composite", CustomComposite.class);
-            Assertions.assertEquals(3, composite.size());
-            Assertions.assertEquals(7, composite.weight());
+            return factory.populate(new Cellar(), definitions);
         });
+
+        var composite = cellar.getService("my_custom_composite", CustomComposite.class);
+        Assertions.assertEquals(3, composite.size());
+        Assertions.assertEquals(7, composite.weight());
     }
 
     public static class CustomModule extends GenericModule<CustomConfig>

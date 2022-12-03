@@ -1,0 +1,5 @@
+services:
+    provider.boolean:
+        class: "com.noleme.vault.service.BooleanProvider"
+        constructor:
+            - false

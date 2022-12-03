@@ -80,6 +80,7 @@ public class ScopeModule implements VaultModule
         return new VaultCompositeParser(
             new FlexibleResolver(),
             Lists.of(
+                new VariableRegistrationModule(),
                 new ScopeVariableModule(json),
                 new VariableResolvingModule(),
                 new VariableReplacementModule(),

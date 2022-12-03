@@ -1,0 +1,6 @@
+services:
+    provider.boolean:
+        class: "com.noleme.vault.service.ServiceProvider"
+        method: "provide"
+        arguments:
+            - "@provider.boolean.base"

@@ -7,7 +7,6 @@ import com.noleme.vault.parser.module.VaultModule;
 import com.noleme.vault.parser.preprocessor.VaultPreprocessor;
 import com.noleme.vault.parser.resolver.source.Source;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -19,33 +18,23 @@ public interface VaultParser
 {
     default Definitions extract(Source source) throws VaultParserException
     {
-        return this.extract(source, new Definitions(), Collections.emptyList());
+        return this.extract(source, new Definitions(), VaultAdjuster.noop());
     }
 
-    default Definitions extract(Source source, Definitions definitions, VaultAdjuster... adjusters) throws VaultParserException
+    default Definitions extract(Source source, Definitions definitions, VaultAdjuster adjuster) throws VaultParserException
     {
-        return this.extract(source, definitions, Arrays.asList(adjusters));
-    }
-
-    default Definitions extract(Source source, Definitions definitions, Collection<VaultAdjuster> adjusters) throws VaultParserException
-    {
-        return this.extract(Collections.singletonList(source), definitions, adjusters);
-    }
-
-    default Definitions extract(Collection<Source> sources, Definitions definitions, VaultAdjuster... adjusters) throws VaultParserException
-    {
-        return this.extract(sources, definitions, Arrays.asList(adjusters));
+        return this.extract(Collections.singletonList(source), definitions, adjuster);
     }
 
     /**
      *
      * @param sources
      * @param definitions
-     * @param adjusters
+     * @param adjuster
      * @return
      * @throws VaultParserException
      */
-    Definitions extract(Collection<Source> sources, Definitions definitions, Collection<VaultAdjuster> adjusters) throws VaultParserException;
+    Definitions extract(Collection<Source> sources, Definitions definitions, VaultAdjuster adjuster) throws VaultParserException;
 
     default Definitions extract(String origin) throws VaultParserException
     {
@@ -54,33 +43,28 @@ public interface VaultParser
 
     default Definitions extract(String origin, Definitions definitions) throws VaultParserException
     {
-        return this.extract(origin, definitions, Collections.emptyList());
+        return this.extract(origin, definitions, VaultAdjuster.noop());
     }
 
-    default Definitions extract(String origin, Definitions definitions, VaultAdjuster... adjusters) throws VaultParserException
+    default Definitions extract(String origin, Definitions definitions, VaultAdjuster adjuster) throws VaultParserException
     {
-        return this.extract(origin, definitions, Arrays.asList(adjusters));
+        return this.extractOrigin(Collections.singletonList(origin), definitions, adjuster);
     }
 
-    default Definitions extract(String origin, Definitions definitions, Collection<VaultAdjuster> adjusters) throws VaultParserException
+    default Definitions extractOrigin(Collection<String> origins, Definitions definitions) throws VaultParserException
     {
-        return this.extractOrigin(Collections.singletonList(origin), definitions, adjusters);
-    }
-
-    default Definitions extractOrigin(Collection<String> origins, Definitions definitions, VaultAdjuster... adjusters) throws VaultParserException
-    {
-        return this.extractOrigin(origins, definitions, Arrays.asList(adjusters));
+        return this.extractOrigin(origins, definitions, VaultAdjuster.noop());
     }
 
     /**
      *
      * @param origins
      * @param definitions
-     * @param adjusters
+     * @param adjuster
      * @return
      * @throws VaultParserException
      */
-    Definitions extractOrigin(Collection<String> origins, Definitions definitions, Collection<VaultAdjuster> adjusters) throws VaultParserException;
+    Definitions extractOrigin(Collection<String> origins, Definitions definitions, VaultAdjuster adjuster) throws VaultParserException;
 
     /**
      * Register a custom preprocessor for performing modifications over configuration nodes before compilation passes.

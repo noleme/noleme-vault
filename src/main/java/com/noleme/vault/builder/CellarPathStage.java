@@ -35,7 +35,7 @@ public class CellarPathStage implements BuildStage
      */
     public CellarPathStage(VaultFactory factory, String path)
     {
-        this(factory, path, defs -> {});
+        this(factory, path, VaultAdjuster.noop());
     }
 
     /**
@@ -55,7 +55,7 @@ public class CellarPathStage implements BuildStage
      */
     public CellarPathStage(VaultFactory factory, List<String> paths)
     {
-        this(factory, paths, defs -> {});
+        this(factory, paths, VaultAdjuster.noop());
     }
 
     /**
