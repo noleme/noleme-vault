@@ -22,7 +22,7 @@ Add the following in your `pom.xml`:
 <dependency>
     <groupId>com.noleme</groupId>
     <artifactId>noleme-vault</artifactId>
-    <version>0.17.2</version>
+    <version>0.18</version>
 </dependency>
 ```
 
@@ -102,6 +102,7 @@ MyClass myService = vault.instance(MyClass.class, "my_service");
 Other features that will need to be documented include:
 
 * import of dependency json/yml files
+* dynamic override / completion via adjusters
 * service method invocation
 * service instantiation via static method call
 * service aliasing
