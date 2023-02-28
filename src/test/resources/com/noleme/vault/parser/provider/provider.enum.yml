@@ -1,0 +1,8 @@
+variables:
+    provider.enum.value: "B"
+
+services:
+    provider.enum:
+        class: com.noleme.vault.service.EnumProvider
+        constructor:
+            - '##provider.enum.value##'
