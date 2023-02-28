@@ -59,6 +59,13 @@ public class LenientClassUtilsTest
 
         Assertions.assertDoesNotThrow(() -> {
             Assertions.assertEquals(
+                ClassUtils.getMethod(TrapClass.class, "method", classes(String.class, Integer.class, TestEnum.class)),
+                LenientClassUtils.getLenientMethod(TrapClass.class, "method", classes(String.class, String.class, String.class), args("my_string", "123", "TWO")).first
+            );
+        });
+
+        Assertions.assertDoesNotThrow(() -> {
+            Assertions.assertEquals(
                 ClassUtils.getMethod(TrapClass.class, "method", classes(String.class, Integer.class)),
                 LenientClassUtils.getLenientMethod(TrapClass.class, "method", classes(String.class, String.class), args("my_string", "123")).first
             );
@@ -69,6 +76,9 @@ public class LenientClassUtilsTest
     void typeConversion()
     {
         Assertions.assertEquals("my_string", LenientClassUtils.attemptTypeConversion("my_string", String.class));
+
+        Assertions.assertEquals(TestEnum.ONE, LenientClassUtils.attemptTypeConversion("ONE", TestEnum.class));
+        Assertions.assertEquals(TestEnum.TWO, LenientClassUtils.attemptTypeConversion("TWO", TestEnum.class));
 
         Assertions.assertEquals(true, LenientClassUtils.attemptTypeConversion("true", boolean.class));
         Assertions.assertEquals(true, LenientClassUtils.attemptTypeConversion("true", Boolean.class));
@@ -127,5 +137,11 @@ public class LenientClassUtilsTest
 
         public void method(String arg) {}
         public void method(String arg, Integer arg2) {}
+        public void method(String arg, Integer arg2, TestEnum arg3) {}
+    }
+
+    public enum TestEnum
+    {
+        ONE, TWO, THREE
     }
 }

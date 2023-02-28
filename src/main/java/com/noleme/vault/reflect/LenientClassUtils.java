@@ -77,8 +77,6 @@ public final class LenientClassUtils
                     logger.debug("Found lenient constructor {} making type conversions over arguments {}", ctor.toGenericString(), convertibleArguments.keySet());
                     return new Pair<>(ctor, lenientParams);
                 }
-
-                continue CTOR_LOOP;
             }
 
             throw e;
@@ -139,8 +137,6 @@ public final class LenientClassUtils
                     logger.debug("Found lenient method {} making type conversions over arguments {}", method.toGenericString(), convertibleArguments.keySet());
                     return new Pair<>(method, lenientArgs);
                 }
-
-                continue METHOD_LOOP;
             }
 
             throw e;
@@ -208,6 +204,14 @@ public final class LenientClassUtils
         logger.debug("Attempting type conversion for string \"{}\" to type {}", value, type.getName());
 
         try {
+            if (type.isEnum())
+            {
+                for (T constant : type.getEnumConstants())
+                {
+                    if (((Enum<?>) constant).name().equals(value))
+                        return constant;
+                }
+            }
             if (type.equals(String.class))
                 return (T) value;
             if ((type.equals(Boolean.class) || type.equals(boolean.class)) && ClassUtils.isParseableAsBoolean(value))
@@ -243,6 +247,8 @@ public final class LenientClassUtils
      */
     public static boolean isConversionTarget(Class<?> type)
     {
+        if (type.isEnum())
+            return true;
         return conversionTargets.contains(type);
     }
 }
