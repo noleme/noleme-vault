@@ -36,7 +36,7 @@
         <maven-javadoc.version>3.5.0</maven-javadoc.version>
         <maven-gpg.version>3.1.0</maven-gpg.version>
         <slf4j.version>1.7.36</slf4j.version>
-        <junit.version>5.9.3</junit.version>
+        <junit.version>5.10.0</junit.version>
         <jacoco.version>0.8.10</jacoco.version>
         <noleme-commons.version>0.17.1</noleme-commons.version>
         <noleme-json.version>0.9.5</noleme-json.version>
