@@ -289,7 +289,7 @@ public final class Vault implements AutoCloseable
                 catch (IllegalAccessException | InstantiationException | InvocationTargetException | VaultException e) {
                     throw new RuntimeVaultException(String.format("Can't instantiate %s", key), e);
                 }
-            });
+            }, AutoCloseable.class.isAssignableFrom(key.type));
         }
         return (Provider<T>) this.providers.get(key);
     }

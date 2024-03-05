@@ -197,7 +197,7 @@ public class VaultLegacyCompiler
             }
         };
 
-        vault.register(key, isProviderSingleton(m) ? new CachedProvider<>(provider) : provider);
+        vault.register(key, isProviderSingleton(m) ? new CachedProvider<>(provider) : provider, AutoCloseable.class.isAssignableFrom(m.getReturnType()));
     }
 
     /**
