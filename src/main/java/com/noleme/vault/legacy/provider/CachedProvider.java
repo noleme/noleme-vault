@@ -1,6 +1,6 @@
 package com.noleme.vault.legacy.provider;
 
-import javax.inject.Provider;
+import jakarta.inject.Provider;
 
 /**
  * @author Pierre Lecerf (plecerf@lumiomedical.com)

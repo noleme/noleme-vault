@@ -6,8 +6,8 @@ import com.noleme.vault.exception.VaultException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import javax.inject.Inject;
-import javax.inject.Named;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 public class PolymorphicDependencyTest
 {

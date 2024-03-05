@@ -6,8 +6,8 @@ import com.noleme.vault.exception.VaultException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
+import jakarta.inject.Inject;
+import jakarta.inject.Provider;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 

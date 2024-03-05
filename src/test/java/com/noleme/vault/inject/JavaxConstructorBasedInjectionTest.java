@@ -5,17 +5,16 @@ import com.noleme.vault.exception.VaultException;
 import com.noleme.vault.service.DoubleProvider;
 import com.noleme.vault.service.IntegerProvider;
 import com.noleme.vault.service.StringProvider;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
 
 /**
  * @author Pierre Lecerf (plecerf@lumiomedical.com)
  * Created on 2021/03/16
  */
-public class ConstructorBasedInjectionTest
+public class JavaxConstructorBasedInjectionTest
 {
     @Test
     void typedInjection() throws VaultException
@@ -97,8 +96,7 @@ public class ConstructorBasedInjectionTest
             @Named("provider.string") StringProvider stringProvider,
             @Named("provider.double") DoubleProvider doubleProvider,
             @Named("provider.integer") IntegerProvider integerProvider
-        )
-        {
+        ) {
             this.stringProvider = stringProvider;
             this.doubleProvider = doubleProvider;
             this.integerProvider = integerProvider;
@@ -136,8 +134,7 @@ public class ConstructorBasedInjectionTest
             @Named("boolean_val.string") boolean booleanVal,
             @Named("char_val.string") char charVal,
             @Named("byte_val.string") byte byteVal
-        )
-        {
+        ) {
             this.integerVal = integerVal;
             this.floatVal = floatVal;
             this.doubleVal = doubleVal;

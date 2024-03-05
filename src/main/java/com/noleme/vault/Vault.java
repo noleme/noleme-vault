@@ -12,8 +12,8 @@ import com.noleme.vault.legacy.VaultLegacyCompiler;
 import com.noleme.vault.parser.adjuster.VaultAdjuster;
 import com.noleme.vault.reflect.LenientClassUtils;
 
-import javax.inject.Provider;
-import javax.inject.Singleton;
+import jakarta.inject.Provider;
+import jakarta.inject.Singleton;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -289,7 +289,7 @@ public final class Vault implements AutoCloseable
                 catch (IllegalAccessException | InstantiationException | InvocationTargetException | VaultException e) {
                     throw new RuntimeVaultException(String.format("Can't instantiate %s", key), e);
                 }
-            });
+            }, AutoCloseable.class.isAssignableFrom(key.type));
         }
         return (Provider<T>) this.providers.get(key);
     }
@@ -314,7 +314,7 @@ public final class Vault implements AutoCloseable
      */
     public Vault register(Key<?> key, Provider<?> provider, boolean closeable)
     {
-        if (key.type.getAnnotation(Singleton.class) != null)
+        if (key.type.getAnnotation(Singleton.class) != null || key.type.getAnnotation(javax.inject.Singleton.class) != null)
         {
             if (!this.singletons.containsKey(key))
             {

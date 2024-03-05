@@ -5,7 +5,7 @@ import com.noleme.vault.legacy.Key;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Provider;
+import jakarta.inject.Provider;
 
 /**
  * @author Pierre Lecerf (plecerf@lumiomedical.com)
