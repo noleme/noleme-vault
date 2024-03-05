@@ -6,7 +6,7 @@ import com.noleme.vault.exception.VaultException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import javax.inject.Named;
+import jakarta.inject.Named;
 
 public class NamedDependencyTest
 {

@@ -1,6 +1,6 @@
 package com.noleme.vault.legacy;
 
-import javax.inject.Named;
+import jakarta.inject.Named;
 import java.lang.annotation.Annotation;
 import java.util.Objects;
 
@@ -59,10 +59,13 @@ public class Key<T>
         if (qualifier == null)
             return Key.of(type);
 
-        return qualifier.annotationType().equals(Named.class)
-            ? Key.of(type, ((Named) qualifier).value())
-            : Key.of(type, qualifier.annotationType())
-        ;
+        if (qualifier.annotationType().equals(Named.class))
+            return Key.of(type, ((Named) qualifier).value());
+
+        if (qualifier.annotationType().equals(javax.inject.Named.class))
+            return Key.of(type, ((javax.inject.Named) qualifier).value());
+
+        return Key.of(type, qualifier.annotationType());
     }
 
     @Override

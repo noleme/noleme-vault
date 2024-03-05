@@ -2,8 +2,8 @@ package com.noleme.vault.service.annotated;
 
 import com.noleme.vault.service.ValueProvider;
 
-import javax.inject.Inject;
-import javax.inject.Named;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 /**
  * @author Pierre Lecerf (plecerf@lumiomedical.com)

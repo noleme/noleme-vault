@@ -6,17 +6,16 @@ import com.noleme.vault.service.DoubleProvider;
 import com.noleme.vault.service.IntegerProvider;
 import com.noleme.vault.service.StringProvider;
 import com.noleme.vault.service.ValueProvider;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
 
 /**
  * @author Pierre Lecerf (plecerf@lumiomedical.com)
  * Created on 2021/03/13
  */
-public class FieldBasedInjectionTest
+public class JavaxFieldBasedInjectionTest
 {
     @Test
     void typeInjection() throws VaultException

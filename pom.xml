@@ -40,13 +40,21 @@
         <jacoco.version>0.8.11</jacoco.version>
         <noleme-commons.version>0.17.1</noleme-commons.version>
         <noleme-json.version>0.10</noleme-json.version>
+        <javax-inject.version>1</javax-inject.version>
+        <jakarta-inject.version>2.0.1</jakarta-inject.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>javax.inject</groupId>
             <artifactId>javax.inject</artifactId>
-            <version>1</version>
+            <version>${javax-inject.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>jakarta.inject</groupId>
+            <artifactId>jakarta.inject-api</artifactId>
+            <version>${jakarta-inject.version}</version>
         </dependency>
 
         <dependency>

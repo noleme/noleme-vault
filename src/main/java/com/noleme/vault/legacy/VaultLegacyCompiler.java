@@ -7,10 +7,10 @@ import com.noleme.vault.legacy.provider.CachedProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
-import javax.inject.Qualifier;
-import javax.inject.Singleton;
+import jakarta.inject.Inject;
+import jakarta.inject.Provider;
+import jakarta.inject.Qualifier;
+import jakarta.inject.Singleton;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.util.*;
@@ -67,7 +67,7 @@ public class VaultLegacyCompiler
         {
             for (Field field : current.getDeclaredFields())
             {
-                if (field.isAnnotationPresent(Inject.class))
+                if (field.isAnnotationPresent(Inject.class) || field.isAnnotationPresent(javax.inject.Inject.class))
                 {
                     field.setAccessible(true);
                     fields.add(field);
@@ -90,7 +90,7 @@ public class VaultLegacyCompiler
         Constructor<?> noarg = null;
         for (Constructor<?> c : key.type.getDeclaredConstructors())
         {
-            if (c.isAnnotationPresent(Inject.class))
+            if (c.isAnnotationPresent(Inject.class) || c.isAnnotationPresent(javax.inject.Inject.class))
             {
                 if (inject == null)
                     inject = c;
@@ -120,7 +120,7 @@ public class VaultLegacyCompiler
     {
         for (Annotation annotation : annotations)
         {
-            if (annotation.annotationType().isAnnotationPresent(Qualifier.class))
+            if (annotation.annotationType().isAnnotationPresent(Qualifier.class) || annotation.annotationType().isAnnotationPresent(javax.inject.Qualifier.class))
                 return annotation;
         }
         return null;
@@ -140,7 +140,7 @@ public class VaultLegacyCompiler
         {
             for (Method method : current.getDeclaredMethods())
             {
-                if (method.isAnnotationPresent(Provides.class) && (type.equals(current) || !providerInSubClass(method, providers)))
+                if ((method.isAnnotationPresent(Provides.class) && (type.equals(current) || !providerInSubClass(method, providers))))
                 {
                     method.setAccessible(true);
                     providers.add(method);
@@ -179,11 +179,6 @@ public class VaultLegacyCompiler
         if (vault.hasProvider(key))
             logger.debug("{} has multiple providers, module {}", key, module.getClass());
 
-        Singleton singleton = m.getAnnotation(Singleton.class) != null
-            ? m.getAnnotation(Singleton.class)
-            : m.getReturnType().getAnnotation(Singleton.class)
-        ;
-
         final Provider<?>[] paramProviders = paramProviders(
             vault,
             key,
@@ -202,7 +197,21 @@ public class VaultLegacyCompiler
             }
         };
 
-        vault.register(key, singleton == null ? provider : new CachedProvider<>(provider));
+        vault.register(key, isProviderSingleton(m) ? new CachedProvider<>(provider) : provider);
+    }
+
+    /**
+     *
+     * @param m The provider method to be evaluated
+     * @return true if either the method or its return type are annotated as singleton
+     */
+    private static boolean isProviderSingleton(final Method m)
+    {
+        if (m.getAnnotation(Singleton.class) != null || m.getAnnotation(javax.inject.Singleton.class) != null)
+            return true;
+        else if (m.getReturnType().getAnnotation(Singleton.class) != null || m.getReturnType().getAnnotation(javax.inject.Singleton.class) != null)
+            return true;
+        return false;
     }
 
     /**

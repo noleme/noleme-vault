@@ -5,7 +5,7 @@ import com.noleme.vault.service.BooleanProvider;
 import com.noleme.vault.service.IntegerProvider;
 import com.noleme.vault.service.StringProvider;
 
-import javax.inject.Named;
+import jakarta.inject.Named;
 
 /**
  * @author Pierre Lecerf (plecerf@lumiomedical.com)

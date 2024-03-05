@@ -5,8 +5,8 @@ import com.noleme.vault.Vault;
 import com.noleme.vault.exception.VaultException;
 import org.junit.jupiter.api.Test;
 
-import javax.inject.Inject;
-import javax.inject.Qualifier;
+import jakarta.inject.Inject;
+import jakarta.inject.Qualifier;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
