@@ -37,6 +37,7 @@
         <maven-gpg.version>3.2.4</maven-gpg.version>
         <slf4j.version>1.7.36</slf4j.version>
         <junit.version>5.10.3</junit.version>
+        <junit.system-stubs.version>2.1.7</junit.system-stubs.version>
         <jacoco.version>0.8.12</jacoco.version>
         <noleme-commons.version>0.17.1</noleme-commons.version>
         <noleme-json.version>0.10</noleme-json.version>
@@ -86,6 +87,13 @@
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
             <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>uk.org.webcompere</groupId>
+            <artifactId>system-stubs-jupiter</artifactId>
+            <version>${junit.system-stubs.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

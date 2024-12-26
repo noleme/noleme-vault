@@ -1,18 +1,14 @@
 package com.noleme.vault.factory;
 
 import com.noleme.vault.container.Cellar;
-import com.noleme.vault.exception.VaultException;
 import com.noleme.vault.exception.VaultInjectionException;
 import com.noleme.vault.service.BooleanProvider;
 import com.noleme.vault.service.DoubleProvider;
 import com.noleme.vault.service.IntegerProvider;
 import com.noleme.vault.service.StringProvider;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.lang.reflect.Field;
-import java.util.Map;
+import uk.org.webcompere.systemstubs.environment.EnvironmentVariables;
 
 /**
  * @author Pierre Lecerf (plecerf@lumiomedical.com)
@@ -22,19 +18,12 @@ public class EnvTest
 {
     private static final VaultFactory factory = new VaultFactory();
 
-    @BeforeEach
-    void setup()
-    {
-        clearEnv();
-    }
-
     @Test
-    void envVariables_shouldBeInterpreted() throws VaultException
+    void envVariables_shouldBeInterpreted() throws Exception
     {
-        setEnv("MY_VAR", "some interesting value");
-        setEnv("MY_OTHER_VAR", "some uninteresting value");
-
-        var cellar = factory.populate(new Cellar(), "com/noleme/vault/parser/simple_variable.yml");
+        var cellar = new EnvironmentVariables("MY_VAR", "some interesting value")
+            .and("MY_OTHER_VAR", "some uninteresting value")
+            .execute(() -> factory.populate(new Cellar(), "com/noleme/vault/parser/simple_variable.yml"));
 
         Assertions.assertEquals("MY_VAR", cellar.getVariable("my_varname"));
         Assertions.assertEquals("some interesting value", cellar.getVariable("my_ref"));
@@ -47,25 +36,23 @@ public class EnvTest
     }
 
     @Test
-    void envVariables_absentShouldBeNull() throws VaultException
+    void envVariables_absentShouldBeNull() throws Exception
     {
-        setEnv("MY_VAR", "some interesting value");
-
-        var cellar = factory.populate(new Cellar(), "com/noleme/vault/parser/simple_variable.yml");
+        var cellar = new EnvironmentVariables("MY_VAR", "some interesting value")
+            .execute(() -> factory.populate(new Cellar(), "com/noleme/vault/parser/simple_variable.yml"));
 
         Assertions.assertEquals("some interesting value", ((StringProvider)cellar.getService("provider.string.1")).provide());
         Assertions.assertNull(((StringProvider)cellar.getService("provider.string.2")).provide());
     }
 
     @Test
-    void envVariables_shouldBeConvertible() throws VaultException
+    void envVariables_shouldBeConvertible() throws Exception
     {
-        setEnv("MY_STRING", "custom_value");
-        setEnv("MY_INTEGER", "2345");
-        setEnv("MY_DOUBLE", "23.45");
-        setEnv("MY_BOOLEAN", "true");
-
-        var cellar = factory.populate(new Cellar(), "com/noleme/vault/parser/variable/env_variable.yml");
+        var cellar = new EnvironmentVariables("MY_STRING", "custom_value")
+            .and("MY_INTEGER", "2345")
+            .and("MY_DOUBLE", "23.45")
+            .and("MY_BOOLEAN", "true")
+            .execute(() -> factory.populate(new Cellar(), "com/noleme/vault/parser/variable/env_variable.yml"));
 
         Assertions.assertEquals("custom_value", cellar.getVariable("my_string_env"));
         Assertions.assertEquals(2345, cellar.getVariable("my_integer_env", int.class));
@@ -74,7 +61,7 @@ public class EnvTest
     }
 
     @Test
-    void envVariablesWithDefaultValues_shouldBeInterpreted() throws VaultException
+    void envVariablesWithDefaultValues_shouldBeInterpreted() throws Exception
     {
         var noEnvCellar = factory.populate(new Cellar(), "com/noleme/vault/parser/variable/env_variable.yml");
 
@@ -87,12 +74,11 @@ public class EnvTest
         Assertions.assertEquals("12.34", noEnvCellar.getVariable("my_double_defval_alt_env"));
         Assertions.assertEquals("false", noEnvCellar.getVariable("my_boolean_defval_alt_env"));
 
-        setEnv("MY_STRING", "custom_value");
-        setEnv("MY_INTEGER", "2345");
-        setEnv("MY_DOUBLE", "23.45");
-        setEnv("MY_BOOLEAN", "true");
-
-        var cellar = factory.populate(new Cellar(), "com/noleme/vault/parser/variable/env_variable.yml");
+        var cellar = new EnvironmentVariables("MY_STRING", "custom_value")
+            .and("MY_INTEGER", "2345")
+            .and("MY_DOUBLE", "23.45")
+            .and("MY_BOOLEAN", "true")
+            .execute(() -> factory.populate(new Cellar(), "com/noleme/vault/parser/variable/env_variable.yml"));
 
         Assertions.assertEquals("custom_value", cellar.getVariable("my_string_defval_env"));
         Assertions.assertEquals("2345", cellar.getVariable("my_integer_defval_env"));
@@ -105,7 +91,7 @@ public class EnvTest
     }
 
     @Test
-    void envVariablesWithDefaultValues_shouldBeConvertible() throws VaultException
+    void envVariablesWithDefaultValues_shouldBeConvertible() throws Exception
     {
         var noEnvCellar = factory.populate(new Cellar(), "com/noleme/vault/parser/variable/env_variable.yml");
 
@@ -118,12 +104,11 @@ public class EnvTest
         Assertions.assertEquals(12.34, noEnvCellar.getVariable("my_double_defval_alt_env", double.class));
         Assertions.assertEquals(false, noEnvCellar.getVariable("my_boolean_defval_alt_env", boolean.class));
 
-        setEnv("MY_STRING", "custom_value");
-        setEnv("MY_INTEGER", "2345");
-        setEnv("MY_DOUBLE", "23.45");
-        setEnv("MY_BOOLEAN", "true");
-
-        var cellar = factory.populate(new Cellar(), "com/noleme/vault/parser/variable/env_variable.yml");
+        var cellar = new EnvironmentVariables("MY_STRING", "custom_value")
+            .and("MY_INTEGER", "2345")
+            .and("MY_DOUBLE", "23.45")
+            .and("MY_BOOLEAN", "true")
+            .execute(() -> factory.populate(new Cellar(), "com/noleme/vault/parser/variable/env_variable.yml"));
 
         Assertions.assertEquals("custom_value", cellar.getVariable("my_string_defval_env"));
         Assertions.assertEquals(2345, cellar.getVariable("my_integer_defval_env", int.class));
@@ -144,44 +129,5 @@ public class EnvTest
         Assertions.assertEquals(1234, cellar.getService("my_provider.integer", IntegerProvider.class).provide());
         Assertions.assertEquals(12.34, cellar.getService("my_provider.double", DoubleProvider.class).provide());
         Assertions.assertEquals(false, cellar.getService("my_provider.boolean", BooleanProvider.class).provide());
-    }
-
-    /**
-     * Nasty hack for altering the env variable snapshot ; does not impact the actual env environment, only its in-memory representation.
-     * This produces a warning for illegal reflective access, should not be an issue in this context.
-     *
-     * @param name
-     * @param value
-     */
-    @SuppressWarnings("unchecked")
-    public static void setEnv(String name, String value)
-    {
-        try {
-            Map<String, String> env = System.getenv();
-            Field field = env.getClass().getDeclaredField("m");
-            field.setAccessible(true);
-            ((Map<String, String>) field.get(env)).put(name, value);
-        }
-        catch (IllegalAccessException | NoSuchFieldException e) {
-            throw new RuntimeException(e.getMessage(), e);
-        }
-    }
-
-    /**
-     * Nasty hack for altering the env variable snapshot ; does not impact the actual env environment, only its in-memory representation.
-     * This produces a warning for illegal reflective access, should not be an issue in this context.
-     */
-    @SuppressWarnings("unchecked")
-    public static void clearEnv()
-    {
-        try {
-            Map<String, String> env = System.getenv();
-            Field field = env.getClass().getDeclaredField("m");
-            field.setAccessible(true);
-            ((Map<String, String>) field.get(env)).clear();
-        }
-        catch (IllegalAccessException | NoSuchFieldException e) {
-            throw new RuntimeException(e.getMessage(), e);
-        }
     }
 }
