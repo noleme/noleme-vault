@@ -34,7 +34,7 @@
         <maven-surefire.version>3.5.0</maven-surefire.version>
         <maven-source.version>3.3.1</maven-source.version>
         <maven-javadoc.version>3.10.0</maven-javadoc.version>
-        <maven-gpg.version>3.2.4</maven-gpg.version>
+        <maven-gpg.version>3.2.7</maven-gpg.version>
         <slf4j.version>1.7.36</slf4j.version>
         <junit.version>5.11.4</junit.version>
         <junit.system-stubs.version>2.1.7</junit.system-stubs.version>
