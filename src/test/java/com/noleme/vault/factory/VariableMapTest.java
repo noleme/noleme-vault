@@ -5,13 +5,11 @@ import com.noleme.vault.container.Cellar;
 import com.noleme.vault.exception.VaultInjectionException;
 import com.noleme.vault.exception.VaultParserException;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import uk.org.webcompere.systemstubs.environment.EnvironmentVariables;
 
 import java.util.Map;
 
-import static com.noleme.vault.factory.EnvTest.clearEnv;
-import static com.noleme.vault.factory.EnvTest.setEnv;
 import static com.noleme.vault.parser.adjuster.VaultAdjuster.variables;
 
 /**
@@ -22,18 +20,12 @@ public class VariableMapTest
 {
     private static final VaultFactory factory = new VaultFactory();
 
-    @BeforeEach
-    void setup()
-    {
-        clearEnv();
-    }
-
     @Test
     void mapVariableTest()
     {
-        setEnv("MY_VAR", "my_value");
-
-        Cellar cellar = Assertions.assertDoesNotThrow(() -> factory.populate(new Cellar(), "com/noleme/vault/parser/variable/map_variable.yml"));
+        var cellar = Assertions.assertDoesNotThrow(() -> new EnvironmentVariables("MY_VAR", "my_value")
+            .execute(() -> factory.populate(new Cellar(), "com/noleme/vault/parser/variable/map_variable.yml"))
+        );
 
         Assertions.assertTrue(cellar.hasVariable("my_map"));
         Assertions.assertTrue(cellar.getVariable("my_map") instanceof Map);
@@ -64,25 +56,25 @@ public class VariableMapTest
     @Test
     void mapVariableTest__validReference()
     {
-        setEnv("MY_VAR", "my_value");
-
-        Assertions.assertDoesNotThrow(() -> Vault.with(
-            variables(vars -> vars.set("provider.map.value", vars.get("my_map"))),
-            "com/noleme/vault/parser/variable/map_variable.yml",
-            "com/noleme/vault/parser/provider/provider.map.yml"
-        ));
+        Assertions.assertDoesNotThrow(() -> new EnvironmentVariables("MY_VAR", "my_value")
+            .execute(() -> Vault.with(
+                variables(vars -> vars.set("provider.map.value", vars.get("my_map"))),
+                "com/noleme/vault/parser/variable/map_variable.yml",
+                "com/noleme/vault/parser/provider/provider.map.yml"
+            ))
+        );
     }
 
     @Test
     void mapVariableTest__invalidReference()
     {
-        setEnv("MY_VAR", "my_value");
-
-        Assertions.assertThrows(VaultInjectionException.class, () -> Vault.with(
-            variables(vars -> vars.set("provider.map.value", vars.get("my_map"))),
-            "com/noleme/vault/parser/variable/map_variable.yml",
-            "com/noleme/vault/parser/provider/provider.map.invalid_reference.yml"
-        ));
+        Assertions.assertThrows(VaultInjectionException.class, () -> new EnvironmentVariables("MY_VAR", "my_value")
+            .execute(() -> Vault.with(
+                variables(vars -> vars.set("provider.map.value", vars.get("my_map"))),
+                "com/noleme/vault/parser/variable/map_variable.yml",
+                "com/noleme/vault/parser/provider/provider.map.invalid_reference.yml"
+            ))
+        );
     }
 
     @Test
