@@ -42,7 +42,7 @@
         <noleme-commons.version>0.17.1</noleme-commons.version>
         <noleme-json.version>0.10</noleme-json.version>
         <javax-inject.version>1</javax-inject.version>
-        <jakarta-inject.version>2.0.1</jakarta-inject.version>
+        <jakarta-inject.version>2.0.1.MR</jakarta-inject.version>
     </properties>
 
     <dependencies>
