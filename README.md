@@ -12,8 +12,6 @@ A library providing DI with JSR-330 annotations and extensible YML/JSON configur
 The intended goal is to have both "traditional" DI capabilities and a non-intrusive, runtime-evaluated configuration system with an emphasis on composition.
 Each configuration file represents a small graph of objects that can be composed with others in order to create an application.
 
-_Note: This library is considered as "in beta" and as such significant API changes may occur without prior warning._
-
 ## I. Installation
 
 Add the following in your `pom.xml`:
@@ -22,13 +20,27 @@ Add the following in your `pom.xml`:
 <dependency>
     <groupId>com.noleme</groupId>
     <artifactId>noleme-vault</artifactId>
-    <version>0.19.1</version>
+    <version>0.19.2</version>
 </dependency>
 ```
 
 ## II. Notes on Structure and Design
 
-_TODO_
+Noleme Vault is designed around a three-stage process for managing dependencies and configuration:
+
+1. **Parsing & Extraction**: a `VaultParser` reads configuration files (YAML, JSON) and produces `Definitions`, representing a blueprint of a dependency graph, along with registered variables that may be used.
+2. **Compilation & Registration**: the `VaultFactory` takes these `Definitions`and handles the resolution of service dependencies, validates the graph structure (checking for circular dependencies or missing services), and registers resulting services and variables into a `Cellar`.
+3. **Runtime & Injection**: the `Vault` instance then can be used as the injection service, leveraging the `Cellar` and providing DI capabilities via JSR-330 annotations or direct queries.
+
+### Key Components
+
+* **Vault**: The main entry point for the library. It provides a high-level API for instantiating services and performing injections
+* **Cellar**: A container for runtime objects. It holds the actual instances of services and the values of configuration variables
+* **Definitions**: A registry of service and variable metadata before they are instantiated
+* **VaultParser**: An extensible component responsible for translating external configuration formats (eg. YML/JSON) into `Definitions`
+* **VaultFactory**: The engine that transforms `Definitions` into a live `Cellar` of services
+
+The next section sheds some light on how these work together.
 
 ## III. Usage
 
