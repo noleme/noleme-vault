@@ -35,12 +35,13 @@
         <maven-source.version>3.3.1</maven-source.version>
         <maven-javadoc.version>3.10.0</maven-javadoc.version>
         <maven-gpg.version>3.2.7</maven-gpg.version>
+        <central-publishing.version>0.10.0</central-publishing.version>
         <slf4j.version>1.7.36</slf4j.version>
         <junit.version>5.11.4</junit.version>
         <junit.system-stubs.version>2.1.7</junit.system-stubs.version>
         <jacoco.version>0.8.12</jacoco.version>
         <noleme-commons.version>0.17.1</noleme-commons.version>
-        <noleme-json.version>0.10</noleme-json.version>
+        <noleme-json.version>0.11</noleme-json.version>
         <javax-inject.version>1</javax-inject.version>
         <jakarta-inject.version>2.0.1</jakarta-inject.version>
     </properties>
@@ -197,7 +198,7 @@
             <plugin>
                 <groupId>org.sonatype.central</groupId>
                 <artifactId>central-publishing-maven-plugin</artifactId>
-                <version>0.6.0</version>
+                <version>${central-publishing.version}</version>
                 <extensions>true</extensions>
                 <configuration>
                     <publishingServerId>central</publishingServerId>
