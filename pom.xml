@@ -6,7 +6,7 @@
 
     <groupId>com.noleme</groupId>
     <artifactId>noleme-vault</artifactId>
-    <version>0.19.2</version>
+    <version>0.19.3</version>
     <packaging>jar</packaging>
 
     <name>Noleme Vault</name>
@@ -41,7 +41,7 @@
         <junit.system-stubs.version>2.1.7</junit.system-stubs.version>
         <jacoco.version>0.8.12</jacoco.version>
         <noleme-commons.version>0.17.1</noleme-commons.version>
-        <noleme-json.version>0.11</noleme-json.version>
+        <noleme-json.version>0.12</noleme-json.version>
         <javax-inject.version>1</javax-inject.version>
         <jakarta-inject.version>2.0.1</jakarta-inject.version>
     </properties>

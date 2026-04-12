@@ -1,7 +1,7 @@
 # Noleme Vault
 
 [![Maven Build](https://github.com/noleme/noleme-vault/actions/workflows/maven-build.yml/badge.svg?branch=master)](https://github.com/noleme/noleme-vault/actions/workflows/maven-build.yml)
-[![Maven Central Repository](https://maven-badges.herokuapp.com/maven-central/com.noleme/noleme-vault/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.noleme/noleme-vault)
+[![Maven Central Version](https://img.shields.io/maven-central/v/com.noleme/noleme-vault)](https://central.sonatype.com/artifact/com.noleme/noleme-vault)
 [![javadoc](https://javadoc.io/badge2/com.noleme/noleme-vault/javadoc.svg)](https://javadoc.io/doc/com.noleme/noleme-vault)
 [![coverage](https://codecov.io/gh/noleme/noleme-vault/branch/master/graph/badge.svg?token=Y9FD38RLDE)](https://codecov.io/gh/noleme/noleme-vault)
 ![GitHub](https://img.shields.io/github/license/noleme/noleme-vault)
@@ -20,7 +20,7 @@ Add the following in your `pom.xml`:
 <dependency>
     <groupId>com.noleme</groupId>
     <artifactId>noleme-vault</artifactId>
-    <version>0.19.2</version>
+    <version>0.19.3</version>
 </dependency>
 ```
 
@@ -106,35 +106,29 @@ MyService service = vault.inject(new MyService());
 ```
 
 Alternatively we could directly query one of the declared services:
-
-```java
-MyClass myService = vault.instance(MyClass.class, "my_service");
-```
-
-Other features that will need to be documented include:
-
-* import of dependency json/yml files
-* dynamic override / completion via adjusters
-* service method invocation
-* service instantiation via static method call
-* service aliasing
-* service closing
-* service container composition
-* service tagging & aggregation
-* service blueprints (scoped imports)
-* custom and generic modules
-* custom preprocessing routines
-
-_TODO_
-
-## IV. Dev Installation
-
-This project will require you to have the following:
+ 
+ ```java
+ MyClass myService = vault.instance(MyClass.class, "my_service");
+ ```
+ 
+ ## IV. Documentation
+ 
+ For more details on the library's features, check out the following documentation pages:
+ 
+ * **[Introduction](doc/introduction.md)**: Design philosophy and key components
+ * **[Services](doc/services.md)**: Declarations, constructors, factory methods, and lifecycle
+ * **[Variables](doc/variables.md)**: Variable definitions, environment variables, and runtime overrides
+ * **[Composition](doc/composition.md)**: Imports, scoped blueprints, and service tagging
+ * **[JSR-330](doc/jsr330.md)**: JSR-330 annotations, field/constructor injection, and modules
+ * **[Advanced](doc/advanced.md)**: Custom modules, preprocessors, and programmatic composition
+ 
+ ## V. Dev Installation
+ 
+ This project will require you to have the following:
 
 * Java 11+
 * Git (versioning)
 * Maven (dependency resolving, publishing and packaging) 
-
 
 ## License
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fnoleme%2Fnoleme-vault.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fnoleme%2Fnoleme-vault?ref=badge_large)
